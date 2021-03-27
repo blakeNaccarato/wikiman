@@ -99,7 +99,7 @@ def add_page(name: str, at_name: str, relative_to: str = "under"):
             sibling_dir = sibling.parent
             sibling_position = int(sibling_dir.name.split(" ")[0])
             sibling_position += 1
-            new_dir_name = get_dir_name(get_human_name(sibling.stem), sibling_position)
+            new_dir_name = get_dir_name(sibling.stem, sibling_position)
             new_dir = at_dir / new_dir_name
             sibling_dir.rename(new_dir)
 
