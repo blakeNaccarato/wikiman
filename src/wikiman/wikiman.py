@@ -1,4 +1,4 @@
-"""Generate wiki navigation links in the sidebar and footer of each page."""
+"""GitHub Wiki CLI manager."""
 
 import itertools
 from pathlib import Path
@@ -29,7 +29,7 @@ MD_TAB = "&nbsp;" * 4
 def main():
     """Runs only if this file is run directly, rather than imported."""
 
-    add("Yep this is it", after="Getting started")
+    print("working")
 
 
 # * -------------------------------------------------------------------------------- * #
