@@ -71,7 +71,7 @@ def update_navigation():
 
 
 def add_page(name: str, under: str, position: Optional[int] = None):
-    """Add a new page after or under the specified page."""
+    """Add a new page under a page, optionally specifying position."""
 
     parent = get_page(under)
     at_dir = parent.parent
