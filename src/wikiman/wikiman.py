@@ -4,6 +4,7 @@ import itertools
 from pathlib import Path
 
 import fire
+import git
 from markdown import Markdown
 
 ROOT_DIRNAME = "wiki"
@@ -12,7 +13,7 @@ ROOT_PAGE = Path(ROOT_DIRNAME) / ROOT_PAGE_NAME
 PAGE_PATTERN = "[!_]*.md"
 
 ROOT = Path(ROOT_DIRNAME)
-WIKI_ROOT = "https://github.com/blakeNaccarato/python-challenges/wiki"
+WIKI_ROOT = git.Repo().remotes.origin.url.removesuffix(".wiki.git") + "/wiki"
 
 SIDEBAR_FILENAME = "_Sidebar.md"
 FOOTER_FILENAME = "_Footer.md"

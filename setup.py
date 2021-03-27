@@ -18,7 +18,7 @@ setup(
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     python_requires=">=3.6",
-    install_requires=["fire", "markdown"],
+    install_requires=["fire", "markdown", "GitPython"],
     entry_points={
         "console_scripts": ["wikiman=wikiman.wikiman:main"],
     },
