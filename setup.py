@@ -9,7 +9,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="wikiman",
-    version="0.2.0",
+    version="0.3.0",
     description=("GitHub Wiki CLI manager."),
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -18,7 +18,7 @@ setup(
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     python_requires=">=3.6",
-    install_requires=["fire", "markdown"],
+    install_requires=["fire", "markdown", "GitPython"],
     entry_points={
         "console_scripts": ["wikiman=wikiman.wikiman:main"],
     },
