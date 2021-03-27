@@ -2,6 +2,7 @@
 
 import itertools
 from pathlib import Path
+from typing import Optional
 
 import fire
 import git
@@ -69,39 +70,27 @@ def update_navigation():
             file.write(nav)
 
 
-def add_page(name: str, at_name: str, relative_to: str = "under"):
+def add_page(name: str, under: str, position: Optional[int] = None):
     """Add a new page after or under the specified page."""
 
-    if relative_to != "under" and relative_to != "after":
-        raise ValueError("Third argument must be either 'under' or 'after'.")
+    parent = get_page(under)
+    at_dir = parent.parent
 
-    at_page = get_page(at_name)
+    if position is None:
+        position = len(get_children(parent))
+    else:
+        # Get the children that will come after the new page
+        children = get_children(parent)
+        children_after = children[position:]
 
-    if at_page == ROOT_PAGE and relative_to == "after":
-        raise ValueError("Can't add sibling to root.")
-
-    if relative_to == "under":
-        at_dir = at_page.parent
-        position = len(get_children(at_page))
-
-    elif relative_to == "after":
-
-        parent = get_parent(at_page)
-        at_dir = parent.parent
-
-        # Get the siblings that will come after the new page
-        siblings = get_siblings(at_page)
-        position = siblings.index(at_page) + 1
-        siblings_after = siblings[position:]
-
-        # Shift sibling directory numbering to accomdate the new page
-        for sibling in siblings_after:
-            sibling_dir = sibling.parent
-            sibling_position = int(sibling_dir.name.split(" ")[0])
-            sibling_position += 1
-            new_dir_name = get_dir_name(sibling.stem, sibling_position)
+        # Shift child directory numbering to accomdate the new page
+        for child in children_after:
+            child_dir = child.parent
+            child_position = int(child_dir.name.split(" ")[0])
+            child_position += 1
+            new_dir_name = get_dir_name(child.stem, child_position)
             new_dir = at_dir / new_dir_name
-            sibling_dir.rename(new_dir)
+            child_dir.rename(new_dir)
 
     make_page(name, at_dir, position)
 
