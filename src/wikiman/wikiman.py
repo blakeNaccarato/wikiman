@@ -73,8 +73,7 @@ def update_navigation():
 def add_page(name: str, under: str, position: Optional[int] = None):
     """Add a new page under a page, optionally specifying position."""
 
-    parent = get_page(under)
-    at_dir = parent.parent
+    parent = find_page(under)
 
     if position is None:
         position = len(get_children(parent))
@@ -85,37 +84,84 @@ def add_page(name: str, under: str, position: Optional[int] = None):
 
         # Shift child directory numbering to accomdate the new page
         for child in children_after:
-            child_dir = child.parent
-            child_position = int(child_dir.name.split(" ")[0])
-            child_position += 1
-            new_dir_name = get_dir_name(child.stem, child_position)
-            new_dir = at_dir / new_dir_name
-            child_dir.rename(new_dir)
+            new_child_position = get_page_position(child) + 1
+            change_page_position(child, new_child_position)
 
-    make_page(name, at_dir, position)
+    page = init_page(name, under, position)
+    create_page(page)
+
+
+def move_page(name: str, under: str, position: Optional[int] = None):
+    """Move a page under a page, optionally specifying position."""
+
+    page = find_page(name)
+    source_dir = page.parent
+    parent = find_page(under)
+    destination_dir = parent.parent
 
 
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
 
 
-def get_page(name: str) -> Path:
-    """Get a page given its name."""
+def find_page(name: str) -> Path:
+    """Find an existing page."""
 
     pages = get_descendants(ROOT)
-    page_names = [get_human_name(page.stem).lower() for page in pages]
+    page_names = [get_human_name(page).lower() for page in pages]
     page_location = page_names.index(name.lower())
     return pages[page_location]
 
 
-def make_page(name: str, at_dir: Path, position: int):
-    """Make a new page in the wiki."""
+def init_page(name: str, under: str, position: int) -> Path:
+    """Initialize a page in the wiki at the specified position."""
 
-    page_dir = at_dir / get_dir_name(name, position)
-    page_dir.mkdir()
+    parent = find_page(under)
+    destination_dir = parent.parent
+    page_dir = destination_dir / get_dir_name(name, position)
+    page = page_dir / get_md_name(name)
+    return page
 
-    new_page = page_dir / get_md_name(name)
-    new_page.touch()
+
+def create_page(page: Path):
+    """Create a page that has been initialized but does not exist yet."""
+
+    page.parent.mkdir()
+    page.touch()
+
+
+def remove_page(page: Path):
+    """Remove a page."""
+
+    page_dir = page.parent
+    page.unlink()
+    for file in [SIDEBAR_FILENAME, FOOTER_FILENAME]:
+        (page_dir / file).unlink(missing_ok=True)
+    page_dir.rmdir()
+
+
+def get_page_position(page: Path):
+    """Get the position of a page."""
+
+    page_dir = page.parent
+    position = int(page_dir.name.split("_")[0])
+    return position
+
+
+def change_page_position(page: Path, position: int):
+    """Change the position of a page."""
+
+    # TODO
+
+    new_dir_name = get_dir_name(page.stem, position)
+    new_dir = destination_dir / new_dir_name
+    child_dir.rename(new_dir)
+
+
+def get_dir_name(name: str, index: int) -> str:
+    """Get the name for the directory containing a page in the file structure."""
+
+    return str(index).zfill(WIDTH) + "_" + name
 
 
 # * -------------------------------------------------------------------------------- * #
@@ -233,7 +279,7 @@ def bold_md(text: str) -> str:
 def get_page_link(page: Path) -> str:
     """Get a link to a page in Markdown format."""
 
-    return get_md_link(get_human_name(page.stem), get_page_url(page))
+    return get_md_link(get_human_name(page), get_page_url(page))
 
 
 def get_md_link(text: str, link: str) -> str:
@@ -252,16 +298,10 @@ def get_page_url(page: Path) -> str:
 # * STRINGS
 
 
-def get_dir_name(name: str, index: int) -> str:
-    """Get the name for the directory containing a page in the file structure."""
-
-    return str(index).zfill(WIDTH) + " " + get_human_name(name)
-
-
-def get_human_name(name: str) -> str:
+def get_human_name(page: Path) -> str:
     """Get the human-readable name for a page, as in Markdown."""
 
-    return name.replace("-", " ")
+    return page.stem.replace("-", " ")
 
 
 def get_md_name(name: str) -> str:
