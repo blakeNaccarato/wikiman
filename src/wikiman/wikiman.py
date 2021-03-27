@@ -208,7 +208,6 @@ def get_relative_nav(page: Path, nav_head: tuple[str, str, str]) -> str:
     """Get the parent, previous, and next Markdown links."""
 
     relative_nav: list[str] = []
-
     (parent, prev_sibling, next_sibling) = get_nearest_family(page)
 
     # Get parent link for any page except for Home
