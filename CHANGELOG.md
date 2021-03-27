@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0]
 
-- Test.
+- Automate wiki URL via git `remote` URL.
 
 [Unreleased]: https://github.com/blakeNaccarato/wikiman/compare/0.3.0...develop
 [0.3.0]: https://github.com/blakeNaccarato/wikiman/releases/tag/0.3.0
