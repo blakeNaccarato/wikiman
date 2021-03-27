@@ -228,9 +228,7 @@ def get_relative_nav(page: Path, nav_head: tuple[str, str, str]) -> str:
     next_link = get_page_link(next_sibling)
     relative_nav.append(nav_head[2] + next_link)
 
-    nav = MD_TAB.join(relative_nav)
-
-    return nav
+    return MD_TAB.join(relative_nav)
 
 
 # * -------------------------------------------------------------------------------- * #
