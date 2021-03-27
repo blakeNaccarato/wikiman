@@ -71,7 +71,7 @@ def update_navigation():
 def add_page(name: str, at_name: str, relative_to: str = "under"):
     """Add a new page after or under the specified page."""
 
-    if relative_to != "under" or relative_to != "after":
+    if relative_to != "under" and relative_to != "after":
         raise ValueError("Third argument must be either 'under' or 'after'.")
 
     at_page = get_page(at_name)
