@@ -209,8 +209,7 @@ def get_relative_nav(page: Path, nav_head: tuple[str, str, str]) -> str:
 
     relative_nav: list[str] = []
 
-    nearest_family = get_nearest_family(page)
-    (parent, prev_sibling, next_sibling) = nearest_family
+    (parent, prev_sibling, next_sibling) = get_nearest_family(page)
 
     # Get parent link for any page except for Home
     if page == ROOT_PAGE:
