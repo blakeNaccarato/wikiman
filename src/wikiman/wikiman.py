@@ -32,7 +32,7 @@ WIDTH = 2
 
 
 def main():
-    """Runs only if this file is run directly, rather than imported."""
+    """The command-line interface. Runs if file is invoked directly, or from prompt."""
 
     fire.Fire(
         {
