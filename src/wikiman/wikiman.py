@@ -1,9 +1,9 @@
-"""GitHub Wiki CLI manager."""
+"""Generate wiki navigation links in the sidebar and footer of each page."""
 
 import itertools
 from pathlib import Path
-from typing import Optional
 
+import fire
 from markdown import Markdown
 
 ROOT_DIRNAME = "wiki"
@@ -11,6 +11,7 @@ ROOT_PAGE_NAME = "Home.md"
 ROOT_PAGE = Path(ROOT_DIRNAME) / ROOT_PAGE_NAME
 PAGE_PATTERN = "[!_]*.md"
 
+ROOT = Path(ROOT_DIRNAME)
 WIKI_ROOT = "https://github.com/blakeNaccarato/python-challenges/wiki"
 
 SIDEBAR_FILENAME = "_Sidebar.md"
@@ -25,23 +26,29 @@ MD_NEWLINE = "  \n"
 # Workaround. Markdown converts sequential whitespace (other than \n) to single spaces.
 MD_TAB = "&nbsp;" * 4
 
+# Width of the number to prepend to directories
+WIDTH = 2
+
 
 def main():
     """Runs only if this file is run directly, rather than imported."""
 
-    print("working")
+    fire.Fire(
+        {
+            "up": update_navigation,
+            "add": add_page,
+        }
+    )
 
 
 # * -------------------------------------------------------------------------------- * #
 # * CLI
 
 
-def up():
+def update_navigation():
     """Update sidebars and footers."""
 
-    root = Path(ROOT_DIRNAME)
-    pages = get_descendants(root)
-
+    pages = get_descendants(ROOT)
     for page in pages:
 
         # Write the tree of nearby pages and the TOC for this page into the sidebar
@@ -61,27 +68,68 @@ def up():
             file.write(nav)
 
 
-def add(name: str, after: Optional[str] = None, under: Optional[str] = None):
-    """Add a new page after the specified page."""
+def add_page(name: str, at_name: str, relative_to: str = "under"):
+    """Add a new page after or under the specified page."""
 
-    root = Path(ROOT_DIRNAME)
-    pages = get_descendants(root)
-    page_names = [get_md_name(page).lower() for page in pages]
+    if relative_to != "under" or relative_to != "after":
+        raise ValueError("Third argument must be either 'under' or 'after'.")
 
-    if after is not None:
-        after = after.lower()
-        idx = page_names.index(after)
-        page = pages[idx]
-        parent_directory = get_parent(page).parent
-        siblings = get_siblings(page)
-        assert True
-        # TODO
-    elif under is not None:
-        pass
+    at_page = get_page(at_name)
+
+    if at_page == ROOT_PAGE and relative_to == "after":
+        raise ValueError("Can't add sibling to root.")
+
+    if relative_to == "under":
+        at_dir = at_page.parent
+        position = len(get_children(at_page))
+
+    elif relative_to == "after":
+
+        parent = get_parent(at_page)
+        at_dir = parent.parent
+
+        # Get the siblings that will come after the new page
+        siblings = get_siblings(at_page)
+        position = siblings.index(at_page) + 1
+        siblings_after = siblings[position:]
+
+        # Shift sibling directory numbering to accomdate the new page
+        for sibling in siblings_after:
+            sibling_dir = sibling.parent
+            sibling_position = int(sibling_dir.name.split(" ")[0])
+            sibling_position += 1
+            new_dir_name = get_dir_name(get_human_name(sibling.stem), sibling_position)
+            new_dir = at_dir / new_dir_name
+            sibling_dir.rename(new_dir)
+
+    make_page(name, at_dir, position)
 
 
 # * -------------------------------------------------------------------------------- * #
-# * NAVIGATION TEXT ELEMENTS
+# * FILE OPERATIONS
+
+
+def get_page(name: str) -> Path:
+    """Get a page given its name."""
+
+    pages = get_descendants(ROOT)
+    page_names = [get_human_name(page.stem).lower() for page in pages]
+    page_location = page_names.index(name.lower())
+    return pages[page_location]
+
+
+def make_page(name: str, at_dir: Path, position: int):
+    """Make a new page in the wiki."""
+
+    page_dir = at_dir / get_dir_name(name, position)
+    page_dir.mkdir()
+
+    new_page = page_dir / get_md_name(name)
+    new_page.touch()
+
+
+# * -------------------------------------------------------------------------------- * #
+# * NAVIGATION
 
 
 def get_tree(page: Path) -> str:
@@ -128,7 +176,7 @@ def insert_subtree(subtree: list[str], tree: list[str], index: int):
 
     index += 1  # To insert *after* the specified index.
 
-    subtree = [f"{MD_TAB}{i}" for i in subtree]
+    subtree = [MD_TAB + str(i) for i in subtree]
     tree = list(itertools.chain(tree[:index], subtree, tree[index:]))
     return tree
 
@@ -168,18 +216,18 @@ def get_relative_nav(page: Path, nav_head: tuple[str, str, str]) -> str:
         parent_link = None
     else:
         parent_link = get_page_link(parent)
-        relative_nav.append(f"{nav_head[0]}{parent_link}")
+        relative_nav.append(nav_head[0] + parent_link)
 
     # Get previous link for pages with a different previous sibling than their parent
     if parent == prev_sibling:
         prev_link = None
     else:
         prev_link = get_page_link(prev_sibling)
-        relative_nav.append(f"{nav_head[1]}{prev_link}")
+        relative_nav.append(nav_head[1] + prev_link)
 
     # Get next link
     next_link = get_page_link(next_sibling)
-    relative_nav.append(f"{nav_head[2]}{next_link}")
+    relative_nav.append(nav_head[2] + next_link)
 
     nav = MD_TAB.join(relative_nav)
 
@@ -199,7 +247,7 @@ def bold_md(text: str) -> str:
 def get_page_link(page: Path) -> str:
     """Get a link to a page in Markdown format."""
 
-    return get_md_link(get_md_name(page), get_page_url(page))
+    return get_md_link(get_human_name(page.stem), get_page_url(page))
 
 
 def get_md_link(text: str, link: str) -> str:
@@ -208,16 +256,32 @@ def get_md_link(text: str, link: str) -> str:
     return f"[{text}]({link})"
 
 
-def get_md_name(page: Path) -> str:
-    """Get the human-readable name for a page, as in Markdown."""
-
-    return page.stem.replace("-", " ")
-
-
 def get_page_url(page: Path) -> str:
     """Get the URL for a page."""
 
     return f"{WIKI_ROOT}/{page.stem}"
+
+
+# * -------------------------------------------------------------------------------- * #
+# * STRINGS
+
+
+def get_dir_name(name: str, index: int) -> str:
+    """Get the name for the directory containing a page in the file structure."""
+
+    return str(index).zfill(WIDTH) + " " + get_human_name(name)
+
+
+def get_human_name(name: str) -> str:
+    """Get the human-readable name for a page, as in Markdown."""
+
+    return name.replace("-", " ")
+
+
+def get_md_name(name: str) -> str:
+    """Get the name for a `*.md` page in the file structure."""
+
+    return name.replace(" ", "-") + ".md"
 
 
 # * -------------------------------------------------------------------------------- * #
