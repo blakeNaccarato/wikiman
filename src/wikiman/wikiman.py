@@ -151,11 +151,10 @@ def get_page_position(page: Path):
 def change_page_position(page: Path, position: int):
     """Change the position of a page."""
 
-    # TODO
-
+    destination_dir = page.parent
     new_dir_name = get_dir_name(page.stem, position)
     new_dir = destination_dir / new_dir_name
-    child_dir.rename(new_dir)
+    destination_dir.rename(new_dir)
 
 
 def get_dir_name(name: str, index: int) -> str:
