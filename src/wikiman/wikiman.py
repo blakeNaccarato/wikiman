@@ -85,39 +85,41 @@ def add_page(name: str, under: str, position: Optional[int] = None):
         # Shift child directory numbering to accomdate the new page
         for child in children_after:
             new_child_position = get_page_position(child) + 1
-            change_page_position(child, new_child_position)
+            move_page(child, parent, new_child_position)
 
-    page = init_page(name, under, position)
+    page = init_page(name, parent, position)
     create_page(page)
 
 
-def move_page(name: str, under: str, position: Optional[int] = None):
+def test(name: str, under: str, position: Optional[int] = None):
     """Move a page under a page, optionally specifying position."""
 
-    page = find_page(name)
-    source_dir = page.parent
-    parent = find_page(under)
-    destination_dir = parent.parent
+    pass
 
 
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
 
 
-def find_page(name: str) -> Path:
-    """Find an existing page."""
-
-    pages = get_descendants(ROOT)
-    page_names = [get_human_name(page).lower() for page in pages]
-    page_location = page_names.index(name.lower())
-    return pages[page_location]
+def shift_page(page: Path, count: int):
+    """Shift a page."""
+    pass
 
 
-def init_page(name: str, under: str, position: int) -> Path:
+def move_page(page: Path, under: Path, position: int):
+    """Change the position of a page."""
+
+    # TODO
+
+    new_page = init_page(page.stem, under, position)
+    new_page.parent.mkdir()
+    page.rename(new_page)
+
+
+def init_page(name: str, under: Path, position: int) -> Path:
     """Initialize a page in the wiki at the specified position."""
 
-    parent = find_page(under)
-    destination_dir = parent.parent
+    destination_dir = under.parent
     page_dir = destination_dir / get_dir_name(name, position)
     page = page_dir / get_md_name(name)
     return page
@@ -148,13 +150,13 @@ def get_page_position(page: Path) -> int:
     return position
 
 
-def change_page_position(page: Path, position: int):
-    """Change the position of a page."""
+def find_page(name: str) -> Path:
+    """Find an existing page."""
 
-    destination_dir = page.parent
-    new_dir_name = get_dir_name(page.stem, position)
-    new_dir = destination_dir / new_dir_name
-    destination_dir.rename(new_dir)
+    pages = get_descendants(ROOT)
+    page_names = [get_human_name(page).lower() for page in pages]
+    page_location = page_names.index(name.lower())
+    return pages[page_location]
 
 
 def get_dir_name(name: str, index: int) -> str:
