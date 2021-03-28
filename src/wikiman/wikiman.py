@@ -140,7 +140,7 @@ def remove_page(page: Path):
     page_dir.rmdir()
 
 
-def get_page_position(page: Path):
+def get_page_position(page: Path) -> int:
     """Get the position of a page."""
 
     page_dir = page.parent
