@@ -15,6 +15,9 @@ SIDEBAR_FILENAME = "_Sidebar.md"
 FOOTER_FILENAME = "_Footer.md"
 
 # The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
+
+#! YOU CAN'T PYTEST MODULE-LEVEL STUFF. SO JUST DEAL WITH IT AND INTRODUCE A "WIKI"
+#! FOLDER FOR TESTING IN OR ELSE GO FULL OOP.
 ROOT_DIR = "wiki"
 
 # Get pages to be used throughout the module
