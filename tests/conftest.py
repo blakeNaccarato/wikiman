@@ -1,18 +1,7 @@
-from dataclasses import dataclass
-from pathlib import Path
-
 import pytest
-from wikiman import git
+import patchy
 
 
-@pytest.fixture(autouse=True)
-def patch(monkeypatch):
-    @dataclass
-    class Url:
-        url = "https://github.com/blakeNaccarato/wikiman/wikiman.wiki.git"
-
-    @dataclass
-    class Remotes:
-        origin = Url()
-
-    monkeypatch.setattr(git.Repo, "remotes", Remotes)
+@pytest.fixture(scope="session", autouse=True)
+def patchy_root():
+    pass
