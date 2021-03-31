@@ -15,10 +15,8 @@ SIDEBAR_FILENAME = "_Sidebar.md"
 FOOTER_FILENAME = "_Footer.md"
 
 # The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
-
-#! YOU CAN'T PYTEST MODULE-LEVEL STUFF. SO JUST DEAL WITH IT AND INTRODUCE A "WIKI"
-#! FOLDER FOR TESTING IN OR ELSE GO FULL OOP.
 ROOT_DIR = "wiki"
+GIT_REMOTE_URL = git.Repo().remotes.origin.url
 
 # Get pages to be used throughout the module
 ROOT = Path(ROOT_DIR)
@@ -295,8 +293,7 @@ def get_md_link(text: str, link: str) -> str:
 def get_page_url(page: Path) -> str:
     """Get the URL for a page."""
 
-    git_remote_url = git.Repo().remotes.origin.url
-    root_url = git_remote_url.removesuffix(".wiki.git") + "/wiki"
+    root_url = GIT_REMOTE_URL.removesuffix(".wiki.git") + "/wiki"
     return root_url + "/" + page.stem
 
 

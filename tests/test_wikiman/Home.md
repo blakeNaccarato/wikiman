@@ -1,1 +1,0 @@
-This wiki is used in `wikiman` tests.

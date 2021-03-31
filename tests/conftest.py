@@ -1,18 +1,16 @@
-from dataclasses import dataclass
+# pylint: disable=missing-module-docstring, missing-function-docstring
+
 from pathlib import Path
+import shutil
 
 import pytest
-from wikiman import git
+
+SRC = Path("./tests/wiki")
+DST = Path("./wiki")
 
 
-@pytest.fixture(autouse=True)
-def patch(monkeypatch):
-    @dataclass
-    class Url:
-        url = "https://github.com/blakeNaccarato/wikiman/wikiman.wiki.git"
-
-    @dataclass
-    class Remotes:
-        origin = Url()
-
-    monkeypatch.setattr(git.Repo, "remotes", Remotes)
+@pytest.fixture()
+def restore_wiki():
+    yield
+    shutil.rmtree(DST)
+    shutil.copytree(SRC, DST)
