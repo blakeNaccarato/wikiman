@@ -1,7 +1,7 @@
-# pylint: disable=missing-module-docstring, missing-function-docstring
+# pylint: disable=missing-module-docstring, missing-function-docstring, unused-argument
 
 import wikiman as wm
 
 
-def test_test(restore_wiki):
-    assert 0
+def test_test(wiki_directory):
+    assert 1
