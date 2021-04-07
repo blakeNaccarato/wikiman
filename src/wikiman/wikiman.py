@@ -163,7 +163,7 @@ def find_page(name: str) -> Path:
 def get_dir_name(name: str, index: int) -> str:
     """Get the name for the directory containing a page in the file structure."""
 
-    return str(index).zfill(WIDTH) + "_" + name
+    return str(index).zfill(WIDTH) + "_" + get_dashed_name(name)
 
 
 # * -------------------------------------------------------------------------------- * #
@@ -301,16 +301,22 @@ def get_page_url(page: Path) -> str:
 # * STRINGS
 
 
+def get_md_name(name: str) -> str:
+    """Get the name for a `*.md` page in the file structure."""
+
+    return get_dashed_name(name) + ".md"
+
+
 def get_human_name(page: Path) -> str:
-    """Get the human-readable name for a page, as in Markdown."""
+    """Get a human-readable name."""
 
     return page.stem.replace("-", " ")
 
 
-def get_md_name(name: str) -> str:
-    """Get the name for a `*.md` page in the file structure."""
+def get_dashed_name(name: str) -> str:
+    """Get a dashed name."""
 
-    return name.replace(" ", "-") + ".md"
+    return name.replace(" ", "-")
 
 
 # * -------------------------------------------------------------------------------- * #
