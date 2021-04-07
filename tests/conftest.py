@@ -6,26 +6,71 @@ from pathlib import Path
 import pytest
 import wikiman as wm
 
-TESTS_ROOT = Path("tests/wiki")
+WIKI_ROOT_NAME = "wiki"
+TESTS_ROOT = Path("tests")
+WIKI_ROOT = TESTS_ROOT / WIKI_ROOT_NAME
+
+
+# * -------------------------------------------------------------------------------- * #
+# * AUTOUSE FIXTURES
+
+
+@pytest.fixture(scope="session", autouse=True)
+def restore_wiki_after_all_tests():
+    """Restore the wiki directory at the end of the testing session."""
+
+    yield
+    restore_wiki()
+
+
+@pytest.fixture(autouse=True)
+def restore_wiki_before_test():
+    """Restore the wiki directory before running a test."""
+
+    restore_wiki()
 
 
 def restore_wiki():
     """Restore the wiki directory."""
 
     shutil.rmtree(wm.ROOT)
-    shutil.copytree(TESTS_ROOT, wm.ROOT)
+    shutil.copytree(WIKI_ROOT, wm.ROOT)
+
+
+# * -------------------------------------------------------------------------------- * #
+# * RESOURCES
 
 
 @pytest.fixture()
-def wiki_directory():
-    """Restore the wiki directory before any test that depends on it."""
+def expected_wiki(request) -> Path:
+    """Get the expected final state of the wiki."""
 
-    restore_wiki()
+    module = request.node.module
+    test_name = request.node.originalname
 
+    root = Path(module.__file__).parent
 
-@pytest.fixture(scope="session", autouse=True)
-def test_session():
-    """Restore the wiki directory after finishing all tests."""
+    module_root = root / module.__name__
+    module_expected_wiki = module_root / WIKI_ROOT_NAME
 
-    yield
-    restore_wiki()
+    test_root = module_root / test_name
+    test_expected_wiki = test_root / WIKI_ROOT_NAME
+
+    is_parametrized = any(
+        (marker.name == "parametrize" for marker in request.node.iter_markers())
+    )
+    if is_parametrized:
+        test_id = request.node.name.split("[")[1].split("-")[0]
+        test_id_root = test_root / test_id
+        test_id_expected_wiki = test_id_root / WIKI_ROOT_NAME
+
+    if is_parametrized and test_id_expected_wiki.exists():
+        expected_directory = test_id_expected_wiki
+    if test_expected_wiki.exists():
+        expected_directory = test_expected_wiki
+    elif module_expected_wiki.exists():
+        expected_directory = module_expected_wiki
+    else:
+        raise pytest.UsageError("No wiki found for expected results to this test.")
+
+    return expected_directory
