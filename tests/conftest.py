@@ -1,4 +1,4 @@
-"""Test configuration."""
+# pylint: disable=missing-module-docstring, redefined-outer-name, unused-argument, wrong-import-order
 
 import shutil
 from pathlib import Path
@@ -23,20 +23,12 @@ def remove_wiki_after_all_tests():
     shutil.rmtree(wm.WIKI_ROOT)
 
 
-@pytest.fixture(autouse=True)
-def restore_wiki_before_test():
-    """Restore the wiki directory before running a test."""
-
-    shutil.rmtree(wm.WIKI_ROOT)
-    shutil.copytree(WIKI_ROOT, wm.WIKI_ROOT)
-
-
 # * -------------------------------------------------------------------------------- * #
 # * RESOURCES
 
 
 @pytest.fixture()
-def expected_wiki(request) -> Path:
+def expected_wiki(request, restore_wiki_before_test) -> Path:
     """Get the expected final state of the wiki."""
 
     is_parametrized = any(
@@ -63,3 +55,11 @@ def expected_wiki(request) -> Path:
         raise pytest.UsageError("No wiki found for expected results to this test.")
 
     return wiki
+
+
+@pytest.fixture()
+def restore_wiki_before_test():
+    """Restore the wiki directory before running a test."""
+
+    shutil.rmtree(wm.WIKI_ROOT)
+    shutil.copytree(WIKI_ROOT, wm.WIKI_ROOT)
