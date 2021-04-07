@@ -2,6 +2,7 @@
 
 import itertools
 import os
+import re
 import shutil
 from pathlib import Path
 from typing import Optional
@@ -14,6 +15,7 @@ from markdown import Markdown
 PAGE_PATTERN = "[!_]*.md"
 SIDEBAR_FILENAME = "_Sidebar.md"
 FOOTER_FILENAME = "_Footer.md"
+ILLEGAL_CHARACTERS = r'\/:*?"<>|'
 
 # The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
 ROOT_NAME = "wiki"
@@ -126,6 +128,9 @@ def move_page(page: Path, under: Path, position: int):
 
 def init_page(name: str, under: Path, position: int) -> Path:
     """Initialize a page in the wiki at the specified position."""
+
+    if re.search(fr"[{ILLEGAL_CHARACTERS}]", name):
+        raise ValueError(f"Name contains one of: {ILLEGAL_CHARACTERS}")
 
     destination_dir = under.parent
     page_dir = destination_dir / get_dir_name(name, position)
