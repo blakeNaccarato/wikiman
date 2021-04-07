@@ -1,9 +1,10 @@
 """Generate wiki navigation links in the sidebar and footer of each page."""
 
 import itertools
+import os
+import shutil
 from pathlib import Path
 from typing import Optional
-import os
 
 import fire
 import git
@@ -15,12 +16,17 @@ SIDEBAR_FILENAME = "_Sidebar.md"
 FOOTER_FILENAME = "_Footer.md"
 
 # The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
-ROOT_DIR = "wiki"
+ROOT_NAME = "wiki"
 GIT_REMOTE_URL = git.Repo().remotes.origin.url
 
 # Get pages to be used throughout the module
-ROOT = Path(ROOT_DIR)
-PAGES = list(ROOT.glob(f"**/{PAGE_PATTERN}"))
+WIKI_ROOT = Path(ROOT_NAME)
+
+if not WIKI_ROOT.exists():
+    WIKI_ROOT.mkdir()
+    (WIKI_ROOT / "Home.md").touch()
+
+PAGES = list(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}"))
 ROOT_PAGE = PAGES[0]
 
 # Glyphs to place in the footer next to "Up", "Prev", and "Next" navigation links.
