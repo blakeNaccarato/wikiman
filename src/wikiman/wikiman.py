@@ -166,7 +166,7 @@ def get_page_position(page: Path) -> int:
 def find_page(name: str) -> Path:
     """Find an existing page."""
 
-    page_names = [get_human_name(page).lower() for page in PAGES]
+    page_names = [get_dashed_name(page.stem).lower() for page in PAGES]
     page_location = page_names.index(name.lower())
     return PAGES[page_location]
 
@@ -292,7 +292,7 @@ def bold_md(text: str) -> str:
 def get_page_link(page: Path) -> str:
     """Get a link to a page in Markdown format."""
 
-    return get_md_link(get_human_name(page), get_page_url(page))
+    return get_md_link(get_human_name(page.stem), get_page_url(page))
 
 
 def get_md_link(text: str, link: str) -> str:
@@ -318,10 +318,10 @@ def get_md_name(name: str) -> str:
     return get_dashed_name(name) + ".md"
 
 
-def get_human_name(page: Path) -> str:
+def get_human_name(name: str) -> str:
     """Get a human-readable name."""
 
-    return page.stem.replace("-", " ")
+    return name.replace("-", " ")
 
 
 def get_dashed_name(name: str) -> str:
