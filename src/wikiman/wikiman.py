@@ -1,22 +1,35 @@
 """Generate wiki navigation links in the sidebar and footer of each page."""
 
 import itertools
+import os
+import re
+import shutil
 from pathlib import Path
+from typing import Optional
 
 import fire
 import git
 from markdown import Markdown
 
-ROOT_DIRNAME = "wiki"
-ROOT_PAGE_NAME = "Home.md"
-ROOT_PAGE = Path(ROOT_DIRNAME) / ROOT_PAGE_NAME
+# Patterns specific to GitHub Wiki
 PAGE_PATTERN = "[!_]*.md"
-
-ROOT = Path(ROOT_DIRNAME)
-WIKI_ROOT = git.Repo().remotes.origin.url.removesuffix(".wiki.git") + "/wiki"
-
 SIDEBAR_FILENAME = "_Sidebar.md"
 FOOTER_FILENAME = "_Footer.md"
+ILLEGAL_CHARACTERS = r'\/:*?"<>|'
+
+# The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
+ROOT_NAME = "wiki"
+GIT_REMOTE_URL = git.Repo().remotes.origin.url
+
+# Get pages to be used throughout the module
+WIKI_ROOT = Path(ROOT_NAME)
+
+if not WIKI_ROOT.exists():
+    WIKI_ROOT.mkdir()
+    (WIKI_ROOT / "Home.md").touch()
+
+PAGES = list(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}"))
+ROOT_PAGE = PAGES[0]
 
 # Glyphs to place in the footer next to "Up", "Prev", and "Next" navigation links.
 NAV_HEAD = ("Up: ", "Prev: ", "Next: ")
@@ -26,13 +39,12 @@ MD_HEAD = "# "
 MD_NEWLINE = "  \n"
 # Workaround. Markdown converts sequential whitespace (other than \n) to single spaces.
 MD_TAB = "&nbsp;" * 4
-
 # Width of the number to prepend to directories
 WIDTH = 2
 
 
 def main():
-    """Runs only if this file is run directly, rather than imported."""
+    """The command-line interface. Runs if file is invoked directly, or from prompt."""
 
     fire.Fire(
         {
@@ -49,8 +61,7 @@ def main():
 def update_navigation():
     """Update sidebars and footers."""
 
-    pages = get_descendants(ROOT)
-    for page in pages:
+    for page in PAGES:
 
         # Write the tree of nearby pages and the TOC for this page into the sidebar
         tree = get_tree(page)
@@ -63,70 +74,107 @@ def update_navigation():
             file.write(sidebar_text)
 
         # Write relative navigation links into the footer
-        nav = get_relative_nav(page, NAV_HEAD)
+        nav = get_relative_nav(page)
         footer = page.parent / FOOTER_FILENAME
         with open(footer, "w") as file:
             file.write(nav)
 
 
-def add_page(name: str, at_name: str, relative_to: str = "under"):
-    """Add a new page after or under the specified page."""
+def add_page(name: str, under: str, position: Optional[int] = None):
+    """Add a new page under a page, optionally specifying position."""
 
-    if relative_to != "under" and relative_to != "after":
-        raise ValueError("Third argument must be either 'under' or 'after'.")
+    parent = find_page(under)
 
-    at_page = get_page(at_name)
+    if position is None:
+        position = len(get_children(parent))
+    else:
+        # Get the children that will come after the new page
+        children = get_children(parent)
+        children_after = children[position:]
 
-    if at_page == ROOT_PAGE and relative_to == "after":
-        raise ValueError("Can't add sibling to root.")
+        # Shift child directory numbering to accomdate the new page
+        for child in children_after:
+            new_child_position = get_page_position(child) + 1
+            move_page(child, parent, new_child_position)
 
-    if relative_to == "under":
-        at_dir = at_page.parent
-        position = len(get_children(at_page))
+    page = init_page(name, parent, position)
+    create_page(page)
 
-    elif relative_to == "after":
 
-        parent = get_parent(at_page)
-        at_dir = parent.parent
+def test(name: str, under: str, position: Optional[int] = None):
+    """Move a page under a page, optionally specifying position."""
 
-        # Get the siblings that will come after the new page
-        siblings = get_siblings(at_page)
-        position = siblings.index(at_page) + 1
-        siblings_after = siblings[position:]
-
-        # Shift sibling directory numbering to accomdate the new page
-        for sibling in siblings_after:
-            sibling_dir = sibling.parent
-            sibling_position = int(sibling_dir.name.split(" ")[0])
-            sibling_position += 1
-            new_dir_name = get_dir_name(get_human_name(sibling.stem), sibling_position)
-            new_dir = at_dir / new_dir_name
-            sibling_dir.rename(new_dir)
-
-    make_page(name, at_dir, position)
+    pass
 
 
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
 
 
-def get_page(name: str) -> Path:
-    """Get a page given its name."""
+def shift_page(page: Path, count: int):
+    """Shift a page."""
+    pass
 
-    pages = get_descendants(ROOT)
-    page_names = [get_human_name(page.stem).lower() for page in pages]
+
+def move_page(page: Path, under: Path, position: int):
+    """Change the position of a page."""
+
+    # TODO
+
+    new_page = init_page(page.stem, under, position)
+    new_page.parent.mkdir()
+    page.rename(new_page)
+
+
+def init_page(name: str, under: Path, position: int) -> Path:
+    """Initialize a page in the wiki at the specified position."""
+
+    if re.search(fr"[{ILLEGAL_CHARACTERS}]", name):
+        raise ValueError(f"Name contains one of: {ILLEGAL_CHARACTERS}")
+
+    destination_dir = under.parent
+    page_dir = destination_dir / get_dir_name(name, position)
+    page = page_dir / get_md_name(name)
+    return page
+
+
+def create_page(page: Path):
+    """Create a page that has been initialized but does not exist yet."""
+
+    page.parent.mkdir()
+    page.touch()
+
+
+def remove_page(page: Path):
+    """Remove a page."""
+
+    page_dir = page.parent
+    page.unlink()
+    for file in [SIDEBAR_FILENAME, FOOTER_FILENAME]:
+        (page_dir / file).unlink(missing_ok=True)
+    page_dir.rmdir()
+
+
+def get_page_position(page: Path) -> int:
+    """Get the position of a page."""
+
+    page_dir = page.parent
+    position = int(page_dir.name.split("_")[0])
+    return position
+
+
+def find_page(name: str) -> Path:
+    """Find an existing page."""
+
+    page_names = [get_human_name(page).lower() for page in PAGES]
     page_location = page_names.index(name.lower())
-    return pages[page_location]
+    return PAGES[page_location]
 
 
-def make_page(name: str, at_dir: Path, position: int):
-    """Make a new page in the wiki."""
+def get_dir_name(name: str, index: int) -> str:
+    """Get the name for the directory containing a page in the file structure."""
 
-    page_dir = at_dir / get_dir_name(name, position)
-    page_dir.mkdir()
-
-    new_page = page_dir / get_md_name(name)
-    new_page.touch()
+    return str(index).zfill(WIDTH) + "_" + get_dashed_name(name)
 
 
 # * -------------------------------------------------------------------------------- * #
@@ -204,35 +252,31 @@ def get_toc(page: Path) -> str:
     return toc
 
 
-def get_relative_nav(page: Path, nav_head: tuple[str, str, str]) -> str:
+def get_relative_nav(page: Path) -> str:
     """Get the parent, previous, and next Markdown links."""
 
     relative_nav: list[str] = []
-
-    nearest_family = get_nearest_family(page)
-    (parent, prev_sibling, next_sibling) = nearest_family
+    (parent, prev_sibling, next_sibling) = get_nearest_family(page)
 
     # Get parent link for any page except for Home
     if page == ROOT_PAGE:
         parent_link = None
     else:
         parent_link = get_page_link(parent)
-        relative_nav.append(nav_head[0] + parent_link)
+        relative_nav.append(NAV_HEAD[0] + parent_link)
 
     # Get previous link for pages with a different previous sibling than their parent
     if parent == prev_sibling:
         prev_link = None
     else:
         prev_link = get_page_link(prev_sibling)
-        relative_nav.append(nav_head[1] + prev_link)
+        relative_nav.append(NAV_HEAD[1] + prev_link)
 
     # Get next link
     next_link = get_page_link(next_sibling)
-    relative_nav.append(nav_head[2] + next_link)
+    relative_nav.append(NAV_HEAD[2] + next_link)
 
-    nav = MD_TAB.join(relative_nav)
-
-    return nav
+    return MD_TAB.join(relative_nav)
 
 
 # * -------------------------------------------------------------------------------- * #
@@ -248,7 +292,7 @@ def bold_md(text: str) -> str:
 def get_page_link(page: Path) -> str:
     """Get a link to a page in Markdown format."""
 
-    return get_md_link(get_human_name(page.stem), get_page_url(page))
+    return get_md_link(get_human_name(page), get_page_url(page))
 
 
 def get_md_link(text: str, link: str) -> str:
@@ -260,39 +304,34 @@ def get_md_link(text: str, link: str) -> str:
 def get_page_url(page: Path) -> str:
     """Get the URL for a page."""
 
-    return f"{WIKI_ROOT}/{page.stem}"
+    root_url = GIT_REMOTE_URL.removesuffix(".wiki.git") + "/wiki"
+    return root_url + "/" + page.stem
 
 
 # * -------------------------------------------------------------------------------- * #
 # * STRINGS
 
 
-def get_dir_name(name: str, index: int) -> str:
-    """Get the name for the directory containing a page in the file structure."""
-
-    return str(index).zfill(WIDTH) + " " + get_human_name(name)
-
-
-def get_human_name(name: str) -> str:
-    """Get the human-readable name for a page, as in Markdown."""
-
-    return name.replace("-", " ")
-
-
 def get_md_name(name: str) -> str:
     """Get the name for a `*.md` page in the file structure."""
 
-    return name.replace(" ", "-") + ".md"
+    return get_dashed_name(name) + ".md"
+
+
+def get_human_name(page: Path) -> str:
+    """Get a human-readable name."""
+
+    return page.stem.replace("-", " ")
+
+
+def get_dashed_name(name: str) -> str:
+    """Get a dashed name."""
+
+    return name.replace(" ", "-")
 
 
 # * -------------------------------------------------------------------------------- * #
 # * FAMILY
-
-
-def get_descendants(page: Path) -> list[Path]:
-    """Get a page and all of its descendants."""
-
-    return list(page.glob(f"**/{PAGE_PATTERN}"))
 
 
 def get_nearest_family(page: Path) -> tuple[Path, Path, Path]:
@@ -301,7 +340,7 @@ def get_nearest_family(page: Path) -> tuple[Path, Path, Path]:
     parent = get_parent(page)
     siblings = get_siblings(page)
 
-    if page.name == ROOT_PAGE_NAME:
+    if page == ROOT_PAGE:
         prev_sibling = page  # The Home page is its own previous sibling
         next_sibling = siblings[0]  # The next page is its next sibling
     else:

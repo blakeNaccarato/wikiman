@@ -17,7 +17,7 @@ setup(
     author="Blake Naccarato",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     install_requires=["fire", "markdown", "GitPython"],
     entry_points={
         "console_scripts": ["wikiman=wikiman.wikiman:main"],
