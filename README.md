@@ -269,6 +269,8 @@ GitHub Wikis handle docs generation and hosting for you. The alternatives just l
 
 In my opinion, you should descend this list as the complexity of your project increases. Ideally you know the end-state complexity of your project from the outset, but sometimes it is unknown. Overambitious docs choices can be sluggish for quick projects, or for projects that aren't development-focused like teaching/tutorial/"awesome lists" on GitHub.
 
+A suggestion of the appropriate docs solution in order of increasing complexity of your project:
+
 1. A `README.md` or `README.rst` in the root of your repo.
 2. GitHub Wiki accompanied by **Wikiman**.
 3. A combination of docs generator/host.
