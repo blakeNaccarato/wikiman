@@ -6,6 +6,15 @@ import pytest
 import wikiman as wm
 from pytest import mark as m
 
+
+# * -------------------------------------------------------------------------------- * #
+# * FILE OPERATIONS
+
+
+def test_add_page():
+    wm.add_page("Measure-Transient-Respite", "Impeach-Vermilion-Vacuum")
+
+
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
 
