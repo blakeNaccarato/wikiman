@@ -267,7 +267,7 @@ GitHub Wikis handle docs generation and hosting for you. The alternatives just l
 [GitHub Pages]: https://pages.github.com/
 [GitBook]: https://www.gitbook.com/
 
-In my opinion, you should descend this list as the complexity of your project increases. Ideally you know the end-state complexity of your project from the outset, but sometimes it is unknown. Overambitious docs choices can be sluggish for quick projects, or projects that aren't development-focused like teaching/tutorial/"awesome lists" on GitHub.
+In my opinion, you should descend this list as the complexity of your project increases. Ideally you know the end-state complexity of your project from the outset, but sometimes it is unknown. Overambitious docs choices can be sluggish for quick projects, or for projects that aren't development-focused like teaching/tutorial/"awesome lists" on GitHub.
 
 1. A `README.md` or `README.rst` in the root of your repo.
 2. GitHub Wiki accompanied by **Wikiman**.
