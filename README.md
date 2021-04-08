@@ -1,5 +1,7 @@
 # Wikiman
 
+![test.png](other/test.png)
+
 A CLI manager for GitHub Wikis. Manage pages and generate tree views, tables of contents, and relative navigation.
 
 > NOTE: I am still implementing most of the features detailed [below]. If you are installing with `pip install wikiman`, then you will get version `0.3.0` and you can use `wikiman up` to update sidebars/footers, and `wikiman add ...` to add pages. I intend to implement aliases so that `wikiman update` and `wikiman up` will do the same thing, among others.
