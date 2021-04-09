@@ -6,18 +6,17 @@ import pytest
 import wikiman as wm
 from pytest import mark as m
 
+# ! -------------------------------------------------------------------------------- ! #
+# ! CLI
+
+# ! -------------------------------------------------------------------------------- ! #
+# ! BACKEND
 
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
 
-
-def test_add_page():
-    wm.add_page("Measure-Transient-Respite", "Impeach-Vermilion-Vacuum")
-
-
-# * -------------------------------------------------------------------------------- * #
-# * FILE OPERATIONS
-
+# * --------- * #
+# * init_page
 
 INIT_PAGE_RAISES_PARAMS = [
     # (
@@ -33,7 +32,7 @@ INIT_PAGE_RAISES_PARAMS = [
         ),
     ),
     (
-        "escapes",
+        "escape_sequences",
         ("E\as\bc\fa\np\re\ts\v", wm.ROOT_PAGE, 0),
     ),
     (
@@ -46,10 +45,8 @@ INIT_PAGE_RAISES_PARAMS = [
 @m.parametrize("test_id, args", INIT_PAGE_RAISES_PARAMS)
 def test_init_page_raises(test_id, args):
 
-    (name, under, position) = args
-
     with pytest.raises(ValueError):
-        wm.init_page(name, under, position)
+        wm.init_page(*args)
 
 
 INIT_PAGE_PARAMS = [
@@ -74,30 +71,45 @@ INIT_PAGE_PARAMS = [
 @m.parametrize("test_id, args, expected", INIT_PAGE_PARAMS)
 def test_init_page(test_id, args, expected):
 
-    (name, under, position) = args
-
-    result = wm.init_page(name, under, position)
+    result = wm.init_page(*args)
 
     assert result == expected
 
 
+# * ----------- * #
+# * create_page
+
+# reuse params from init_page, but compare to `expected_wiki` instead of `expected`
 CREATE_PAGE_PARAMS = [param[:2] for param in INIT_PAGE_PARAMS]
 
 
 @m.parametrize("test_id, args", CREATE_PAGE_PARAMS)
 def test_create_page(test_id, args, expected_wiki):
 
-    (name, under, position) = args
-    page = wm.init_page(name, under, position)
-    wm.create_page(page)
+    page = wm.init_page(*args)
 
+    wm.create_page(page)
     result = dircmp(wm.WIKI_ROOT, expected_wiki)
 
     assert not result.diff_files
 
 
+# * --------- * #
+# * add_page
+
+
+def test_add_page():
+
+    wm.add_page("Measure-Transient-Respite", "Impeach-Vermilion-Vacuum")
+
+    # TODO: Assert
+
+
 # * -------------------------------------------------------------------------------- * #
-# * FAMILY
+# * NAVIGATION
+
+# * -------------------------------------------------------------------------------- * #
+# * RELATIVES
 
 
 @m.parametrize(
@@ -117,3 +129,13 @@ def test_get_parent(test_id, args, expected):
     result = wm.get_parent(page)
 
     assert result == expected
+
+
+# ! -------------------------------------------------------------------------------- ! #
+# ! UTILITIES
+
+# * -------------------------------------------------------------------------------- * #
+# * MARKDOWN
+
+# * -------------------------------------------------------------------------------- * #
+# * STRINGS

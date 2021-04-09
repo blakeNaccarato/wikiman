@@ -15,7 +15,7 @@ from markdown import Markdown
 PAGE_PATTERN = "[!_]*.md"
 SIDEBAR_FILENAME = "_Sidebar.md"
 FOOTER_FILENAME = "_Footer.md"
-ILLEGAL_CHARACTERS = re.compile('[\\\\/:*?"<>|\a\b\f\n\r\t\v]')
+ILLEGAL_CHARACTERS = re.compile(r'[\\/:*?"<>|\a\b\f\n\r\t\v]')
 
 # The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
 ROOT_NAME = "wiki"
@@ -54,8 +54,8 @@ def main():
     )
 
 
-# * -------------------------------------------------------------------------------- * #
-# * CLI
+# ! -------------------------------------------------------------------------------- ! #
+# ! CLI
 
 
 def update_navigation():
@@ -107,6 +107,10 @@ def test(name: str, under: str, position: Optional[int] = None):
     pass
 
 
+# ! -------------------------------------------------------------------------------- ! #
+# ! BACKEND
+
+
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
 
@@ -126,23 +130,24 @@ def move_page(page: Path, under: Path, position: int):
     page.rename(new_page)
 
 
-def init_page(name: str, under: Path, position: int) -> Path:
-    """Initialize a page in the wiki at the specified position."""
-
-    if ILLEGAL_CHARACTERS.search(name):
-        raise ValueError('Name cannot contain escape sequences or \ / : * ? " < > |')
-
-    destination_dir = under.parent
-    page_dir = destination_dir / get_dir_name(name, position)
-    page = page_dir / get_md_name(name)
-    return page
-
-
 def create_page(page: Path):
     """Create a page that has been initialized but does not exist yet."""
 
     page.parent.mkdir()
     page.touch()
+
+
+def init_page(name: str, under: Path, position: int) -> Path:
+    """Initialize a page in the wiki at the specified position."""
+
+    if ILLEGAL_CHARACTERS.search(name):
+        message = 'Name cannot contain escape sequences or \\ / : * ? " < > |'  # noqa:W605, pylint:disable=anomalous-backslash-in-string
+        raise ValueError(message)
+
+    destination_dir = under.parent
+    page_dir = destination_dir / get_dir_name(name, position)
+    page = page_dir / get_md_name(name)
+    return page
 
 
 def remove_page(page: Path):
@@ -169,12 +174,6 @@ def find_page(name: str) -> Path:
     page_names = [get_dashed_name(page.stem).lower() for page in PAGES]
     page_location = page_names.index(name.lower())
     return PAGES[page_location]
-
-
-def get_dir_name(name: str, index: int) -> str:
-    """Get the name for the directory containing a page in the file structure."""
-
-    return str(index).zfill(WIDTH) + "_" + get_dashed_name(name)
 
 
 # * -------------------------------------------------------------------------------- * #
@@ -280,58 +279,7 @@ def get_relative_nav(page: Path) -> str:
 
 
 # * -------------------------------------------------------------------------------- * #
-# * MARKDOWN
-
-
-def bold_md(text: str) -> str:
-    """Make text bold in Markdown format."""
-
-    return f"**{text}**"
-
-
-def get_page_link(page: Path) -> str:
-    """Get a link to a page in Markdown format."""
-
-    return get_md_link(get_human_name(page.stem), get_page_url(page))
-
-
-def get_md_link(text: str, link: str) -> str:
-    """Get a link in Markdown format."""
-
-    return f"[{text}]({link})"
-
-
-def get_page_url(page: Path) -> str:
-    """Get the URL for a page."""
-
-    root_url = GIT_REMOTE_URL.removesuffix(".wiki.git") + "/wiki"
-    return root_url + "/" + page.stem
-
-
-# * -------------------------------------------------------------------------------- * #
-# * STRINGS
-
-
-def get_md_name(name: str) -> str:
-    """Get the name for a `*.md` page in the file structure."""
-
-    return get_dashed_name(name) + ".md"
-
-
-def get_human_name(name: str) -> str:
-    """Get a human-readable name."""
-
-    return name.replace("-", " ")
-
-
-def get_dashed_name(name: str) -> str:
-    """Get a dashed name."""
-
-    return name.replace(" ", "-")
-
-
-# * -------------------------------------------------------------------------------- * #
-# * FAMILY
+# * RELATIVES
 
 
 def get_nearest_family(page: Path) -> tuple[Path, Path, Path]:
@@ -404,8 +352,68 @@ def get_parent(page: Path) -> Path:
     return parent
 
 
+# ! -------------------------------------------------------------------------------- ! #
+# ! UTILITIES
+
 # * -------------------------------------------------------------------------------- * #
-# * RUN MAIN
+# * MARKDOWN
+
+
+def bold_md(text: str) -> str:
+    """Make text bold in Markdown format."""
+
+    return f"**{text}**"
+
+
+def get_page_link(page: Path) -> str:
+    """Get a link to a page in Markdown format."""
+
+    return get_md_link(get_human_name(page.stem), get_page_url(page))
+
+
+def get_md_link(text: str, link: str) -> str:
+    """Get a link in Markdown format."""
+
+    return f"[{text}]({link})"
+
+
+def get_page_url(page: Path) -> str:
+    """Get the URL for a page."""
+
+    root_url = GIT_REMOTE_URL.removesuffix(".wiki.git") + "/wiki"
+    return root_url + "/" + page.stem
+
+
+# * -------------------------------------------------------------------------------- * #
+# * STRINGS
+
+
+def get_dir_name(name: str, index: int) -> str:
+    """Get the name for the directory containing a page in the file structure."""
+
+    return str(index).zfill(WIDTH) + "_" + get_dashed_name(name)
+
+
+def get_md_name(name: str) -> str:
+    """Get the name for a `*.md` page in the file structure."""
+
+    return get_dashed_name(name) + ".md"
+
+
+def get_human_name(name: str) -> str:
+    """Get a human-readable name."""
+
+    return name.replace("-", " ")
+
+
+def get_dashed_name(name: str) -> str:
+    """Get a dashed name."""
+
+    return name.replace(" ", "-")
+
+
+# ! -------------------------------------------------------------------------------- ! #
+# ! RUN MAIN
 
 if __name__ == "__main__":
     main()
