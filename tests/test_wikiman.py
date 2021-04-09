@@ -19,7 +19,40 @@ def test_add_page():
 # * FILE OPERATIONS
 
 
-TEST_INIT_PAGE_PARAMS = [
+INIT_PAGE_RAISES_PARAMS = [
+    # (
+    #     <test_id>
+    #     <args>
+    # ),
+    (
+        "backslash",
+        (
+            "Backs\lash",  # noqa:W605, pylint:disable=anomalous-backslash-in-string
+            wm.ROOT_PAGE,
+            0,
+        ),
+    ),
+    (
+        "escapes",
+        ("E\as\bc\fa\np\re\ts\v", wm.ROOT_PAGE, 0),
+    ),
+    (
+        "all_others",
+        ('/:*?"<>|', wm.ROOT_PAGE, 0),
+    ),
+]
+
+
+@m.parametrize("test_id, args", INIT_PAGE_RAISES_PARAMS)
+def test_init_page_raises(test_id, args):
+
+    (name, under, position) = args
+
+    with pytest.raises(ValueError):
+        wm.init_page(name, under, position)
+
+
+INIT_PAGE_PARAMS = [
     # (
     #     <test_id>
     #     <args>
@@ -38,10 +71,20 @@ TEST_INIT_PAGE_PARAMS = [
 ]
 
 
-@m.parametrize(
-    "test_id, args",
-    [param[:2] for param in TEST_INIT_PAGE_PARAMS],
-)
+@m.parametrize("test_id, args, expected", INIT_PAGE_PARAMS)
+def test_init_page(test_id, args, expected):
+
+    (name, under, position) = args
+
+    result = wm.init_page(name, under, position)
+
+    assert result == expected
+
+
+CREATE_PAGE_PARAMS = [param[:2] for param in INIT_PAGE_PARAMS]
+
+
+@m.parametrize("test_id, args", CREATE_PAGE_PARAMS)
 def test_create_page(test_id, args, expected_wiki):
 
     (name, under, position) = args
@@ -51,34 +94,6 @@ def test_create_page(test_id, args, expected_wiki):
     result = dircmp(wm.WIKI_ROOT, expected_wiki)
 
     assert not result.diff_files
-
-
-@m.parametrize("name", tuple(wm.ILLEGAL_CHARACTERS.replace("\\", "")))
-def test_init_page_raises(name):
-    """Ensure that the proper exception is raised when illegal characters are given.
-
-    We can't test for backslash because Python always escapes backslashes outside of an
-    explicit raw string constant. Also, raw strings cannot end with a backslash, so a
-    raw string containing a single backslash doesn't work either. So we test every other
-    illegal character.
-
-    https://docs.python.org/3/faq/design.html#why-can-t-raw-strings-r-strings-end-with-a-backslash
-    """
-
-    with pytest.raises(ValueError, match=wm.ILLEGAL_CHARACTERS) as excinfo:
-        wm.init_page(name, wm.ROOT_PAGE, 0)
-
-    assert wm.ILLEGAL_CHARACTERS in str(excinfo.value)
-
-
-@m.parametrize("test_id, args, expected", TEST_INIT_PAGE_PARAMS)
-def test_init_page(test_id, args, expected):
-
-    (name, under, position) = args
-
-    result = wm.init_page(name, under, position)
-
-    assert result == expected
 
 
 # * -------------------------------------------------------------------------------- * #
