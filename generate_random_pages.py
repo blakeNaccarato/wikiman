@@ -1,4 +1,4 @@
-"""Generate ten random page names."""
+"""Generate page names consisting of three random words."""
 
 from random_word import RandomWords
 
