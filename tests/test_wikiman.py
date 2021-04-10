@@ -88,6 +88,8 @@ CREATE_PAGE_PARAMS = [param[:2] for param in INIT_PAGE_PARAMS]
 @m.parametrize("test_id, args", CREATE_PAGE_PARAMS)
 def test_create_page(test_id, args, EXPECTED_WIKI):
 
+    # TODO: Implement EXPECTED_WIKI for parametrized tests
+
     page = wm.init_page(*args)
 
     wm.create_page(page)
