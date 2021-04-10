@@ -97,17 +97,6 @@ def test_create_page(test_id, args, EXPECTED_WIKI):
 
 
 # * --------- * #
-# * add_page
-
-
-def test_add_page():
-
-    wm.add_page("Measure-Transient-Respite", "Impeach-Vermilion-Vacuum")
-
-    # TODO: Assert
-
-
-# * --------- * #
 # * find_page
 
 FIND_PAGE_PARAMS = [
@@ -123,7 +112,7 @@ FIND_PAGE_PARAMS = [
     ),
     (
         "lowercase",
-        'impeach-vermilion-vacuum',
+        "impeach-vermilion-vacuum",
         FIND_PAGE_LOWERCASE_EXPECTED := (
             conftest.WIKI_ROOT
             / r"00_Impeach-Vermilion-Vacuum\Impeach-Vermilion-Vacuum.md"
