@@ -4,23 +4,44 @@ import shutil
 from pathlib import Path
 
 import pytest
-import wikiman as wm
 
 WIKI_ROOT_NAME = "wiki"
+
+WIKI_ROOT = Path("wiki")
+if not WIKI_ROOT.exists():
+    WIKI_ROOT.mkdir()
+
 TESTS_ROOT = Path("tests")
-WIKI_ROOT = TESTS_ROOT / WIKI_ROOT_NAME
+TESTS_WIKI_ROOT = TESTS_ROOT / WIKI_ROOT_NAME
 
 
 # * -------------------------------------------------------------------------------- * #
-# * AUTOUSE FIXTURES
+# * AUTOUSE FIXTURES (CONTEXTS)
+
+
+def main():
+    """Does this work?"""
+
+    restore_wiki()
+
+
+# * -------------------------------------------------------------------------------- * #
+# * AUTOUSE FIXTURES (CONTEXTS)
+
+
+@pytest.fixture()
+def RESTORE_WIKI_BEFORE_TEST(autouse=True):
+    """Restore the wiki directory before running a test."""
+
+    restore_wiki()
 
 
 @pytest.fixture(scope="session", autouse=True)
-def remove_wiki_after_all_tests():
+def REMOVE_WIKI_AFTER_ALL_TESTS():
     """Remove the wiki directory at the end of the testing session."""
 
     yield
-    shutil.rmtree(wm.WIKI_ROOT)
+    shutil.rmtree(WIKI_ROOT)
 
 
 # * -------------------------------------------------------------------------------- * #
@@ -28,7 +49,7 @@ def remove_wiki_after_all_tests():
 
 
 @pytest.fixture()
-def expected_wiki(request, restore_wiki_before_test) -> Path:
+def EXPECTED_WIKI(request, RESTORE_WIKI_BEFORE_TEST) -> Path:
     """Get the expected final state of the wiki.
 
     Search the "tests" folder for "wiki" subfolders to folders matching the test module
@@ -82,9 +103,18 @@ def expected_wiki(request, restore_wiki_before_test) -> Path:
     return wiki
 
 
-@pytest.fixture()
-def restore_wiki_before_test():
-    """Restore the wiki directory before running a test."""
+# * -------------------------------------------------------------------------------- * #
+# * UTILITY FUNCTIONS
 
-    shutil.rmtree(wm.WIKI_ROOT)
-    shutil.copytree(WIKI_ROOT, wm.WIKI_ROOT)
+
+def restore_wiki():
+    """Restore the wiki directory."""
+
+    shutil.rmtree(WIKI_ROOT)
+    shutil.copytree(TESTS_WIKI_ROOT, WIKI_ROOT)
+
+
+# * -------------------------------------------------------------------------------- * #
+# * RUN MAIN
+
+main()
