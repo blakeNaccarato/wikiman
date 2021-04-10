@@ -1,9 +1,7 @@
 """Generate wiki navigation links in the sidebar and footer of each page."""
 
 import itertools
-import os
 import re
-import shutil
 from pathlib import Path
 from typing import Optional
 
@@ -46,19 +44,14 @@ WIDTH = 2
 def main():
     """The command-line interface. Runs if file is invoked directly, or from prompt."""
 
-    fire.Fire(
-        {
-            "up": update_navigation,
-            "add": add_page,
-        }
-    )
+    fire.Fire({"up": cli_update_navigation, "add": cli_add_page, "move": cli_move_page})
 
 
 # ! -------------------------------------------------------------------------------- ! #
 # ! CLI
 
 
-def update_navigation():
+def cli_update_navigation():
     """Update sidebars and footers."""
 
     for page in PAGES:
@@ -80,7 +73,7 @@ def update_navigation():
             file.write(nav)
 
 
-def add_page(name: str, under: str, position: Optional[int] = None):
+def cli_add_page(name: str, under: str, position: Optional[int] = None):
     """Add a new page under a page, optionally specifying position."""
 
     parent = find_page(under)
@@ -101,7 +94,7 @@ def add_page(name: str, under: str, position: Optional[int] = None):
     create_page(page)
 
 
-def test(name: str, under: str, position: Optional[int] = None):
+def cli_move_page():  # name: str, under: str, position: Optional[int] = None):
     """Move a page under a page, optionally specifying position."""
 
     pass
@@ -115,7 +108,7 @@ def test(name: str, under: str, position: Optional[int] = None):
 # * FILE OPERATIONS
 
 
-def shift_page(page: Path, count: int):
+def shift_page():  # page: Path, count: int):
     """Shift a page."""
     pass
 
