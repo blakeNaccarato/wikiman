@@ -20,7 +20,7 @@ TESTS_WIKI_ROOT = TESTS_ROOT / WIKI_ROOT_NAME
 
 
 def main():
-    """Restore the wiki before ever importing wikiman."""
+    """Restore the wiki after importing conftest but before ever importing wikiman."""
 
     restore_wiki()
 
