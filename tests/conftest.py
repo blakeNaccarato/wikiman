@@ -20,7 +20,7 @@ TESTS_WIKI_ROOT = TESTS_ROOT / WIKI_ROOT_NAME
 
 
 def main():
-    """Does this work?"""
+    """Restore the wiki before ever importing wikiman."""
 
     restore_wiki()
 
