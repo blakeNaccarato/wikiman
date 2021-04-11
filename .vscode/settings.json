@@ -1,4 +1,5 @@
 {
+    //* pytest
     "python.testing.pytestArgs": [
         "tests"
     ],
@@ -6,8 +7,15 @@
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
 
+    
+    //* flake8
     "python.linting.flake8Args": [
         "--config",
         ".flake8"
     ],
+
+    //* markdownlint
+    "markdownlint.config": {
+        "first-line-heading": false
+    },
 }
