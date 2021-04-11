@@ -1,6 +1,9 @@
-Don't put a heading at the top of your Markdown files. GitHub Wiki automatically generates the title at the top of every wiki page. Dashes are replaced by spaces in the filename (e.g. `Wiki-Page.md` to "Wiki Page") and the title is presented above your content. If you're linting your Markdown documentation, you may need to disable a warning about missing a heading on the first line.
 
-If you're using the [markdownlint] extension in VSCode, you can disable the `first-line-heading` warning by inserting the following into your `settings.json`.
+Welcome to the example wiki for **Wikiman**. This page details some advice for using GitHub Wikis, and how you should write your Markdown content to accomdate for the quirkiness of the platform. This page also serves as an example for how the table of contents looks for any given page. The content of this wiki also serves as the input to some `pytest` tests that operate directly on files and folders. This ensures that the functions of **Wikiman** are working as intended.
+
+## Don't put a heading at the top of your Markdown files
+
+GitHub Wiki automatically generates the title at the top of every wiki page. Dashes are replaced by spaces in the filename (e.g. `Wiki-Page.md` to "Wiki Page") and the title is presented above your content. If you're linting your Markdown documentation, you may need to disable a warning about missing a heading on the first line. If you're using the [markdownlint] extension in VSCode, you can disable the `first-line-heading` warning by inserting the following into your `settings.json`.
 
 ```json
 // settings.json
@@ -23,7 +26,7 @@ GitHub Wikis requires a `Home.md` file to be in your project. This serves as the
 
 ## Try not to use first-level headings (#) at all
 
-This advice may be classified as a matter of preference, but I don't recommend using first-level headings (lines prefixed by a single "#") *at all*. This has to do with the size at which first-level headings are rendered by GitHub Wiki, compared with that of the page title.
+This advice may be classified as a matter of preference, but I don't recommend using first-level headings (lines prefixed by a single "#") at all. This has to do with the size at which first-level headings are rendered by GitHub Wiki, compared with that of the page title.
 
 ## Wikiman generates tables of contents
 
@@ -39,6 +42,4 @@ This heading won't appear in the TOC, either.
 
 ## Wrapping up
 
-If you've read `README.md` in the main Wikiman project repo, and you've read this page here, then you know all you need to know about GitHub Wikis. It is a quirky little platform, but it works well enough for certain projects. We have to live with some of the quirks, such as the mandatory `Home.md`. But Wikiman helps overcome some of the others.
-
-The rest of this wiki contains randomly-generated page names with a variety of different contents. This wiki is used as the testing ground for Wikiman. Tests are written with `pytest`. Each function that operates directly on the folder structure of the wiki can be tested if the inital state and expected result are known. Some `pytest` fixtures are used to help with setup and teardown of initial/expected wiki states.
+If you've read `README.md` in the main **Wikiman** project repo, and you've read this page here, then you know all you need to know about GitHub Wikis. It is a quirky little platform, but it works well enough for certain projects. We have to live with some of the quirks, such as the mandatory `Home.md`. But Wikiman helps overcome some of the others.

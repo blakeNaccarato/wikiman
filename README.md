@@ -8,7 +8,7 @@ A CLI manager for GitHub Wikis. Manage pages and generate tree views, tables of 
 
 ## Example
 
-See the [wiki for Wikiman itself] to see the wiki that results from the usage example [detailed later on]. Note the Table of Contents in pages that are not empty. Also note the dynamic tree navigation in the sidebar and relative navigation in footers.
+See the [wiki for Wikiman itself] to see the wiki that results from the usage example [detailed later on]. Note the Table of Contents in the Home page. Also note the dynamic tree navigation in the sidebar and relative navigation in footers.
 
 [wiki for Wikiman itself]: https://github.com/blakeNaccarato/wikiman/wiki
 
