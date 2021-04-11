@@ -171,6 +171,20 @@ def test_get_parent(test_id, arg, expected):
 
 
 @m.parametrize(
+    "test_id, args, expected",
+    [
+        ("one_digit", ("page-name", 3), "03_page-name"),
+        ("two_digits", ("page-name", 45), "45_page-name"),
+    ],
+)
+def test_get_dir_name(test_id, args, expected):
+
+    result = wm.get_dir_name(*args)
+
+    assert result == expected
+
+
+@m.parametrize(
     "test_id, arg, expected",
     [
         ("dashes", "page-with-dashes", "page-with-dashes"),
