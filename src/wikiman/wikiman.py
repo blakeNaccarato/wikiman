@@ -398,7 +398,6 @@ def get_md_name(name: str) -> str:
 def get_human_name(name: str) -> str:
     """Get a human-readable name."""
 
-    # TODO: Write test for this.
     return name.replace("-", " ").capitalize()
 
 
