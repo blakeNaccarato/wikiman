@@ -144,7 +144,7 @@ def test_find_page(test_id, arg, expected, RESTORE_WIKI_BEFORE_TEST):
 
 
 @m.parametrize(
-    "test_id, args, expected",
+    "test_id, arg, expected",
     [
         (
             "root_page",
@@ -153,11 +153,9 @@ def test_find_page(test_id, arg, expected, RESTORE_WIKI_BEFORE_TEST):
         ),
     ],
 )
-def test_get_parent(test_id, args, expected):
+def test_get_parent(test_id, arg, expected):
 
-    (page) = args
-
-    result = wm.get_parent(page)
+    result = wm.get_parent(arg)
 
     assert result == expected
 
@@ -170,3 +168,17 @@ def test_get_parent(test_id, args, expected):
 
 # * -------------------------------------------------------------------------------- * #
 # * STRINGS
+
+
+@m.parametrize(
+    "test_id, arg, expected",
+    [
+        ("dashes", "page-with-dashes", "page-with-dashes"),
+        ("spaces", "page with spaces", "page-with-spaces"),
+    ],
+)
+def test_get_dashed_name(test_id, arg, expected):
+
+    result = wm.get_dashed_name(arg)
+
+    assert result == expected
