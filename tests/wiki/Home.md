@@ -5,8 +5,8 @@ Welcome to the example wiki for **Wikiman**. This page details some advice for u
 
 GitHub Wiki automatically generates the title at the top of every wiki page. Dashes are replaced by spaces in the filename (e.g. `Wiki-Page.md` to "Wiki Page") and the title is presented above your content. If you're linting your Markdown documentation, you may need to disable a warning about missing a heading on the first line. If you're using the [markdownlint] extension in VSCode, you can disable the `first-line-heading` warning by inserting the following into your `settings.json`.
 
-```json
-// settings.json
+```jsonc
+// Contents of settings.json
 {
     // ... other settings
 
