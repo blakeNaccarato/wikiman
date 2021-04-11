@@ -16,7 +16,7 @@ TESTS_WIKI_ROOT = TESTS_ROOT / WIKI_ROOT_NAME
 
 
 # * -------------------------------------------------------------------------------- * #
-# * AUTOUSE FIXTURES (CONTEXTS)
+# * MAIN
 
 
 def main():
