@@ -16,4 +16,4 @@ ignore =
     W503,  ; line break before binary operator, conflict with black
 
 per-file-ignores =
-    tests/*: N802, N803
+    tests/*: N802, N803  ; lowercase name, uppercase used to identify certain fixtures
