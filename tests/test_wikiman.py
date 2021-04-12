@@ -187,6 +187,20 @@ def test_get_dir_name(test_id, args, expected):
 @m.parametrize(
     "test_id, arg, expected",
     [
+        ("dashes", "page-with-dashes", "Page with dashes"),
+        ("spaces", "page with spaces", "page with spaces"),
+    ],
+)
+def test_get_human_name(test_id, arg, expected):
+
+    result = wm.get_human_name(arg)
+
+    assert result == expected
+
+
+@m.parametrize(
+    "test_id, arg, expected",
+    [
         ("dashes", "page-with-dashes", "page-with-dashes"),
         ("spaces", "page with spaces", "page-with-spaces"),
     ],

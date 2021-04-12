@@ -398,7 +398,7 @@ def get_md_name(name: str) -> str:
 def get_human_name(name: str) -> str:
     """Get a human-readable name."""
 
-    return name.replace("-", " ").capitalize()
+    return name.replace("-", " ")
 
 
 def get_dashed_name(name: str) -> str:
