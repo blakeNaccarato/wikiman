@@ -46,7 +46,6 @@ INIT_PAGE_RAISES_PARAMS = [
 
 @m.parametrize("test_id, args", INIT_PAGE_RAISES_PARAMS)
 def test_init_page_raises(test_id, args):
-
     with pytest.raises(ValueError):
         wm.init_page(*args)
 
@@ -72,9 +71,7 @@ INIT_PAGE_PARAMS = [
 
 @m.parametrize("test_id, args, expected", INIT_PAGE_PARAMS)
 def test_init_page(test_id, args, expected):
-
     result = wm.init_page(*args)
-
     assert result == expected
 
 
@@ -130,9 +127,7 @@ FIND_PAGE_PARAMS = [
 
 @m.parametrize("test_id, arg, expected", FIND_PAGE_PARAMS)
 def test_find_page(test_id, arg, expected, RESTORE_WIKI_BEFORE_TEST):
-
     result = wm.find_page(arg)
-
     assert result == expected
 
 
@@ -154,9 +149,7 @@ def test_find_page(test_id, arg, expected, RESTORE_WIKI_BEFORE_TEST):
     ],
 )
 def test_get_parent(test_id, arg, expected):
-
     result = wm.get_parent(arg)
-
     assert result == expected
 
 
@@ -178,9 +171,7 @@ def test_get_parent(test_id, arg, expected):
     ],
 )
 def test_get_dir_name(test_id, args, expected):
-
     result = wm.get_dir_name(*args)
-
     assert result == expected
 
 
@@ -192,9 +183,7 @@ def test_get_dir_name(test_id, args, expected):
     ],
 )
 def test_get_human_name(test_id, arg, expected):
-
     result = wm.get_human_name(arg)
-
     assert result == expected
 
 
@@ -206,7 +195,5 @@ def test_get_human_name(test_id, arg, expected):
     ],
 )
 def test_get_dashed_name(test_id, arg, expected):
-
     result = wm.get_dashed_name(arg)
-
     assert result == expected
