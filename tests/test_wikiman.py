@@ -20,31 +20,28 @@ import conftest
 # * --------- * #
 # * init_page
 
-INIT_PAGE_RAISES_PARAMS = [
-    # (
-    #     <test_id>
-    #     <args>
-    # ),
-    (
-        "backslash",
+
+@m.parametrize(
+    "test_id, args",
+    [
         (
-            "Backs\lash",  # noqa:W605, pylint:disable=anomalous-backslash-in-string
-            wm.ROOT_PAGE,
-            0,
+            "backslash",
+            (
+                "Backs\lash",  # noqa:W605, pylint:disable=anomalous-backslash-in-string
+                wm.ROOT_PAGE,
+                0,
+            ),
         ),
-    ),
-    (
-        "escape_sequences",
-        ("E\as\bc\fa\np\re\ts\v", wm.ROOT_PAGE, 0),
-    ),
-    (
-        "all_others",
-        ('/:*?"<>|', wm.ROOT_PAGE, 0),
-    ),
-]
-
-
-@m.parametrize("test_id, args", INIT_PAGE_RAISES_PARAMS)
+        (
+            "escape_sequences",
+            ("E\as\bc\fa\np\re\ts\v", wm.ROOT_PAGE, 0),
+        ),
+        (
+            "all_others",
+            ('/:*?"<>|', wm.ROOT_PAGE, 0),
+        ),
+    ],
+)
 def test_init_page_raises(test_id, args):
     with pytest.raises(ValueError):
         wm.init_page(*args)
@@ -101,17 +98,17 @@ def test_create_page(test_id, args, EXPECTED_WIKI):
 FIND_PAGE_PARAMS = [
     # (
     #     <test_id>
-    #     <arg>
+    #     <args>
     #     <expected>
     # ),
     (
         "root_page",
-        wm.ROOT_PAGE.stem,
+        (wm.ROOT_PAGE.stem,),
         wm.ROOT_PAGE,
     ),
     (
         "lowercase",
-        "impeach-vermilion-vacuum",
+        ("impeach-vermilion-vacuum",),
         FIND_PAGE_LOWERCASE_EXPECTED := (
             conftest.WIKI_ROOT
             / r"00_Impeach-Vermilion-Vacuum\Impeach-Vermilion-Vacuum.md"
@@ -119,15 +116,15 @@ FIND_PAGE_PARAMS = [
     ),
     (
         "uppercase",
-        "Impeach-Vermilion-Vacuum",
+        ("Impeach-Vermilion-Vacuum",),
         FIND_PAGE_LOWERCASE_EXPECTED,
     ),
 ]
 
 
-@m.parametrize("test_id, arg, expected", FIND_PAGE_PARAMS)
-def test_find_page(test_id, arg, expected, RESTORE_WIKI_BEFORE_TEST):
-    result = wm.find_page(arg)
+@m.parametrize("test_id, args, expected", FIND_PAGE_PARAMS)
+def test_find_page(test_id, args, expected, RESTORE_WIKI_BEFORE_TEST):
+    result = wm.find_page(*args)
     assert result == expected
 
 
@@ -139,17 +136,17 @@ def test_find_page(test_id, arg, expected, RESTORE_WIKI_BEFORE_TEST):
 
 
 @m.parametrize(
-    "test_id, arg, expected",
+    "test_id, args, expected",
     [
         (
             "root_page",
-            wm.ROOT_PAGE,
+            (wm.ROOT_PAGE,),
             wm.WIKI_ROOT / "Home.md",
         ),
     ],
 )
-def test_get_parent(test_id, arg, expected):
-    result = wm.get_parent(arg)
+def test_get_parent(test_id, args, expected):
+    result = wm.get_parent(*args)
     assert result == expected
 
 
@@ -176,24 +173,24 @@ def test_get_dir_name(test_id, args, expected):
 
 
 @m.parametrize(
-    "test_id, arg, expected",
+    "test_id, args, expected",
     [
-        ("dashes", "page-with-dashes", "page with dashes"),
-        ("spaces", "page with spaces", "page with spaces"),
+        ("dashes", ("page-with-dashes",), "page with dashes"),
+        ("spaces", ("page with spaces",), "page with spaces"),
     ],
 )
-def test_get_human_name(test_id, arg, expected):
-    result = wm.get_human_name(arg)
+def test_get_human_name(test_id, args, expected):
+    result = wm.get_human_name(*args)
     assert result == expected
 
 
 @m.parametrize(
-    "test_id, arg, expected",
+    "test_id, args, expected",
     [
-        ("dashes", "page-with-dashes", "page-with-dashes"),
-        ("spaces", "page with spaces", "page-with-spaces"),
+        ("dashes", ("page-with-dashes",), "page-with-dashes"),
+        ("spaces", ("page with spaces",), "page-with-spaces"),
     ],
 )
-def test_get_dashed_name(test_id, arg, expected):
-    result = wm.get_dashed_name(arg)
+def test_get_dashed_name(test_id, args, expected):
+    result = wm.get_dashed_name(*args)
     assert result == expected
