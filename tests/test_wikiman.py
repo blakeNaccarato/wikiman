@@ -9,10 +9,90 @@ from pytest import mark as m
 import conftest
 
 # ! -------------------------------------------------------------------------------- ! #
-# ! CLI
+# ! UTILITIES
+
+# * -------------------------------------------------------------------------------- * #
+# * STRINGS
+
+
+# * --------------- * #
+# * get_dashed_name
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        ("dashes", ("page-with-dashes",), "page-with-dashes"),
+        ("spaces", ("page with spaces",), "page-with-spaces"),
+    ],
+)
+def test_get_dashed_name(test_id, args, expected):
+    result = wm.get_dashed_name(*args)
+    assert result == expected
+
+
+# * -------------- * #
+# * get_human_name
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        ("dashes", ("page-with-dashes",), "page with dashes"),
+        ("spaces", ("page with spaces",), "page with spaces"),
+    ],
+)
+def test_get_human_name(test_id, args, expected):
+    result = wm.get_human_name(*args)
+    assert result == expected
+
+
+# * ------------ * #
+# * get_dir_name
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        ("one_digit", ("page-name", 3), "03_page-name"),
+        ("two_digits", ("page-name", 45), "45_page-name"),
+    ],
+)
+def test_get_dir_name(test_id, args, expected):
+    result = wm.get_dir_name(*args)
+    assert result == expected
+
+
+# * -------------------------------------------------------------------------------- * #
+# * MARKDOWN
 
 # ! -------------------------------------------------------------------------------- ! #
-# ! BACKEND
+# ! API
+
+# * -------------------------------------------------------------------------------- * #
+# * RELATIVES
+
+# * ---------- * #
+# * get_parent
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            "root_page",
+            (wm.ROOT_PAGE,),
+            wm.WIKI_ROOT / "Home.md",
+        ),
+    ],
+)
+def test_get_parent(test_id, args, expected):
+    result = wm.get_parent(*args)
+    assert result == expected
+
+
+# * -------------------------------------------------------------------------------- * #
+# * NAVIGATION
 
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
@@ -128,83 +208,5 @@ def test_find_page(test_id, args, expected, RESTORE_WIKI_BEFORE_TEST):
     assert result == expected
 
 
-# * -------------------------------------------------------------------------------- * #
-# * NAVIGATION
-
-# * -------------------------------------------------------------------------------- * #
-# * RELATIVES
-
-# * ---------- * #
-# * get_parent
-
-
-@m.parametrize(
-    "test_id, args, expected",
-    [
-        (
-            "root_page",
-            (wm.ROOT_PAGE,),
-            wm.WIKI_ROOT / "Home.md",
-        ),
-    ],
-)
-def test_get_parent(test_id, args, expected):
-    result = wm.get_parent(*args)
-    assert result == expected
-
-
 # ! -------------------------------------------------------------------------------- ! #
-# ! UTILITIES
-
-# * -------------------------------------------------------------------------------- * #
-# * MARKDOWN
-
-# * -------------------------------------------------------------------------------- * #
-# * STRINGS
-
-# * ------------ * #
-# * get_dir_name
-
-
-@m.parametrize(
-    "test_id, args, expected",
-    [
-        ("one_digit", ("page-name", 3), "03_page-name"),
-        ("two_digits", ("page-name", 45), "45_page-name"),
-    ],
-)
-def test_get_dir_name(test_id, args, expected):
-    result = wm.get_dir_name(*args)
-    assert result == expected
-
-
-# * -------------- * #
-# * get_human_name
-
-
-@m.parametrize(
-    "test_id, args, expected",
-    [
-        ("dashes", ("page-with-dashes",), "page with dashes"),
-        ("spaces", ("page with spaces",), "page with spaces"),
-    ],
-)
-def test_get_human_name(test_id, args, expected):
-    result = wm.get_human_name(*args)
-    assert result == expected
-
-
-# * --------------- * #
-# * get_dashed_name
-
-
-@m.parametrize(
-    "test_id, args, expected",
-    [
-        ("dashes", ("page-with-dashes",), "page-with-dashes"),
-        ("spaces", ("page with spaces",), "page-with-spaces"),
-    ],
-)
-def test_get_dashed_name(test_id, args, expected):
-    result = wm.get_dashed_name(*args)
-    assert result == expected
+# ! CLI
