@@ -134,6 +134,9 @@ def test_find_page(test_id, args, expected, RESTORE_WIKI_BEFORE_TEST):
 # * -------------------------------------------------------------------------------- * #
 # * RELATIVES
 
+# * ---------- * #
+# * get_parent
+
 
 @m.parametrize(
     "test_id, args, expected",
@@ -159,6 +162,9 @@ def test_get_parent(test_id, args, expected):
 # * -------------------------------------------------------------------------------- * #
 # * STRINGS
 
+# * ------------ * #
+# * get_dir_name
+
 
 @m.parametrize(
     "test_id, args, expected",
@@ -172,6 +178,10 @@ def test_get_dir_name(test_id, args, expected):
     assert result == expected
 
 
+# * -------------- * #
+# * get_human_name
+
+
 @m.parametrize(
     "test_id, args, expected",
     [
@@ -182,6 +192,10 @@ def test_get_dir_name(test_id, args, expected):
 def test_get_human_name(test_id, args, expected):
     result = wm.get_human_name(*args)
     assert result == expected
+
+
+# * --------------- * #
+# * get_dashed_name
 
 
 @m.parametrize(
