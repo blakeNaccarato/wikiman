@@ -15,7 +15,7 @@ import conftest
 # * STRINGS
 
 
-# * --------------- * #
+# * ---------------------------------------- * #
 # * get_dashed_name
 
 
@@ -31,7 +31,7 @@ def test_get_dashed_name(test_id, args, expected):
     assert result == expected
 
 
-# * -------------- * #
+# * ---------------------------------------- * #
 # * get_human_name
 
 
@@ -47,7 +47,19 @@ def test_get_human_name(test_id, args, expected):
     assert result == expected
 
 
-# * ------------ * #
+# * ---------------------------------------- * #
+# * get_md_name
+
+
+@m.parametrize(
+    "test_id, args, expected", [("base", ("Name of a page",), "Name-of-a-page.md")]
+)
+def test_get_md_name(test_id, args, expected):
+    result = wm.get_md_name(*args)
+    assert result == expected
+
+
+# * ---------------------------------------- * #
 # * get_dir_name
 
 
@@ -72,7 +84,7 @@ def test_get_dir_name(test_id, args, expected):
 # * -------------------------------------------------------------------------------- * #
 # * RELATIVES
 
-# * ---------- * #
+# * ---------------------------------------- * #
 # * get_parent
 
 
@@ -97,7 +109,7 @@ def test_get_parent(test_id, args, expected):
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
 
-# * --------- * #
+# * ---------------------------------------- * #
 # * init_page
 
 
@@ -152,7 +164,7 @@ def test_init_page(test_id, args, expected):
     assert result == expected
 
 
-# * ----------- * #
+# * ---------------------------------------- * #
 # * create_page
 
 # reuse params from init_page, but compare to `expected_wiki` instead of `expected`
@@ -172,7 +184,7 @@ def test_create_page(test_id, args, EXPECTED_WIKI):
     assert not result.diff_files
 
 
-# * --------- * #
+# * ---------------------------------------- * #
 # * find_page
 
 FIND_PAGE_PARAMS = [
