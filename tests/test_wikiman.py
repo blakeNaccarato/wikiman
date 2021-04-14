@@ -6,7 +6,7 @@ import pytest
 import wikiman as wm
 from pytest import mark as m
 
-import conftest
+from conftest import WIKI_ROOT
 
 # ! -------------------------------------------------------------------------------- ! #
 # ! UTILITIES
@@ -79,23 +79,24 @@ def test_get_dir_name(test_id, args, expected):
 # * MARKDOWN
 
 
+# * ---------------------------------------- * #
+# * get_page_url
+
+
 # We use `wm.GIT_REMOTE_URL` because we don't care about that part. That will resolve
 # the wiki repo properly when invoked by end-users. Sure, it doesn't give us a "proper"
 # wiki link in the test suite, since we're not invoking this from a "proper" wiki repo.
 # And we can't pytest.fixtures.monkeypatch a module-level variable, either.
 @m.parametrize(
-    "test_id, args, expected",
-    [
-        (
-            "base",
-            (wm.ROOT_PAGE,),
-            wm.GIT_REMOTE_URL + "Home",
-        )
-    ],
+    "test_id, args, expected", [("base", (wm.ROOT_PAGE,), wm.GIT_REMOTE_URL + "Home")]
 )
 def test_get_page_url(test_id, args, expected):
     result = wm.get_page_url(*args)
     assert result == expected
+
+
+# * ---------------------------------------- * #
+# * get_md_link
 
 
 @m.parametrize("test_id, args, expected", [("base", ("text", "link"), "[text](link)")])
@@ -104,13 +105,21 @@ def test_get_md_link(test_id, args, expected):
     assert result == expected
 
 
+# * ---------------------------------------- * #
+# * get_page_link
+
+
 @m.parametrize(
     "test_id, args, expected",
-    [("base", (wm.ROOT_PAGE,), f"[Home]({wm.GIT_REMOTE_URL + wm.ROOT_PAGE.stem})")],
+    [("base", (wm.ROOT_PAGE,), f"[Home]({wm.GIT_REMOTE_URL}Home)")],
 )
 def test_get_page_link(test_id, args, expected):
     result = wm.get_page_link(*args)
     assert result == expected
+
+
+# * ---------------------------------------- * #
+# * bold_md
 
 
 @m.parametrize("test_id, args, expected", [("base", ("text",), "**text**")])
@@ -126,12 +135,28 @@ def test_bold_md(test_id, args, expected):
 # * RELATIVES
 
 # * ---------------------------------------- * #
+# * get_children
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [("root_page", (wm.ROOT_PAGE,), list(WIKI_ROOT.glob(f"*/{wm.PAGE_PATTERN}")))],
+)
+def test_get_children(test_id, args, expected):
+    result = wm.get_children(*args)
+    assert result == expected
+
+
+# * ---------------------------------------- * #
 # * get_parent
 
 
 @m.parametrize(
     "test_id, args, expected",
-    [("root_page", (wm.ROOT_PAGE,), wm.WIKI_ROOT / "Home.md")],
+    [
+        ("root_page", (wm.ROOT_PAGE,), WIKI_ROOT / "Home.md"),
+        # TODO: Implement other page archetypes with different parents
+    ],
 )
 def test_get_parent(test_id, args, expected):
     result = wm.get_parent(*args)
@@ -232,8 +257,7 @@ FIND_PAGE_PARAMS = [
         "lowercase",
         ("impeach-vermilion-vacuum",),
         FIND_PAGE_LOWERCASE_EXPECTED := (
-            conftest.WIKI_ROOT
-            / r"00_Impeach-Vermilion-Vacuum\Impeach-Vermilion-Vacuum.md"
+            WIKI_ROOT / r"00_Impeach-Vermilion-Vacuum\Impeach-Vermilion-Vacuum.md"
         ),
     ),
     (

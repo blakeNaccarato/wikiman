@@ -323,13 +323,6 @@ def get_siblings(page: Path) -> list[Path]:
     return siblings
 
 
-def get_children(page: Path) -> list[Path]:
-    """Get the children of a page."""
-
-    parent_directory = page.parent
-    return list(parent_directory.glob(f"*/{PAGE_PATTERN}"))
-
-
 def get_parent(page: Path) -> Path:
     """Get the parent of a page."""
 
@@ -345,6 +338,13 @@ def get_parent(page: Path) -> Path:
         parent = list(parent_directory.glob(PAGE_PATTERN))[0]
 
     return parent
+
+
+def get_children(page: Path) -> list[Path]:
+    """Get the children of a page."""
+
+    parent_directory = page.parent
+    return list(parent_directory.glob(f"*/{PAGE_PATTERN}"))
 
 
 # ! -------------------------------------------------------------------------------- ! #
