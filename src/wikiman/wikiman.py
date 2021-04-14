@@ -17,7 +17,7 @@ ILLEGAL_CHARACTERS = re.compile(r'[\\/:*?"<>|\a\b\f\n\r\t\v]')
 
 # The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
 ROOT_NAME = "wiki"
-GIT_REMOTE_URL = git.Repo().remotes.origin.url
+GIT_REMOTE_URL = git.Repo().remotes.origin.url.removesuffix(".wiki.git") + "/wiki" + "/"
 
 # Get pages to be used throughout the module
 WIKI_ROOT = Path(ROOT_NAME)
@@ -375,8 +375,7 @@ def get_md_link(text: str, link: str) -> str:
 def get_page_url(page: Path) -> str:
     """Get the URL for a page."""
 
-    root_url = GIT_REMOTE_URL.removesuffix(".wiki.git") + "/wiki"
-    return root_url + "/" + page.stem
+    return GIT_REMOTE_URL + page.stem
 
 
 # * -------------------------------------------------------------------------------- * #

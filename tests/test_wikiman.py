@@ -78,6 +78,26 @@ def test_get_dir_name(test_id, args, expected):
 # * -------------------------------------------------------------------------------- * #
 # * MARKDOWN
 
+
+# We use `wm.GIT_REMOTE_URL` because we don't care about that part. That will resolve
+# the wiki repo properly when invoked by end-users. Sure, it doesn't give us a "proper"
+# wiki link in the test suite, since we're not invoking this from a "proper" wiki repo.
+# And we can't pytest.fixtures.monkeypatch a module-level variable, either.
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            "base",
+            (wm.ROOT_PAGE,),
+            wm.GIT_REMOTE_URL + "Home",
+        )
+    ],
+)
+def test_get_page_url(test_id, args, expected):
+    result = wm.get_page_url(*args)
+    assert result == expected
+
+
 # ! -------------------------------------------------------------------------------- ! #
 # ! API
 
@@ -90,13 +110,7 @@ def test_get_dir_name(test_id, args, expected):
 
 @m.parametrize(
     "test_id, args, expected",
-    [
-        (
-            "root_page",
-            (wm.ROOT_PAGE,),
-            wm.WIKI_ROOT / "Home.md",
-        ),
-    ],
+    [("root_page", (wm.ROOT_PAGE,), wm.WIKI_ROOT / "Home.md")],
 )
 def test_get_parent(test_id, args, expected):
     result = wm.get_parent(*args)
@@ -146,15 +160,10 @@ INIT_PAGE_PARAMS = [
     #     <expected>
     # ),
     (
-        "dashes",
+        "base",
         ("test-page-name", wm.ROOT_PAGE, 0),
         wm.WIKI_ROOT / "00_test-page-name/test-page-name.md",
-    ),
-    (
-        "spaces",
-        ("test page name", wm.ROOT_PAGE, 0),
-        wm.WIKI_ROOT / "00_test-page-name/test-page-name.md",
-    ),
+    )
 ]
 
 
