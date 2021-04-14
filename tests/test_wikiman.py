@@ -98,6 +98,27 @@ def test_get_page_url(test_id, args, expected):
     assert result == expected
 
 
+@m.parametrize("test_id, args, expected", [("base", ("text", "link"), "[text](link)")])
+def test_get_md_link(test_id, args, expected):
+    result = wm.get_md_link(*args)
+    assert result == expected
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [("base", (wm.ROOT_PAGE,), f"[Home]({wm.GIT_REMOTE_URL + wm.ROOT_PAGE.stem})")],
+)
+def test_get_page_link(test_id, args, expected):
+    result = wm.get_page_link(*args)
+    assert result == expected
+
+
+@m.parametrize("test_id, args, expected", [("base", ("text",), "**text**")])
+def test_bold_md(test_id, args, expected):
+    result = wm.bold_md(*args)
+    assert result == expected
+
+
 # ! -------------------------------------------------------------------------------- ! #
 # ! API
 
