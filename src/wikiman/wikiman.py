@@ -140,37 +140,6 @@ def create_page(page: Path):
     page.touch()
 
 
-def get_page_position(page: Path) -> int:
-    """Get the position of a page."""
-
-    page_dir = page.parent
-    position = int(page_dir.name.split("_")[0])
-    return position
-
-
-def find_page(name: str) -> Path:
-    """Find an existing page."""
-
-    # TODO: Get dashed name for user input as well as in PAGES.
-
-    page_names = [get_dashed_name(page.stem).lower() for page in PAGES]
-    page_location = page_names.index(name.lower())
-    return PAGES[page_location]
-
-
-def init_page(name: str, under: Path, position: int) -> Path:
-    """Initialize a page in the wiki at the specified position."""
-
-    if ILLEGAL_CHARACTERS.search(name):
-        message = 'Name cannot contain escape sequences or \\ / : * ? " < > |'  # noqa:W605, pylint:disable=anomalous-backslash-in-string
-        raise ValueError(message)
-
-    destination_dir = under.parent
-    page_dir = destination_dir / get_dir_name(name, position)
-    page = page_dir / get_md_name(name)
-    return page
-
-
 # * -------------------------------------------------------------------------------- * #
 # * NAVIGATION
 
@@ -349,6 +318,42 @@ def get_children(page: Path) -> list[Path]:
 
 # ! -------------------------------------------------------------------------------- ! #
 # ! UTILITIES
+
+
+# * -------------------------------------------------------------------------------- * #
+# * PAGE
+
+
+def get_page_position(page: Path) -> int:
+    """Get the position of a page."""
+
+    page_dir = page.parent
+    position = int(page_dir.name.split("_")[0])
+    return position
+
+
+def init_page(name: str, under: Path, position: int) -> Path:
+    """Initialize a page in the wiki at the specified position."""
+
+    if ILLEGAL_CHARACTERS.search(name):
+        message = 'Name cannot contain escape sequences or \\ / : * ? " < > |'
+        raise ValueError(message)
+
+    destination_dir = under.parent
+    page_dir = destination_dir / get_dir_name(name, position)
+    page = page_dir / get_md_name(name)
+    return page
+
+
+def find_page(name: str) -> Path:
+    """Find an existing page."""
+
+    # TODO: Get dashed name for user input as well as in PAGES.
+
+    page_names = [get_dashed_name(page.stem).lower() for page in PAGES]
+    page_location = page_names.index(name.lower())
+    return PAGES[page_location]
+
 
 # * -------------------------------------------------------------------------------- * #
 # * MARKDOWN
