@@ -12,8 +12,6 @@ jobs:
       with:
         python-version: 3.9
     - run: |
-        pip install .
-        pip install pytest
-        pip install pytest-cov
-        pytest --cov ./src/wikiman --cov-report=xml
+        pip install . pytest pytest-cov
+        pytest --cov
     - uses: codecov/codecov-action@master
