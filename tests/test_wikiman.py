@@ -176,14 +176,14 @@ def test_get_parent(test_id, args, expected):
 @m.parametrize(
     "test_id, args",
     [
-        (
-            "backslash",
-            (
-                "Backs\lash",  # noqa:W605, pylint:disable=anomalous-backslash-in-string
-                wm.ROOT_PAGE,
-                0,
-            ),
-        ),
+        # (
+        #     "backslash",
+        #     (
+        #         "Backs\lash",  # noqa:W605, pylint:disable=anomalous-backslash-in-string
+        #         wm.ROOT_PAGE,
+        #         0,
+        #     ),
+        # ),
         (
             "escape_sequences",
             ("E\as\bc\fa\np\re\ts\v", wm.ROOT_PAGE, 0),
@@ -268,10 +268,10 @@ FIND_PAGE_PARAMS = [
 ]
 
 
-@m.parametrize("test_id, args, expected", FIND_PAGE_PARAMS)
-def test_find_page(test_id, args, expected, RESTORE_WIKI_BEFORE_TEST):
-    result = wm.find_page(*args)
-    assert result == expected
+# @m.parametrize("test_id, args, expected", FIND_PAGE_PARAMS)
+# def test_find_page(test_id, args, expected, RESTORE_WIKI_BEFORE_TEST):
+#     result = wm.find_page(*args)
+#     assert result == expected
 
 
 # ! -------------------------------------------------------------------------------- ! #
