@@ -1,0 +1,10 @@
+name: codecov
+
+on:
+  workflow_dispatch:
+
+jobs:
+  codecov:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: codecov/codecov-action@v1.3.2
