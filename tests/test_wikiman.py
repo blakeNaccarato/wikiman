@@ -276,8 +276,8 @@ GET_SIBLINGS_PARAMS = [
         "root_page",
         (PAGES["home"],),
         EXPECTED_SIBLINGS := [
-            PAGES["impeach-vermilion-vacuum"],
             PAGES["equity-substitute-huddle"],
+            PAGES["impeach-vermilion-vacuum"],
         ],
     ),
     ("subpage", (PAGES["impeach-vermilion-vacuum"],), EXPECTED_SIBLINGS),
