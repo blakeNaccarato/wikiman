@@ -219,24 +219,24 @@ def test_init_page(test_id, args, expected):
     assert result == expected
 
 
-# * ---------------------------------------- * #
-# * create_page
+# # * ---------------------------------------- * #
+# # * create_page
 
-# reuse params from init_page, but compare to `expected_wiki` instead of `expected`
-CREATE_PAGE_PARAMS = [param[:2] for param in INIT_PAGE_PARAMS]
+# # reuse params from init_page, but compare to `expected_wiki` instead of `expected`
+# CREATE_PAGE_PARAMS = [param[:2] for param in INIT_PAGE_PARAMS]
 
 
-@m.parametrize("test_id, args", CREATE_PAGE_PARAMS)
-def test_create_page(test_id, args, EXPECTED_WIKI):
+# @m.parametrize("test_id, args", CREATE_PAGE_PARAMS)
+# def test_create_page(test_id, args, EXPECTED_WIKI):
 
-    # TODO: Implement EXPECTED_WIKI for parametrized tests
+#     # TODO: Implement EXPECTED_WIKI for parametrized tests
 
-    page = wm.init_page(*args)
+#     page = wm.init_page(*args)
 
-    wm.create_page(page)
-    result = dircmp(wm.WIKI_ROOT, EXPECTED_WIKI)
+#     wm.create_page(page)
+#     result = dircmp(wm.WIKI_ROOT, EXPECTED_WIKI)
 
-    assert not result.diff_files
+#     assert not result.diff_files
 
 
 # * ---------------------------------------- * #
