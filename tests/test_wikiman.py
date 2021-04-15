@@ -155,7 +155,7 @@ def test_get_children(test_id, args, expected):
     "test_id, args, expected",
     [
         ("root_page", (wm.ROOT_PAGE,), WIKI_ROOT / "Home.md"),
-        # TODO: Implement other page archetypes with different parents
+        ("subpage", (wm.PAGES[1],), WIKI_ROOT / "Home.md"),
     ],
 )
 def test_get_parent(test_id, args, expected):
