@@ -251,7 +251,13 @@ PAGE_PATTERN = "[!_]*.md"
 
 @m.parametrize(
     "test_id, args, expected",
-    [("root_page", (PAGES["home"],), list(WIKI_ROOT.glob(f"*/{PAGE_PATTERN}")))],
+    [
+        (
+            "root_page",
+            (PAGES["home"],),
+            [PAGES["impeach-vermilion-vacuum"], PAGES["equity-substitute-huddle"]],
+        )
+    ],
 )
 def test_get_children(test_id, args, expected):
     result = wm.get_children(*args)
