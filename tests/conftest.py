@@ -89,6 +89,8 @@ def EXPECTED_WIKI(request, RESTORE_WIKI_BEFORE_TEST) -> Path:
     if is_parametrized:
         test_id = request.node.name.split("[")[1].split("-")[0]
         parametrized_wiki = test_wiki.parent / test_id / WIKI_ROOT_NAME
+    else:
+        parametrized_wiki = None
 
     # Look in parametrized-, then test-, then module-level paths for an expected wiki
     if is_parametrized and parametrized_wiki.exists():
