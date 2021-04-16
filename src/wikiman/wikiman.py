@@ -351,7 +351,11 @@ def find_page(name: str) -> Path:
     # TODO: Get dashed name for user input as well as in PAGES.
 
     page_names = [get_dashed_name(page.stem).lower() for page in PAGES]
-    page_location = page_names.index(name.lower())
+
+    try:
+        page_location = page_names.index(name.lower())
+    except ValueError as exception:
+        raise ValueError("Page not found.") from exception
     return PAGES[page_location]
 
 

@@ -161,6 +161,12 @@ def test_bold_md(test_id, args, expected):
 # * find_page
 
 
+@m.parametrize("test_id, args", [("page_not_found", ("Page-That-Doesn't-Exist",))])
+def test_find_page_raises(test_id, args, RESTORE_WIKI_BEFORE_TEST):
+    with pytest.raises(ValueError):
+        wm.find_page(*args)
+
+
 @m.parametrize(
     "test_id, args, expected",
     [
