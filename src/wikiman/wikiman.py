@@ -26,8 +26,8 @@ if not WIKI_ROOT.exists():
     WIKI_ROOT.mkdir()
     (WIKI_ROOT / "Home.md").touch()
 
-PAGES = list(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}"))
-ROOT_PAGE = PAGES[0]
+PAGES = list(sorted(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}")))
+ROOT_PAGE = PAGES[-1]
 
 # Glyphs to place in the footer next to "Up", "Prev", and "Next" navigation links.
 NAV_HEAD = ("Up: ", "Prev: ", "Next: ")
@@ -271,7 +271,7 @@ def get_nearest_family(page: Path) -> tuple[Path, Path, Path]:
         if any_subpages:
             # Make a page with children have its first child as a sibling
             first_child_dir = [p for p in page.parent.iterdir() if p.is_dir()][0]
-            first_child = list(first_child_dir.glob(PAGE_PATTERN))[0]
+            first_child = list(sorted(first_child_dir.glob(PAGE_PATTERN)))[0]
             next_sibling = first_child
         elif is_last_child:
             # Make the next sibling of the parent also the next sibling of this page
@@ -304,7 +304,7 @@ def get_parent(page: Path) -> Path:
         page_directory = page.parent
         parent_directory = page_directory.parent
         # If each page has its own directory, glob should get only one page
-        parent = list(parent_directory.glob(PAGE_PATTERN))[0]
+        parent = list(sorted(parent_directory.glob(PAGE_PATTERN)))[0]
 
     return parent
 
@@ -313,7 +313,7 @@ def get_children(page: Path) -> list[Path]:
     """Get the children of a page."""
 
     parent_directory = page.parent
-    return list(parent_directory.glob(f"*/{PAGE_PATTERN}"))
+    return list(sorted(parent_directory.glob(f"*/{PAGE_PATTERN}")))
 
 
 # ! -------------------------------------------------------------------------------- ! #
