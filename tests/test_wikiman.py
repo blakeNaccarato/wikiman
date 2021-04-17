@@ -1,14 +1,10 @@
 # pylint: disable=missing-function-docstring, missing-module-docstring, redefined-outer-name, unused-argument, wrong-import-order
 
-from filecmp import dircmp
-from pathlib import Path
-
 import pytest
 import wikiman as wm
 from pytest import mark as m
 
 from conftest import WIKI_ROOT
-
 
 # We hardcode our expected pages rather than pulling from the module under test. This
 # leads to some repetition, but avoids dependencies on module-level variables of the
