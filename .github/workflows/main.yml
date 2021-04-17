@@ -21,11 +21,11 @@ jobs:
           pip install -U setuptools
           pip install -U \
             twine
-            bandit flake8 flake8-bugbear mypy pep8-naming pylint rstcheck \
+            flake8 flake8-bugbear mypy pep8-naming pylint rstcheck \
             pytest pytest-cov
       - run: pylint --rcfile ./.config/lint.ini ./src/wikiman/
       - run: flake8 --config .config/lint.ini
       - run: mypy --config-file .config/lint.ini src tests
-      - run: bandit -c .config/lint.bandit.yaml .
+#       - run: bandit -c .config/lint.bandit.yaml .
       - run: pytest --cov
       - uses: codecov/codecov-action@v1.3.2
