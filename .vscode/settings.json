@@ -7,15 +7,36 @@
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
 
-    
-    //* flake8
-    "python.linting.flake8Args": [
-        "--config",
-        ".flake8"
-    ],
 
-    //* markdownlint
+    //* linting
+
     "markdownlint.config": {
         "first-line-heading": false
     },
+
+    "python.linting.banditArgs": [
+        "-c",
+        ".config/lint.bandit.yaml"
+    ],
+
+    "python.linting.flake8Args": [
+        "--config",
+        ".config/lint.ini"
+    ],
+
+    "python.linting.mypyArgs": [
+        "--config-file",
+        ".config/lint.ini",
+    ],
+
+    "python.linting.pylintArgs": [
+        "--rcfile",
+        ".config/lint.ini"
+    ],
+
+    "restructuredtext.linter.name": "rstcheck",
+    "restructuredtext.linter.extraArgs": [
+        "--config",
+        ".config/lint.ini"
+    ],
 }
