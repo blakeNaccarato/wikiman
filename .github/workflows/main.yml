@@ -3,18 +3,29 @@ name: main
 on:
   workflow_dispatch:
   push:
-    branches: main
+    branches: [main]
   pull_request:
-    branches: main
+    branches: [main]
 
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.3.4
-    - uses: actions/setup-python@v2.2.2
-      with:
-        python-version: 3.9
-    - run: pip install . pytest pytest-cov
-    - run: pytest --cov
-    - uses: codecov/codecov-action@v1.3.2
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install -U pip
+          pip install -U wheel
+          pip install -U setuptools
+          pip install -U \
+            twine
+            bandit flake8 flake8-bugbear mypy pep8-naming pylint rstcheck \
+            pytest pytest-cov
+      - run: pylint --rcfile ./.config/lint.ini ./src/wikiman/
+      - run: flake8 --config .config/lint.ini
+      - run: mypy --config-file .config/lint.ini src tests
+      - run: bandit -c .config/lint.bandit.yaml .
+      - run: pytest --cov
+      - uses: codecov/codecov-action@v1.3.2
