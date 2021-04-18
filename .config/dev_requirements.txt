@@ -1,3 +1,6 @@
+# this project
+-e .
+
 # project-specific
 random-word
 
