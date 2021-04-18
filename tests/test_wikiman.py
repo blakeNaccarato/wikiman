@@ -243,8 +243,6 @@ def test_get_page_position(test_id, args, expected):
 # @m.parametrize("test_id, args", CREATE_PAGE_PARAMS)
 # def test_create_page(test_id, args, EXPECTED_WIKI):
 
-#     # TODO: Implement EXPECTED_WIKI for parametrized tests
-
 #     page = wm.init_page(*args)
 
 #     wm.create_page(page)

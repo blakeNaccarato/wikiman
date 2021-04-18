@@ -44,7 +44,7 @@ WIDTH = 2
 def main():
     """The command-line interface. Runs if file is invoked directly, or from prompt."""
 
-    fire.Fire({"up": cli_update_navigation, "add": cli_add_page, "move": cli_move_page})
+    fire.Fire({"up": cli_update_navigation, "add": cli_add_page})
 
 
 # ! -------------------------------------------------------------------------------- ! #
@@ -94,10 +94,10 @@ def cli_add_page(name: str, under: str, position: Optional[int] = None):
     create_page(page)
 
 
-def cli_move_page():  # name: str, under: str, position: Optional[int] = None):
-    """Move a page under a page, optionally specifying position."""
+# def cli_move_page():  # name: str, under: str, position: Optional[int] = None):
+#     """Move a page under a page, optionally specifying position."""
 
-    pass
+#     pass
 
 
 # ! -------------------------------------------------------------------------------- ! #
@@ -108,15 +108,13 @@ def cli_move_page():  # name: str, under: str, position: Optional[int] = None):
 # * FILE OPERATIONS
 
 
-def shift_page():  # page: Path, count: int):
-    """Shift a page."""
-    pass
+# def shift_page():  # page: Path, count: int):
+#     """Shift a page."""
+#     pass
 
 
 def move_page(page: Path, under: Path, position: int):
     """Change the position of a page."""
-
-    # TODO
 
     new_page = init_page(page.stem, under, position)
     new_page.parent.mkdir()
@@ -351,12 +349,10 @@ def init_page(name: str, under: Path, position: int) -> Path:
 def find_page(name: str) -> Path:
     """Find an existing page."""
 
-    # TODO: Get dashed name for user input as well as in PAGES.
-
     page_names = [get_dashed_name(page.stem).lower() for page in PAGES]
 
     try:
-        page_location = page_names.index(name.lower())
+        page_location = page_names.index(get_dashed_name(name).lower())
     except ValueError as exception:
         raise ValueError("Page not found.") from exception
     return PAGES[page_location]
