@@ -21,7 +21,7 @@ PAGE_PATHS = {
     # >>> Under "Official..."
     "Close-Waste-Transform": OFFICIAL / "00_Close-Waste-Transform",
     "Transit-Thrum-Middle": OFFICIAL / "01_Transit-Thrum-Middle",
-    "Serpentine-Harry-Butcher": OFFICIAL / "02_Serpentine-Harry-Butcher",
+    "Serpentine-Hurry-Butcher": OFFICIAL / "02_Serpentine-Hurry-Butcher",
     # >> Under "Impeach..."
     "Middle-Pasture-Floating": IMPEACH / "02_Middle-Pasture-Floating",
     # > Under "Home"
@@ -160,7 +160,7 @@ def test_bold_md(test_id, args, expected):
 @m.parametrize(
     "test_id, args, expected",
     [
-        ("root_page", ("Home",), PAGES["home"]),
+        ("home", ("Home",), PAGES["home"]),
         ("lowercase", ("impeach-vermilion-vacuum",), PAGES["impeach-vermilion-vacuum"]),
         ("uppercase", ("Impeach-Vermilion-Vacuum",), PAGES["impeach-vermilion-vacuum"]),
         ("subpage", ("measure-transient-respite",), PAGES["measure-transient-respite"]),
@@ -221,7 +221,7 @@ def test_init_page_raises(test_id, args):
 @m.parametrize(
     "test_id, args, expected",
     [
-        ("root_page", (PAGES["home"],), 0),
+        ("home", (PAGES["home"],), 0),
         ("impeach-vermilion-vacuum", (PAGES["impeach-vermilion-vacuum"],), 0),
         ("measure-transient-respite", (PAGES["measure-transient-respite"],), 0),
         ("middle-pasture-floating", (PAGES["middle-pasture-floating"],), 2),
@@ -249,10 +249,36 @@ PAGE_PATTERN = "[!_]*.md"
     "test_id, args, expected",
     [
         (
-            "root_page",
+            "home",
             (PAGES["home"],),
             [PAGES["impeach-vermilion-vacuum"], PAGES["equity-substitute-huddle"]],
-        )
+        ),
+        (
+            "impeach-vermilion-vacuum",
+            (PAGES["impeach-vermilion-vacuum"],),
+            [
+                PAGES["measure-transient-respite"],
+                PAGES["official-union-advantage"],
+                PAGES["middle-pasture-floating"],
+            ],
+        ),
+        (
+            "equity-substitute-huddle",
+            (PAGES["equity-substitute-huddle"],),
+            [
+                PAGES["automatic-party-merit"],
+                PAGES["medium-establish-vital"],
+            ],
+        ),
+        (
+            "official-union-advantage",
+            (PAGES["official-union-advantage"],),
+            [
+                PAGES["close-waste-transform"],
+                PAGES["transit-thrum-middle"],
+                PAGES["serpentine-hurry-butcher"],
+            ],
+        ),
     ],
 )
 def test_get_children(test_id, args, expected):
@@ -267,8 +293,8 @@ def test_get_children(test_id, args, expected):
 @m.parametrize(
     "test_id, args, expected",
     [
-        ("root_page", (PAGES["home"],), PAGES["home"]),
-        ("subpage", (wm.find_page("impeach-vermilion-vacuum"),), PAGES["home"]),
+        ("home", (PAGES["home"],), PAGES["home"]),
+        ("subpage", (PAGES["impeach-vermilion-vacuum"],), PAGES["home"]),
     ],
 )
 def test_get_parent(test_id, args, expected):
@@ -281,7 +307,7 @@ def test_get_parent(test_id, args, expected):
 
 GET_SIBLINGS_PARAMS = [
     (
-        "root_page",
+        "home",
         (PAGES["home"],),
         EXPECTED_SIBLINGS := [
             PAGES["impeach-vermilion-vacuum"],
