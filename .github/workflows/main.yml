@@ -20,6 +20,7 @@ jobs:
           pip install -U wheel
           pip install -U setuptools twine
           pip install -U pylint
+          pip install .
       - run: pylint --rcfile ./.config/lint.ini ./src/wikiman/
   flake8:
     runs-on: ubuntu-20.04
@@ -33,6 +34,7 @@ jobs:
           pip install -U wheel
           pip install -U setuptools twine
           pip install -U flake8 flake8-bugbear pep8-naming
+          pip install .
       - run: flake8 --config .config/lint.ini
   mypy:
     runs-on: ubuntu-20.04
@@ -46,6 +48,7 @@ jobs:
           pip install -U wheel
           pip install -U setuptools twine
           pip install -U mypy
+          pip install .
       - run: mypy --config-file .config/lint.ini src tests
   bandit:
     runs-on: ubuntu-20.04
@@ -59,6 +62,7 @@ jobs:
           pip install -U wheel
           pip install -U setuptools twine
           pip install -U bandit
+          pip install .
       - run: bandit -c .config/lint.bandit.yaml .
   pytest-cov:
     runs-on: ubuntu-20.04
@@ -72,5 +76,6 @@ jobs:
           pip install -U wheel
           pip install -U setuptools twine
           pip install -U pytest pytest-cov
+          pip install .
       - run: pytest --cov
       - uses: codecov/codecov-action@v1.3.2
