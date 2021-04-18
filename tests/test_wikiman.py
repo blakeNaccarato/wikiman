@@ -157,18 +157,13 @@ def test_bold_md(test_id, args, expected):
 # * find_page
 
 
-@m.parametrize("test_id, args", [("page_not_found", ("Page-That-Doesn't-Exist",))])
-def test_find_page_raises(test_id, args, RESTORE_WIKI_BEFORE_TEST):
-    with pytest.raises(ValueError):
-        wm.find_page(*args)
-
-
 @m.parametrize(
     "test_id, args, expected",
     [
         ("root_page", ("Home",), PAGES["home"]),
         ("lowercase", ("impeach-vermilion-vacuum",), PAGES["impeach-vermilion-vacuum"]),
         ("uppercase", ("Impeach-Vermilion-Vacuum",), PAGES["impeach-vermilion-vacuum"]),
+        ("subpage", ("measure-transient-respite",), PAGES["measure-transient-respite"]),
     ],
 )
 def test_find_page(test_id, args, expected, RESTORE_WIKI_BEFORE_TEST):
@@ -176,21 +171,14 @@ def test_find_page(test_id, args, expected, RESTORE_WIKI_BEFORE_TEST):
     assert result == expected
 
 
+@m.parametrize("test_id, args", [("page_not_found", ("Page-That-Doesn't-Exist",))])
+def test_find_page_raises(test_id, args, RESTORE_WIKI_BEFORE_TEST):
+    with pytest.raises(ValueError):
+        wm.find_page(*args)
+
+
 # * ---------------------------------------- * #
 # * init_page
-
-
-@m.parametrize(
-    "test_id, args",
-    [
-        ("backslash", (r"Backs\lash", PAGES["home"], 0)),
-        ("escape_sequences", ("E\as\bc\fa\np\re\ts\v", PAGES["home"], 0)),
-        ("all_others", ('/:*?"<>|', PAGES["home"], 0)),
-    ],
-)
-def test_init_page_raises(test_id, args):
-    with pytest.raises(ValueError):
-        wm.init_page(*args)
 
 
 INIT_PAGE_PARAMS = [
@@ -210,6 +198,38 @@ INIT_PAGE_PARAMS = [
 @m.parametrize("test_id, args, expected", INIT_PAGE_PARAMS)
 def test_init_page(test_id, args, expected):
     result = wm.init_page(*args)
+    assert result == expected
+
+
+@m.parametrize(
+    "test_id, args",
+    [
+        ("backslash", (r"Backs\lash", PAGES["home"], 0)),
+        ("escape_sequences", ("E\as\bc\fa\np\re\ts\v", PAGES["home"], 0)),
+        ("all_others", ('/:*?"<>|', PAGES["home"], 0)),
+    ],
+)
+def test_init_page_raises(test_id, args):
+    with pytest.raises(ValueError):
+        wm.init_page(*args)
+
+
+# * ---------------------------------------- * #
+# * get_page_position
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        ("root_page", (PAGES["home"],), 0),
+        ("impeach", (PAGES["impeach-vermilion-vacuum"],), 0),
+        ("measure", (PAGES["measure-transient-respite"],), 0),
+        ("middle", (PAGES["middle-pasture-floating"],), 2),
+        ("medium", (PAGES["medium-establish-vital"],), 1),
+    ],
+)
+def test_get_page_position(test_id, args, expected):
+    result = wm.get_page_position(*args)
     assert result == expected
 
 

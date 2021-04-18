@@ -327,8 +327,11 @@ def get_children(page: Path) -> list[Path]:
 def get_page_position(page: Path) -> int:
     """Get the position of a page."""
 
-    page_dir = page.parent
-    position = int(page_dir.name.split("_")[0])
+    if page == ROOT_PAGE:
+        position = 0
+    else:
+        page_dir = page.parent
+        position = int(page_dir.name.split("_")[0])
     return position
 
 
