@@ -222,33 +222,15 @@ def test_init_page_raises(test_id, args):
     "test_id, args, expected",
     [
         ("root_page", (PAGES["home"],), 0),
-        ("impeach", (PAGES["impeach-vermilion-vacuum"],), 0),
-        ("measure", (PAGES["measure-transient-respite"],), 0),
-        ("middle", (PAGES["middle-pasture-floating"],), 2),
-        ("medium", (PAGES["medium-establish-vital"],), 1),
+        ("impeach-vermilion-vacuum", (PAGES["impeach-vermilion-vacuum"],), 0),
+        ("measure-transient-respite", (PAGES["measure-transient-respite"],), 0),
+        ("middle-pasture-floating", (PAGES["middle-pasture-floating"],), 2),
+        ("medium-establish-vital", (PAGES["medium-establish-vital"],), 1),
     ],
 )
 def test_get_page_position(test_id, args, expected):
     result = wm.get_page_position(*args)
     assert result == expected
-
-
-# # * ---------------------------------------- * #
-# # * create_page
-
-# # reuse params from init_page, but compare to `expected_wiki` instead of `expected`
-# CREATE_PAGE_PARAMS = [param[:2] for param in INIT_PAGE_PARAMS]
-
-
-# @m.parametrize("test_id, args", CREATE_PAGE_PARAMS)
-# def test_create_page(test_id, args, EXPECTED_WIKI):
-
-#     page = wm.init_page(*args)
-
-#     wm.create_page(page)
-#     result = dircmp(WIKI_ROOT, EXPECTED_WIKI)
-
-#     assert not result.diff_files
 
 
 # ! -------------------------------------------------------------------------------- ! #
@@ -321,6 +303,24 @@ def test_get_siblings(test_id, args, expected):
 
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
+
+
+# # * ---------------------------------------- * #
+# # * create_page
+
+# # reuse params from init_page, but compare to `expected_wiki` instead of `expected`
+# CREATE_PAGE_PARAMS = [param[:2] for param in INIT_PAGE_PARAMS]
+
+
+# @m.parametrize("test_id, args", CREATE_PAGE_PARAMS)
+# def test_create_page(test_id, args, EXPECTED_WIKI):
+
+#     page = wm.init_page(*args)
+
+#     wm.create_page(page)
+#     result = dircmp(WIKI_ROOT, EXPECTED_WIKI)
+
+#     assert not result.diff_files
 
 
 # ! -------------------------------------------------------------------------------- ! #
