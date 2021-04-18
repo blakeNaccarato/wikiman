@@ -34,11 +34,11 @@
         ".config/lint.ini"
     ],
 
-    // "restructuredtext.linter.name": "rstcheck",
-    // "restructuredtext.linter.extraArgs": [
-    //     "--config",
-    //     ".config/lint.ini"
-    // ],
+    "restructuredtext.linter.name": "rstcheck",
+    "restructuredtext.linter.extraArgs": [
+        "--config",
+        ".config/lint.ini"
+    ],
 
     //* workflows
     

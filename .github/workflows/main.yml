@@ -8,8 +8,8 @@ on:
     branches: [main]
 
 jobs:
-  main:
-    runs-on: ubuntu-latest
+  pylint:
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2.3.4
       - uses: actions/setup-python@v2.2.2
@@ -18,11 +18,59 @@ jobs:
       - run: |
           pip install -U pip
           pip install -U wheel
-          pip install -U setuptools
-          pip install -U twine bandit flake8 flake8-bugbear mypy pep8-naming pylint rstcheck pytest pytest-cov
+          pip install -U setuptools twine
+          pip install -U pylint
       - run: pylint --rcfile ./.config/lint.ini ./src/wikiman/
+  flake8:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install -U pip
+          pip install -U wheel
+          pip install -U setuptools twine
+          pip install -U flake8 flake8-bugbear pep8-naming
       - run: flake8 --config .config/lint.ini
+  mypy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install -U pip
+          pip install -U wheel
+          pip install -U setuptools twine
+          pip install -U mypy
       - run: mypy --config-file .config/lint.ini src tests
-#       - run: bandit -c .config/lint.bandit.yaml .
+  bandit:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install -U pip
+          pip install -U wheel
+          pip install -U setuptools twine
+          pip install -U bandit
+      - run: bandit -c .config/lint.bandit.yaml .
+  pytest-cov:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install -U pip
+          pip install -U wheel
+          pip install -U setuptools twine
+          pip install -U pytest pytest-cov
       - run: pytest --cov
       - uses: codecov/codecov-action@v1.3.2
