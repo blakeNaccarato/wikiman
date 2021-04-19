@@ -16,7 +16,10 @@ PAGE_PATHS = {
     # > Under "Home"
     "Impeach-Vermilion-Vacuum": (IMPEACH := WIKI_ROOT / "00_Impeach-Vermilion-Vacuum"),
     # >> Under "Impeach..."
-    "Measure-Transient-Respite": IMPEACH / "00_Measure-Transient-Respite",
+    "Measure-Transient-Respite": (MEASURE := IMPEACH / "00_Measure-Transient-Respite"),
+    # >>> Under "Measure..."
+    "Slate-Slide-Course": (MEASURE / "00_Slate-Slide-Course"),
+    # >> Under "Impeach..."
     "Official-Union-Advantage": (OFFICIAL := IMPEACH / "01_Official-Union-Advantage"),
     # >>> Under "Official..."
     "Close-Waste-Transform": OFFICIAL / "00_Close-Waste-Transform",
@@ -222,10 +225,10 @@ def test_init_page_raises(test_id, args):
     "test_id, args, expected",
     [
         ("home", (PAGES["home"],), 0),
-        ("impeach-vermilion-vacuum", (PAGES["impeach-vermilion-vacuum"],), 0),
-        ("measure-transient-respite", (PAGES["measure-transient-respite"],), 0),
-        ("middle-pasture-floating", (PAGES["middle-pasture-floating"],), 2),
-        ("medium-establish-vital", (PAGES["medium-establish-vital"],), 1),
+        (0, (PAGES["impeach-vermilion-vacuum"],), 0),
+        (1, (PAGES["measure-transient-respite"],), 0),
+        (2, (PAGES["middle-pasture-floating"],), 2),
+        (3, (PAGES["medium-establish-vital"],), 1),
     ],
 )
 def test_get_page_position(test_id, args, expected):
@@ -254,7 +257,7 @@ PAGE_PATTERN = "[!_]*.md"
             [PAGES["impeach-vermilion-vacuum"], PAGES["equity-substitute-huddle"]],
         ),
         (
-            "impeach-vermilion-vacuum",
+            0,
             (PAGES["impeach-vermilion-vacuum"],),
             [
                 PAGES["measure-transient-respite"],
@@ -263,7 +266,7 @@ PAGE_PATTERN = "[!_]*.md"
             ],
         ),
         (
-            "equity-substitute-huddle",
+            1,
             (PAGES["equity-substitute-huddle"],),
             [
                 PAGES["automatic-party-merit"],
@@ -271,7 +274,7 @@ PAGE_PATTERN = "[!_]*.md"
             ],
         ),
         (
-            "official-union-advantage",
+            2,
             (PAGES["official-union-advantage"],),
             [
                 PAGES["close-waste-transform"],
@@ -294,7 +297,8 @@ def test_get_children(test_id, args, expected):
     "test_id, args, expected",
     [
         ("home", (PAGES["home"],), PAGES["home"]),
-        ("subpage", (PAGES["impeach-vermilion-vacuum"],), PAGES["home"]),
+        (0, (PAGES["impeach-vermilion-vacuum"],), PAGES["home"]),
+        (1, (PAGES["serpentine-hurry-butcher"],), PAGES["official-union-advantage"]),
     ],
 )
 def test_get_parent(test_id, args, expected):
@@ -305,20 +309,23 @@ def test_get_parent(test_id, args, expected):
 # * ---------------------------------------- * #
 # * get_siblings
 
-GET_SIBLINGS_PARAMS = [
-    (
-        "home",
-        (PAGES["home"],),
-        EXPECTED_SIBLINGS := [
-            PAGES["impeach-vermilion-vacuum"],
-            PAGES["equity-substitute-huddle"],
-        ],
-    ),
-    ("subpage", (PAGES["impeach-vermilion-vacuum"],), EXPECTED_SIBLINGS),
-]
 
-
-@m.parametrize("test_id, args, expected", GET_SIBLINGS_PARAMS)
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            "home",
+            (PAGES["home"],),
+            [PAGES["impeach-vermilion-vacuum"], PAGES["equity-substitute-huddle"]],
+        ),
+        (
+            "subpage",
+            (PAGES["impeach-vermilion-vacuum"],),
+            [PAGES["impeach-vermilion-vacuum"], PAGES["equity-substitute-huddle"]],
+        ),
+        ("only_child", (PAGES["slate-slide-course"],), [PAGES["slate-slide-course"]]),
+    ],
+)
 def test_get_siblings(test_id, args, expected):
     result = wm.get_siblings(*args)
     assert result == expected

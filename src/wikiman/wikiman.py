@@ -282,7 +282,7 @@ def get_nearest_family(page: Path) -> tuple[Path, Path, Path]:
 
 
 def get_siblings(page: Path) -> list[Path]:
-    """Get a page and its siblings."""
+    """Get a page and its siblings. The home page has its children as its siblings."""
 
     parent = get_parent(page)
     children_of_parent = get_children(parent)
