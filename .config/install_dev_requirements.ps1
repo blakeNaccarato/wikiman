@@ -1,4 +1,5 @@
-pip install -U pip         # throws [WinError 5], but still works on its own
-pip install -U wheel       # speed up subsequent package installs
-pip install -U setuptools  # update bundled setuptools
-pip install -U -r .config\dev_requirements.txt  # packages for development
+py -3.9 -m venv .venv
+.venv/Scripts/activate
+pip install -U pip  # throws [WinError 5], but still works on its own
+pip install -U setuptools wheel
+pip install -r .config\dev_requirements.txt  # packages for development
