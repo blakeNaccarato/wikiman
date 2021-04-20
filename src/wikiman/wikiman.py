@@ -185,7 +185,6 @@ def insert_subtree(subtree: list[str], tree: list[str], index: int):
     """Insert a subtree into a tree after the specified index."""
 
     index += 1  # To insert *after* the specified index.
-
     subtree = [MD_TAB + str(line) for line in subtree]
     tree = tree[:index] + subtree + tree[index:]
     return tree
