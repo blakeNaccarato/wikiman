@@ -216,19 +216,22 @@ def get_toc(page: Path) -> str:
 def get_relative_nav(page: Path) -> str:
     """Get the parent, previous, and next Markdown links."""
 
-    (prev_page, next_page, parent) = get_nearest(page)
+    (next_page, prev_page, parent) = get_nearest(page)
     relative_nav: list[str] = []
 
-    # Get previous link for pages with a different previous sibling than their parent
-    if parent == prev_page:
+    # Get next link for any page except the last page in the entire wiki
+    if next_page == ROOT_PAGE:
+        next_link = None
+    else:
+        next_link = get_page_link(next_page)
+        relative_nav.append(NAV_HEAD[1] + next_link)
+
+    # Get previous link for any page except for the first page in a section
+    if prev_page == parent:
         prev_link = None
     else:
         prev_link = get_page_link(prev_page)
         relative_nav.append(NAV_HEAD[0] + prev_link)
-
-    # Get next link
-    next_link = get_page_link(next_page)
-    relative_nav.append(NAV_HEAD[1] + next_link)
 
     # Get parent link for any page except for Home
     if page == ROOT_PAGE:
@@ -249,29 +252,18 @@ def get_nearest(page: Path) -> tuple[Path, Path, Path]:
 
     siblings = get_siblings(page)
     if page == ROOT_PAGE:
-        prev_page = page
         if len(siblings) == 0:
             next_page = ROOT_PAGE
         else:
             next_page = siblings[0]
+        prev_page = page
     else:
         page_position = siblings.index(page)
-        prev_page = get_prev(page, siblings, page_position)
         next_page = get_next(page, siblings, page_position)
+        prev_page = get_prev(page, siblings, page_position)
 
     parent = get_parent(page)
-    return prev_page, next_page, parent
-
-
-def get_prev(page: Path, siblings: list[Path], page_position: int) -> Path:
-    """Get the page just before this page."""
-
-    is_first_child = page_position == 0
-    if is_first_child:
-        prev_page = get_parent(page)
-    else:
-        prev_page = siblings[page_position - 1]
-    return prev_page
+    return next_page, prev_page, parent
 
 
 def get_next(page: Path, siblings: list[Path], page_position: int) -> Path:
@@ -305,6 +297,17 @@ def get_next_of_last_child(page) -> Path:
         else:
             next_page = siblings_of_parent[next_page_position]
     return next_page
+
+
+def get_prev(page: Path, siblings: list[Path], page_position: int) -> Path:
+    """Get the page just before this page."""
+
+    is_first_child = page_position == 0
+    if is_first_child:
+        prev_page = get_parent(page)
+    else:
+        prev_page = siblings[page_position - 1]
+    return prev_page
 
 
 # * -------------------------------------------------------------------------------- * #

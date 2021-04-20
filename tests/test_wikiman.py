@@ -372,14 +372,14 @@ class GetNearestPathways:
         (
             "home",
             (PAGES["home"],),
-            (PAGES["home"], PAGES["impeach-vermilion-vacuum"], PAGES["home"]),
+            (PAGES["impeach-vermilion-vacuum"], PAGES["home"], PAGES["home"]),
         ),
         (
             "last_page",
             (PAGES["reaction-diagonal-patter"],),
             (
-                PAGES["medium-establish-vital"],
                 PAGES["home"],
+                PAGES["medium-establish-vital"],
                 PAGES["equity-substitute-huddle"],
             ),
         ),
@@ -392,8 +392,8 @@ class GetNearestPathways:
             ),
             (PAGES["medium-establish-vital"],),
             (
-                PAGES["automatic-party-merit"],
                 PAGES["reaction-diagonal-patter"],
+                PAGES["automatic-party-merit"],
                 PAGES["equity-substitute-huddle"],
             ),
         ),
@@ -406,8 +406,8 @@ class GetNearestPathways:
             ),
             (PAGES["automatic-party-merit"],),
             (
-                PAGES["equity-substitute-huddle"],
                 PAGES["medium-establish-vital"],
+                PAGES["equity-substitute-huddle"],
                 PAGES["equity-substitute-huddle"],
             ),
         ),
@@ -420,8 +420,8 @@ class GetNearestPathways:
             ),
             (PAGES["official-union-advantage"],),
             (
-                PAGES["measure-transient-respite"],
                 PAGES["close-waste-transform"],
+                PAGES["measure-transient-respite"],
                 PAGES["impeach-vermilion-vacuum"],
             ),
         ),
@@ -434,8 +434,8 @@ class GetNearestPathways:
             ),
             (PAGES["middle-pasture-floating"],),
             (
-                PAGES["official-union-advantage"],
                 PAGES["equity-substitute-huddle"],
+                PAGES["official-union-advantage"],
                 PAGES["impeach-vermilion-vacuum"],
             ),
         ),
@@ -448,8 +448,8 @@ class GetNearestPathways:
             ),
             (PAGES["measure-transient-respite"],),
             (
-                PAGES["impeach-vermilion-vacuum"],
                 PAGES["slate-slide-course"],
+                PAGES["impeach-vermilion-vacuum"],
                 PAGES["impeach-vermilion-vacuum"],
             ),
         ),
@@ -462,8 +462,8 @@ class GetNearestPathways:
             ),
             (PAGES["knuckle-conversion-wound"],),
             (
-                PAGES["transit-thrum-middle"],
                 PAGES["serpentine-hurry-butcher"],
+                PAGES["transit-thrum-middle"],
                 PAGES["transit-thrum-middle"],
             ),
         ),
@@ -471,8 +471,8 @@ class GetNearestPathways:
             "only_child_of_last_child",
             (PAGES["height-collar-detail"],),
             (
-                PAGES["slate-slide-course"],
                 PAGES["official-union-advantage"],
+                PAGES["slate-slide-course"],
                 PAGES["slate-slide-course"],
             ),
         ),
@@ -484,8 +484,8 @@ class GetNearestPathways:
             ),
             (PAGES["slate-slide-course"],),
             (
-                PAGES["measure-transient-respite"],
                 PAGES["height-collar-detail"],
+                PAGES["measure-transient-respite"],
                 PAGES["measure-transient-respite"],
             ),
         ),
