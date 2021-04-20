@@ -192,7 +192,7 @@ def insert_subtree(subtree: list[str], tree: list[str], index: int):
 
 
 def get_toc(page: Path) -> str:
-    """Get the table of contents for a page."""
+    """Get the table of contents for a page. List only the most significant headings."""
 
     toc_list: list[str] = []
     page_url = get_page_url(page)
