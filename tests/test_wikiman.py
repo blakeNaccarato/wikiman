@@ -175,13 +175,13 @@ def test_bold_md(test_id, args, expected):
         ("subpage", ("measure-transient-respite",), PAGES["measure-transient-respite"]),
     ],
 )
-def test_find_page(test_id, args, expected, RESTORE_WIKI_BEFORE_TEST):
+def test_find_page(test_id, args, expected, RESTORE_WIKI):
     result = wm.find_page(*args)
     assert result == expected
 
 
 @m.parametrize("test_id, args", [("page_not_found", ("Page-That-Doesn't-Exist",))])
-def test_find_page_raises(test_id, args, RESTORE_WIKI_BEFORE_TEST):
+def test_find_page_raises(test_id, args, RESTORE_WIKI):
     with pytest.raises(ValueError):
         wm.find_page(*args)
 

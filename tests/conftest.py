@@ -26,14 +26,7 @@ def main():
 
 
 # * -------------------------------------------------------------------------------- * #
-# * AUTOUSE FIXTURES (CONTEXTS)
-
-
-@pytest.fixture()
-def RESTORE_WIKI_BEFORE_TEST(autouse=True):
-    """Restore the wiki directory before running a test."""
-
-    restore_wiki()
+# * GLOBAL AUTOMATIC CONTEXTS
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -45,11 +38,24 @@ def REMOVE_WIKI_AFTER_ALL_TESTS():
 
 
 # * -------------------------------------------------------------------------------- * #
+# * CONTEXTS
+
+
+@pytest.fixture()
+def RESTORE_WIKI():
+    """Restore the wiki directory before and after running a test."""
+
+    restore_wiki()
+    yield
+    restore_wiki()
+
+
+# * -------------------------------------------------------------------------------- * #
 # * RESOURCES
 
 
 @pytest.fixture()
-def EXPECTED_WIKI(request, RESTORE_WIKI_BEFORE_TEST) -> Path:
+def EXPECTED_WIKI(request, RESTORE_WIKI) -> Path:
     """Get the expected final state of the wiki.
 
     Search the "tests" folder for "wiki" subfolders to folders matching the test module
