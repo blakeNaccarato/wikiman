@@ -19,12 +19,16 @@ PAGE_PATHS = {
     # >> Under "Impeach..."
     "Measure-Transient-Respite": (MEASURE := IMPEACH / "00_Measure-Transient-Respite"),
     # >>> Under "Measure..."
-    "Slate-Slide-Course": (MEASURE / "00_Slate-Slide-Course"),
+    "Slate-Slide-Course": (SLATE := (MEASURE / "00_Slate-Slide-Course")),
+    # >>>> Under "Slate..."
+    "Height-Collar-Detail": (SLATE / "00_Height-Collar-Detail"),
     # >> Under "Impeach..."
     "Official-Union-Advantage": (OFFICIAL := IMPEACH / "01_Official-Union-Advantage"),
     # >>> Under "Official..."
     "Close-Waste-Transform": OFFICIAL / "00_Close-Waste-Transform",
-    "Transit-Thrum-Middle": OFFICIAL / "01_Transit-Thrum-Middle",
+    "Transit-Thrum-Middle": (TRANSIT := OFFICIAL / "01_Transit-Thrum-Middle"),
+    # >>>> Under "Transit..."
+    "Knuckle-Conversion-Wound": TRANSIT / "00_Knuckle-Conversion-Wound",
     "Serpentine-Hurry-Butcher": OFFICIAL / "02_Serpentine-Hurry-Butcher",
     # >> Under "Impeach..."
     "Middle-Pasture-Floating": IMPEACH / "02_Middle-Pasture-Floating",
@@ -33,6 +37,7 @@ PAGE_PATHS = {
     # >> Under "Equity.."
     "Automatic-Party-Merit": EQUITY / "00_Automatic-Party-Merit",
     "Medium-Establish-Vital": EQUITY / "01_Medium-Establish-Vital",
+    "Reaction-Diagonal-Patter": EQUITY / "02_Reaction-Diagonal-Patter",
 }
 
 PAGES = {str(key).lower(): value / (key + ".md") for key, value in PAGE_PATHS.items()}
@@ -338,15 +343,12 @@ def test_get_siblings(test_id, args, expected):
 
 @dataclass
 class GetNearestFamilyPathways:
-    is_home: bool
     is_first_child: bool
     has_children: bool
     is_last_child: bool
 
     def __repr__(self):
         msg = ""
-        if self.is_home:
-            msg += "H"
         if self.is_first_child:
             msg += "F"
         if self.has_children:
@@ -362,94 +364,124 @@ class GetNearestFamilyPathways:
     "test_id, args, expected",
     [
         (
+            "home",
+            (PAGES["home"],),
+            (PAGES["home"], PAGES["home"], PAGES["impeach-vermilion-vacuum"]),
+        ),
+        (
+            "last_page",
+            (PAGES["reaction-diagonal-patter"],),
+            (
+                PAGES["equity-substitute-huddle"],
+                PAGES["medium-establish-vital"],
+                PAGES["home"],
+            ),
+        ),
+        (
+            # X
             GetNearestFamilyPathways(
-                is_home=True,
                 is_first_child=False,
                 has_children=False,
                 is_last_child=False,
             ),
-            (PAGES["home"],),
-            (),
-        ),
-        (
-            GetNearestFamilyPathways(
-                is_home=False,
-                is_first_child=False,
-                has_children=False,
-                is_last_child=False,
+            (PAGES["medium-establish-vital"],),
+            (
+                PAGES["equity-substitute-huddle"],
+                PAGES["automatic-party-merit"],
+                PAGES["reaction-diagonal-patter"],
             ),
-            (PAGES["home"],),
-            (),
         ),
         (
+            # F
             GetNearestFamilyPathways(
-                is_home=False,
                 is_first_child=True,
                 has_children=False,
                 is_last_child=False,
             ),
-            (PAGES["home"],),
-            (),
+            (PAGES["automatic-party-merit"],),
+            (
+                PAGES["equity-substitute-huddle"],
+                PAGES["equity-substitute-huddle"],
+                PAGES["medium-establish-vital"],
+            ),
         ),
         (
+            # C
             GetNearestFamilyPathways(
-                is_home=False,
                 is_first_child=False,
                 has_children=True,
                 is_last_child=False,
             ),
-            (PAGES["home"],),
-            (),
+            (PAGES["official-union-advantage"],),
+            (
+                PAGES["impeach-vermilion-vacuum"],
+                PAGES["measure-transient-respite"],
+                PAGES["close-waste-transform"],
+            ),
         ),
         (
+            # L
             GetNearestFamilyPathways(
-                is_home=False,
                 is_first_child=False,
                 has_children=False,
                 is_last_child=True,
             ),
-            (PAGES["home"],),
-            (),
+            (PAGES["middle-pasture-floating"],),
+            (
+                PAGES["impeach-vermilion-vacuum"],
+                PAGES["official-union-advantage"],
+                PAGES["equity-substitute-huddle"],
+            ),
         ),
         (
+            # FC
             GetNearestFamilyPathways(
-                is_home=False,
                 is_first_child=True,
                 has_children=True,
                 is_last_child=False,
             ),
-            (PAGES["home"],),
-            (),
+            (PAGES["measure-transient-respite"],),
+            (
+                PAGES["impeach-vermilion-vacuum"],
+                PAGES["impeach-vermilion-vacuum"],
+                PAGES["slate-slide-course"],
+            ),
         ),
         (
+            # FL (only child)
             GetNearestFamilyPathways(
-                is_home=False,
                 is_first_child=True,
                 has_children=False,
                 is_last_child=True,
             ),
-            (PAGES["home"],),
-            (),
-        ),
-        (
-            GetNearestFamilyPathways(
-                is_home=False,
-                is_first_child=True,
-                has_children=True,
-                is_last_child=False,
+            (PAGES["knuckle-conversion-wound"],),
+            (
+                PAGES["transit-thrum-middle"],
+                PAGES["transit-thrum-middle"],
+                PAGES["serpentine-hurry-butcher"],
             ),
-            (PAGES["home"],),
-            (),
+        ),
+        (
+            "only_child_of_last_child",
+            (PAGES["height-collar-detail"],),
+            (
+                PAGES["slate-slide-course"],
+                PAGES["slate-slide-course"],
+                PAGES["official-union-advantage"],
+            ),
         ),
         (
             GetNearestFamilyPathways(
-                is_home=False,
                 is_first_child=True,
                 has_children=True,
                 is_last_child=True,
             ),
-            (PAGES["home"],),
-            (),
+            (PAGES["slate-slide-course"],),
+            (
+                PAGES["measure-transient-respite"],
+                PAGES["measure-transient-respite"],
+                PAGES["height-collar-detail"],
+            ),
         ),
     ],
 )

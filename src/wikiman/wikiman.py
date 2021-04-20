@@ -272,9 +272,26 @@ def get_nearest_family(page: Path) -> tuple[Path, Path, Path]:
             first_child = list(sorted(first_child_dir.glob(PAGE_PATTERN)))[0]
             next_sibling = first_child
         elif is_last_child:
+            is_last_page = False  # This may change
             # Make the next sibling of the parent also the next sibling of this page
-            (*_, next_sibling_of_parent) = get_nearest_family(parent)
-            next_sibling = next_sibling_of_parent
+            this_parent = parent
+            siblings_of_parent = get_siblings(this_parent)
+            next_sibling_position = siblings_of_parent.index(this_parent) + 1
+            parent_is_last_child = next_sibling_position >= len(siblings_of_parent)
+            while parent_is_last_child:
+                # Go to the next parent to get the next sibling
+                this_parent = get_parent(this_parent)
+                if this_parent == ROOT_PAGE:
+                    # Last children all the way up means we're at the last page ever
+                    is_last_page = True
+                    break
+                siblings_of_parent = get_siblings(this_parent)
+                next_sibling_position = siblings_of_parent.index(this_parent) + 1
+                parent_is_last_child = next_sibling_position >= len(siblings_of_parent)
+            if is_last_page:
+                next_sibling = ROOT_PAGE
+            else:
+                next_sibling = siblings_of_parent[next_sibling_position]
         else:
             next_sibling = siblings[page_position + 1]
 
