@@ -264,9 +264,9 @@ def get_nearest_family(page: Path) -> tuple[Path, Path, Path]:
             prev_sibling = siblings[page_position - 1]
 
         # Get the next sibling
-        any_subpages = any(item.is_dir() for item in page.parent.iterdir())
+        has_children = any(item.is_dir() for item in page.parent.iterdir())
         is_last_child = page_position == len(siblings) - 1
-        if any_subpages:
+        if has_children:
             # Make a page with children have its first child as a sibling
             first_child_dir = [p for p in page.parent.iterdir() if p.is_dir()][0]
             first_child = list(sorted(first_child_dir.glob(PAGE_PATTERN)))[0]

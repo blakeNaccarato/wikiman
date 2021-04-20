@@ -1,5 +1,6 @@
-# pylint: disable=missing-function-docstring, missing-module-docstring, redefined-outer-name, unused-argument, wrong-import-order
+# pylint: disable=missing-function-docstring, missing-module-docstring, missing-class-docstring, redefined-outer-name, unused-argument, wrong-import-order
 
+from dataclasses import dataclass
 import pytest
 import wikiman as wm
 from pytest import mark as m
@@ -328,6 +329,132 @@ def test_get_parent(test_id, args, expected):
 )
 def test_get_siblings(test_id, args, expected):
     result = wm.get_siblings(*args)
+    assert result == expected
+
+
+# * ---------------------------------------- * #
+# * get_nearest_family
+
+
+@dataclass
+class GetNearestFamilyPathways:
+    is_home: bool
+    is_first_child: bool
+    has_children: bool
+    is_last_child: bool
+
+    def __repr__(self):
+        msg = ""
+        if self.is_home:
+            msg += "H"
+        if self.is_first_child:
+            msg += "F"
+        if self.has_children:
+            msg += "C"
+        if self.is_last_child:
+            msg += "L"
+        if not msg:
+            msg = "X"
+        return msg
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            GetNearestFamilyPathways(
+                is_home=True,
+                is_first_child=False,
+                has_children=False,
+                is_last_child=False,
+            ),
+            (PAGES["home"],),
+            (),
+        ),
+        (
+            GetNearestFamilyPathways(
+                is_home=False,
+                is_first_child=False,
+                has_children=False,
+                is_last_child=False,
+            ),
+            (PAGES["home"],),
+            (),
+        ),
+        (
+            GetNearestFamilyPathways(
+                is_home=False,
+                is_first_child=True,
+                has_children=False,
+                is_last_child=False,
+            ),
+            (PAGES["home"],),
+            (),
+        ),
+        (
+            GetNearestFamilyPathways(
+                is_home=False,
+                is_first_child=False,
+                has_children=True,
+                is_last_child=False,
+            ),
+            (PAGES["home"],),
+            (),
+        ),
+        (
+            GetNearestFamilyPathways(
+                is_home=False,
+                is_first_child=False,
+                has_children=False,
+                is_last_child=True,
+            ),
+            (PAGES["home"],),
+            (),
+        ),
+        (
+            GetNearestFamilyPathways(
+                is_home=False,
+                is_first_child=True,
+                has_children=True,
+                is_last_child=False,
+            ),
+            (PAGES["home"],),
+            (),
+        ),
+        (
+            GetNearestFamilyPathways(
+                is_home=False,
+                is_first_child=True,
+                has_children=False,
+                is_last_child=True,
+            ),
+            (PAGES["home"],),
+            (),
+        ),
+        (
+            GetNearestFamilyPathways(
+                is_home=False,
+                is_first_child=True,
+                has_children=True,
+                is_last_child=False,
+            ),
+            (PAGES["home"],),
+            (),
+        ),
+        (
+            GetNearestFamilyPathways(
+                is_home=False,
+                is_first_child=True,
+                has_children=True,
+                is_last_child=True,
+            ),
+            (PAGES["home"],),
+            (),
+        ),
+    ],
+)
+def test_get_nearest_family(test_id, args, expected):
+    result = wm.get_nearest_family(*args)
     assert result == expected
 
 
