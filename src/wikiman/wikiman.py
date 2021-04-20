@@ -1,6 +1,5 @@
 """Generate wiki navigation links in the sidebar and footer of each page."""
 
-import itertools
 import re
 from pathlib import Path
 from typing import Optional
@@ -148,9 +147,10 @@ def get_tree(page: Path) -> str:
     # Start the tree at root or with the page and its siblings
     if page == ROOT_PAGE:
         # Tree is a list of just the root page
-        tree = [bold_md(get_page_link(page))]
+        tree = [bold_md(get_page_link(ROOT_PAGE))]
         page_idx = 0
     else:
+        # Tree is a list of the page and its siblings
         siblings = get_siblings(page)
         tree = [get_page_link(page) for page in siblings]
         page_idx = siblings.index(page)
@@ -168,7 +168,7 @@ def get_tree(page: Path) -> str:
 
         if parent == ROOT_PAGE:
             # Insert the working tree below the root page
-            parent_links = [get_page_link(parent)]
+            parent_links = [get_page_link(ROOT_PAGE)]
             parent_idx = 0
             tree = insert_subtree(subtree=tree, tree=parent_links, index=parent_idx)
         else:
@@ -186,8 +186,8 @@ def insert_subtree(subtree: list[str], tree: list[str], index: int):
 
     index += 1  # To insert *after* the specified index.
 
-    subtree = [MD_TAB + str(i) for i in subtree]
-    tree = list(itertools.chain(tree[:index], subtree, tree[index:]))
+    subtree = [MD_TAB + str(line) for line in subtree]
+    tree = tree[:index] + subtree + tree[index:]
     return tree
 
 
