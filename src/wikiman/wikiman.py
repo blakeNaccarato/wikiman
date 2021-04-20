@@ -293,6 +293,7 @@ def get_nearest_family(page: Path) -> tuple[Path, Path, Path]:
             else:
                 next_sibling = siblings_of_parent[next_sibling_position]
         else:
+            # The next sibling is just the next sibling
             next_sibling = siblings[page_position + 1]
 
     return parent, prev_sibling, next_sibling
