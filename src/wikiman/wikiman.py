@@ -30,7 +30,7 @@ PAGES = list(sorted(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}")))
 ROOT_PAGE = PAGES[-1]
 
 # Glyphs to place in the footer next to "Up", "Prev", and "Next" navigation links.
-NAV_HEAD = ("Prev: ", "Next: ", "Up: ")
+NAV_HEAD = ("Next: ", "Prev: ", "Up: ")
 # Heading levels indicated by number of "#" in sequence. Changes header size.
 MD_HEAD = "# "
 # Two newlines signifies a paragraph break in Markdown.
@@ -224,17 +224,17 @@ def get_relative_nav(page: Path) -> str:
         next_link = None
     else:
         next_link = get_page_link(next_page)
-        relative_nav.append(NAV_HEAD[1] + next_link)
+        relative_nav.append(NAV_HEAD[0] + next_link)
 
-    # Get previous link for any page except for the first page in a section
-    if prev_page == parent:
+    # Get previous link for any page except the home page
+    if page == ROOT_PAGE:
         prev_link = None
     else:
         prev_link = get_page_link(prev_page)
-        relative_nav.append(NAV_HEAD[0] + prev_link)
+        relative_nav.append(NAV_HEAD[1] + prev_link)
 
-    # Get parent link for any page except for Home
-    if page == ROOT_PAGE:
+    # Get parent link for any page except for Home, or the first page in a section
+    if page == ROOT_PAGE or prev_page == parent:
         parent_link = None
     else:
         parent_link = get_page_link(parent)
