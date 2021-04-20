@@ -17,8 +17,7 @@ jobs:
           python-version: 3.9
       - run: |
           pip install -U pip setuptools wheel
-          pip install pylint~=2.7
-          pip install .
+          pip install . pylint~=2.7
       - run: pylint --rcfile ./.config/lint.ini ./src/wikiman/
   flake8:
     runs-on: ubuntu-20.04
@@ -29,8 +28,7 @@ jobs:
           python-version: 3.9
       - run: |
           pip install -U pip setuptools wheel
-          pip install flake8~=3.9 flake8-bugbear~=21.4 pep8-naming~=0.11
-          pip install .
+          pip install . flake8~=3.9 flake8-bugbear~=21.4 pep8-naming~=0.11
       - run: flake8 --config .config/lint.ini
   mypy:
     runs-on: ubuntu-20.04
@@ -41,8 +39,7 @@ jobs:
           python-version: 3.9
       - run: |
           pip install -U pip setuptools wheel
-          pip install -U mypy==0.812
-          pip install .
+          pip install . mypy==0.812
       - run: mypy --config-file .config/lint.ini src tests
   bandit:
     runs-on: ubuntu-20.04
@@ -53,8 +50,7 @@ jobs:
           python-version: 3.9
       - run: |
           pip install -U pip setuptools wheel
-          pip install bandit~=1.7
-          pip install .
+          pip install . bandit~=1.7
       - run: bandit -c .config/lint.bandit.yaml .
   pytest-cov:
     runs-on: ubuntu-20.04
@@ -65,7 +61,6 @@ jobs:
           python-version: 3.9
       - run: |
           pip install -U pip setuptools wheel
-          pip install pytest~=6.2 pytest-cov~=2.11
-          pip install .
+          pip install . pytest~=6.2 pytest-cov~=2.11
       - run: pytest --cov
       - uses: codecov/codecov-action@v1.3.2
