@@ -343,7 +343,7 @@ def test_get_siblings(test_id, args, expected):
 
 
 @dataclass
-class GetNearestFamilyPathways:
+class GetNearestPathways:
     is_first_child: bool
     has_children: bool
     is_last_child: bool
@@ -380,7 +380,7 @@ class GetNearestFamilyPathways:
         ),
         (
             # X
-            GetNearestFamilyPathways(
+            GetNearestPathways(
                 is_first_child=False,
                 has_children=False,
                 is_last_child=False,
@@ -394,7 +394,7 @@ class GetNearestFamilyPathways:
         ),
         (
             # F
-            GetNearestFamilyPathways(
+            GetNearestPathways(
                 is_first_child=True,
                 has_children=False,
                 is_last_child=False,
@@ -408,7 +408,7 @@ class GetNearestFamilyPathways:
         ),
         (
             # C
-            GetNearestFamilyPathways(
+            GetNearestPathways(
                 is_first_child=False,
                 has_children=True,
                 is_last_child=False,
@@ -422,7 +422,7 @@ class GetNearestFamilyPathways:
         ),
         (
             # L
-            GetNearestFamilyPathways(
+            GetNearestPathways(
                 is_first_child=False,
                 has_children=False,
                 is_last_child=True,
@@ -436,7 +436,7 @@ class GetNearestFamilyPathways:
         ),
         (
             # FC
-            GetNearestFamilyPathways(
+            GetNearestPathways(
                 is_first_child=True,
                 has_children=True,
                 is_last_child=False,
@@ -450,7 +450,7 @@ class GetNearestFamilyPathways:
         ),
         (
             # FL (only child)
-            GetNearestFamilyPathways(
+            GetNearestPathways(
                 is_first_child=True,
                 has_children=False,
                 is_last_child=True,
@@ -472,7 +472,7 @@ class GetNearestFamilyPathways:
             ),
         ),
         (
-            GetNearestFamilyPathways(
+            GetNearestPathways(
                 is_first_child=True,
                 has_children=True,
                 is_last_child=True,
@@ -486,8 +486,8 @@ class GetNearestFamilyPathways:
         ),
     ],
 )
-def test_get_nearest_family(test_id, args, expected):
-    result = wm.get_nearest_family(*args)
+def test_get_nearest(test_id, args, expected):
+    result = wm.get_nearest(*args)
     assert result == expected
 
 
