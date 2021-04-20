@@ -277,6 +277,7 @@ PAGE_PATTERN = "[!_]*.md"
             [
                 PAGES["automatic-party-merit"],
                 PAGES["medium-establish-vital"],
+                PAGES["reaction-diagonal-patter"],
             ],
         ),
         (
