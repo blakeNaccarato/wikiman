@@ -30,7 +30,7 @@ PAGES = list(sorted(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}")))
 ROOT_PAGE = PAGES[-1]
 
 # Glyphs to place in the footer next to "Up", "Prev", and "Next" navigation links.
-NAV_HEAD = ("Up: ", "Prev: ", "Next: ")
+NAV_HEAD = ("Prev: ", "Next: ", "Up: ")
 # Heading levels indicated by number of "#" in sequence. Changes header size.
 MD_HEAD = "# "
 # Two newlines signifies a paragraph break in Markdown.
@@ -216,26 +216,26 @@ def get_toc(page: Path) -> str:
 def get_relative_nav(page: Path) -> str:
     """Get the parent, previous, and next Markdown links."""
 
+    (prev_page, next_page, parent) = get_nearest(page)
     relative_nav: list[str] = []
-    (parent, prev_sibling, next_sibling) = get_nearest_family(page)
+
+    # Get previous link for pages with a different previous sibling than their parent
+    if parent == prev_page:
+        prev_link = None
+    else:
+        prev_link = get_page_link(prev_page)
+        relative_nav.append(NAV_HEAD[0] + prev_link)
+
+    # Get next link
+    next_link = get_page_link(next_page)
+    relative_nav.append(NAV_HEAD[1] + next_link)
 
     # Get parent link for any page except for Home
     if page == ROOT_PAGE:
         parent_link = None
     else:
         parent_link = get_page_link(parent)
-        relative_nav.append(NAV_HEAD[0] + parent_link)
-
-    # Get previous link for pages with a different previous sibling than their parent
-    if parent == prev_sibling:
-        prev_link = None
-    else:
-        prev_link = get_page_link(prev_sibling)
-        relative_nav.append(NAV_HEAD[1] + prev_link)
-
-    # Get next link
-    next_link = get_page_link(next_sibling)
-    relative_nav.append(NAV_HEAD[2] + next_link)
+        relative_nav.append(NAV_HEAD[2] + parent_link)
 
     return MD_TAB.join(relative_nav)
 
@@ -247,68 +247,61 @@ def get_relative_nav(page: Path) -> str:
 def get_nearest(page: Path) -> tuple[Path, Path, Path]:
     """Get the pages nearest to a page."""
 
-    parent = get_parent(page)
     siblings = get_siblings(page)
-
     if page == ROOT_PAGE:
-        prev_sibling = page  # The Home page is its own previous sibling
-        next_sibling = siblings[0]  # The next page is its next sibling
+        prev_page = page
+        next_page = siblings[0]
     else:
         page_position = siblings.index(page)
-        is_first_child = page_position == 0
+        prev_page = get_prev(page, siblings, page_position)
+        next_page = get_next(page, siblings, page_position)
 
-        prev_sibling = get_prev(page, siblings, page_position, is_first_child)
-        next_sibling = get_next(page, parent, siblings, page_position)
-
-    return parent, prev_sibling, next_sibling
+    parent = get_parent(page)
+    return prev_page, next_page, parent
 
 
-def get_prev(
-    page: Path, siblings: list[Path], page_position: int, is_first_child: bool
-) -> Path:
+def get_prev(page: Path, siblings: list[Path], page_position: int) -> Path:
     """Get the page just before this page."""
 
+    is_first_child = page_position == 0
     if is_first_child:
-        prev_sibling = get_parent(page)
+        prev_page = get_parent(page)
     else:
-        prev_sibling = siblings[page_position - 1]
-    return prev_sibling
+        prev_page = siblings[page_position - 1]
+    return prev_page
 
 
-def get_next(page, parent, siblings, page_position):
+def get_next(page: Path, siblings: list[Path], page_position: int) -> Path:
     """Get the page just after this page."""
 
-    has_children = any(item.is_dir() for item in page.parent.iterdir())
-    is_last_child = page_position == len(siblings) - 1
+    children = get_children(page)
+    has_children = len(children) > 0
+    is_last_child = page_position + 1 >= len(siblings)
     if has_children:
-        # Make a page with children have its first child as a sibling
-        first_child_dir = [p for p in page.parent.iterdir() if p.is_dir()][0]
-        first_child = list(sorted(first_child_dir.glob(PAGE_PATTERN)))[0]
-        next_sibling = first_child
+        next_page = children[0]
     elif is_last_child:
-        is_last_page = False
-        this_parent = parent
-        siblings_of_parent = get_siblings(this_parent)
-        next_sibling_position = siblings_of_parent.index(this_parent) + 1
-        parent_is_last_child = next_sibling_position >= len(siblings_of_parent)
-        while parent_is_last_child:
-            # Go to the next parent to get the next sibling
-            this_parent = get_parent(this_parent)
-            if this_parent == ROOT_PAGE:
-                # Last children all the way up means we're at the last page ever
-                is_last_page = True
-                break
-            siblings_of_parent = get_siblings(this_parent)
-            next_sibling_position = siblings_of_parent.index(this_parent) + 1
-            parent_is_last_child = next_sibling_position >= len(siblings_of_parent)
-        if is_last_page:
-            next_sibling = ROOT_PAGE
-        else:
-            next_sibling = siblings_of_parent[next_sibling_position]
+        next_page = get_next_of_last_child(page)
     else:
-        # The next sibling is just the next sibling
-        next_sibling = siblings[page_position + 1]
-    return next_sibling
+        next_page = siblings[page_position + 1]
+    return next_page
+
+
+def get_next_of_last_child(page) -> Path:
+    """Get the next page of a last child."""
+
+    parent = get_parent(page)
+    is_last_page = parent == ROOT_PAGE
+    if is_last_page:
+        next_page = ROOT_PAGE
+    else:
+        siblings_of_parent = get_siblings(parent)
+        next_page_position = siblings_of_parent.index(parent) + 1
+        parent_is_last_child = next_page_position >= len(siblings_of_parent)
+        if parent_is_last_child:
+            next_page = get_next_of_last_child(parent)
+        else:
+            next_page = siblings_of_parent[next_page_position]
+    return next_page
 
 
 # * -------------------------------------------------------------------------------- * #
