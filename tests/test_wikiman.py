@@ -1,6 +1,5 @@
 # pylint: disable=missing-function-docstring, missing-module-docstring, missing-class-docstring, redefined-outer-name, unused-argument, wrong-import-order
 
-from dataclasses import dataclass
 import pytest
 import wikiman as wm
 from pytest import mark as m
@@ -31,7 +30,9 @@ PAGE_PATHS = {
     "Knuckle-Conversion-Wound": TRANSIT / "00_Knuckle-Conversion-Wound",
     "Serpentine-Hurry-Butcher": OFFICIAL / "02_Serpentine-Hurry-Butcher",
     # >> Under "Impeach..."
-    "Middle-Pasture-Floating": IMPEACH / "02_Middle-Pasture-Floating",
+    "Middle-Pasture-Floating": (MIDDLE := IMPEACH / "02_Middle-Pasture-Floating"),
+    # >>> Under "Middle..."
+    "Meridian-Preserve-Winter": MIDDLE / "00_Meridian-Preserve-Winter",
     # > Under "Home"
     "Equity-Substitute-Huddle": (EQUITY := WIKI_ROOT / "01_Equity-Substitute-Huddle"),
     # >> Under "Equity.."
@@ -351,7 +352,37 @@ def test_get_siblings(test_id, args, expected):
 # * get_prev
 
 
-@m.parametrize("test_id, args, expected", [("", (PAGES["home"],), PAGES["home"])])
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            "is_first_child",
+            (
+                PAGES["measure-transient-respite"],
+                [
+                    PAGES["measure-transient-respite"],
+                    PAGES["official-union-advantage"],
+                    PAGES["middle-pasture-floating"],
+                ],
+                0,
+            ),
+            PAGES["impeach-vermilion-vacuum"],
+        ),
+        (
+            "else",
+            (
+                PAGES["official-union-advantage"],
+                [
+                    PAGES["measure-transient-respite"],
+                    PAGES["official-union-advantage"],
+                    PAGES["middle-pasture-floating"],
+                ],
+                1,
+            ),
+            PAGES["measure-transient-respite"],
+        ),
+    ],
+)
 def test_get_prev(test_id, args, expected):
     result = wm.get_prev(*args)
     assert result == expected
@@ -361,7 +392,22 @@ def test_get_prev(test_id, args, expected):
 # * get_next_of_last_child
 
 
-@m.parametrize("test_id, args, expected", [("", (PAGES["home"],), PAGES["home"])])
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        ("is_last_page", (PAGES["reaction-diagonal-patter"],), PAGES["home"]),
+        (
+            "elif_parent_is_last_child",
+            (PAGES["meridian-preserve-winter"],),
+            PAGES["equity-substitute-huddle"],
+        ),
+        (
+            "else",
+            (PAGES["middle-pasture-floating"],),
+            PAGES["equity-substitute-huddle"],
+        ),
+    ],
+)
 def test_get_next_of_last_child(test_id, args, expected):
     result = wm.get_next_of_last_child(*args)
     assert result == expected
@@ -371,7 +417,49 @@ def test_get_next_of_last_child(test_id, args, expected):
 # * get_next
 
 
-@m.parametrize("test_id, args, expected", [("", (PAGES["home"],), PAGES["home"])])
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            "has_children",
+            (
+                PAGES["equity-substitute-huddle"],
+                [
+                    PAGES["impeach-vermilion-vacuum"],
+                    PAGES["equity-substitute-huddle"],
+                ],
+                1,
+            ),
+            PAGES["automatic-party-merit"],
+        ),
+        (
+            "elif_is_last_child",
+            (
+                PAGES["serpentine-hurry-butcher"],
+                [
+                    PAGES["close-waste-transform"],
+                    PAGES["transit-thrum-middle"],
+                    PAGES["serpentine-hurry-butcher"],
+                ],
+                2,
+            ),
+            PAGES["middle-pasture-floating"],
+        ),
+        (
+            "else",
+            (
+                PAGES["medium-establish-vital"],
+                [
+                    PAGES["automatic-party-merit"],
+                    PAGES["medium-establish-vital"],
+                    PAGES["reaction-diagonal-patter"],
+                ],
+                1,
+            ),
+            PAGES["reaction-diagonal-patter"],
+        ),
+    ],
+)
 def test_get_next(test_id, args, expected):
     result = wm.get_next(*args)
     assert result == expected
@@ -379,25 +467,6 @@ def test_get_next(test_id, args, expected):
 
 # * ---------------------------------------- * #
 # * get_nearest
-
-
-@dataclass
-class GetNearestPathways:
-    is_first_child: bool
-    has_children: bool
-    is_last_child: bool
-
-    def __repr__(self):
-        msg = ""
-        if self.is_first_child:
-            msg += "F"
-        if self.has_children:
-            msg += "C"
-        if self.is_last_child:
-            msg += "L"
-        if not msg:
-            msg = "X"
-        return msg
 
 
 @m.parametrize(
@@ -408,119 +477,19 @@ class GetNearestPathways:
             (PAGES["home"],),
             (PAGES["impeach-vermilion-vacuum"], PAGES["home"], PAGES["home"]),
         ),
+        # (
+        #     #? Can't test this path without a lot of fixturing
+        #     "home_is_only_page",
+        #     (PAGES["home"],),
+        #     (PAGES["home"], PAGES["home"], PAGES["home"]),
+        # ),
         (
-            "last_page",
-            (PAGES["reaction-diagonal-patter"],),
-            (
-                PAGES["home"],
-                PAGES["medium-establish-vital"],
-                PAGES["equity-substitute-huddle"],
-            ),
-        ),
-        (
-            # X
-            GetNearestPathways(
-                is_first_child=False,
-                has_children=False,
-                is_last_child=False,
-            ),
+            "else",
             (PAGES["medium-establish-vital"],),
             (
                 PAGES["reaction-diagonal-patter"],
                 PAGES["automatic-party-merit"],
                 PAGES["equity-substitute-huddle"],
-            ),
-        ),
-        (
-            # F
-            GetNearestPathways(
-                is_first_child=True,
-                has_children=False,
-                is_last_child=False,
-            ),
-            (PAGES["automatic-party-merit"],),
-            (
-                PAGES["medium-establish-vital"],
-                PAGES["equity-substitute-huddle"],
-                PAGES["equity-substitute-huddle"],
-            ),
-        ),
-        (
-            # C
-            GetNearestPathways(
-                is_first_child=False,
-                has_children=True,
-                is_last_child=False,
-            ),
-            (PAGES["official-union-advantage"],),
-            (
-                PAGES["close-waste-transform"],
-                PAGES["measure-transient-respite"],
-                PAGES["impeach-vermilion-vacuum"],
-            ),
-        ),
-        (
-            # L
-            GetNearestPathways(
-                is_first_child=False,
-                has_children=False,
-                is_last_child=True,
-            ),
-            (PAGES["middle-pasture-floating"],),
-            (
-                PAGES["equity-substitute-huddle"],
-                PAGES["official-union-advantage"],
-                PAGES["impeach-vermilion-vacuum"],
-            ),
-        ),
-        (
-            # FC
-            GetNearestPathways(
-                is_first_child=True,
-                has_children=True,
-                is_last_child=False,
-            ),
-            (PAGES["measure-transient-respite"],),
-            (
-                PAGES["slate-slide-course"],
-                PAGES["impeach-vermilion-vacuum"],
-                PAGES["impeach-vermilion-vacuum"],
-            ),
-        ),
-        (
-            # FL (only child)
-            GetNearestPathways(
-                is_first_child=True,
-                has_children=False,
-                is_last_child=True,
-            ),
-            (PAGES["knuckle-conversion-wound"],),
-            (
-                PAGES["serpentine-hurry-butcher"],
-                PAGES["transit-thrum-middle"],
-                PAGES["transit-thrum-middle"],
-            ),
-        ),
-        (
-            "only_child_of_last_child",
-            (PAGES["height-collar-detail"],),
-            (
-                PAGES["official-union-advantage"],
-                PAGES["slate-slide-course"],
-                PAGES["slate-slide-course"],
-            ),
-        ),
-        (
-            GetNearestPathways(
-                is_first_child=True,
-                has_children=True,
-                is_last_child=True,
-            ),
-            (PAGES["slate-slide-course"],),
-            (
-                PAGES["height-collar-detail"],
-                PAGES["measure-transient-respite"],
-                PAGES["measure-transient-respite"],
             ),
         ),
     ],
