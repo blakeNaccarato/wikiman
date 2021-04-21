@@ -255,7 +255,7 @@ def get_nearest(page: Path) -> tuple[Path, Path, Path]:
             next_page = ROOT_PAGE
         else:
             next_page = siblings[0]
-        prev_page = page
+        prev_page = ROOT_PAGE
     else:
         page_position = siblings.index(page)
         next_page = get_next(page, siblings, page_position)
