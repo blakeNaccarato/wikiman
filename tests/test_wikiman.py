@@ -343,8 +343,42 @@ def test_get_siblings(test_id, args, expected):
     assert result == expected
 
 
+# * -------------------------------------------------------------------------------- * #
+# * RELATIVES
+
+
 # * ---------------------------------------- * #
-# * get_nearest_family
+# * get_prev
+
+
+@m.parametrize("test_id, args, expected", [("", (PAGES["home"],), PAGES["home"])])
+def test_get_prev(test_id, args, expected):
+    result = wm.get_prev(*args)
+    assert result == expected
+
+
+# * ---------------------------------------- * #
+# * get_next_of_last_child
+
+
+@m.parametrize("test_id, args, expected", [("", (PAGES["home"],), PAGES["home"])])
+def test_get_next_of_last_child(test_id, args, expected):
+    result = wm.get_next_of_last_child(*args)
+    assert result == expected
+
+
+# * ---------------------------------------- * #
+# * get_next
+
+
+@m.parametrize("test_id, args, expected", [("", (PAGES["home"],), PAGES["home"])])
+def test_get_next(test_id, args, expected):
+    result = wm.get_next(*args)
+    assert result == expected
+
+
+# * ---------------------------------------- * #
+# * get_nearest
 
 
 @dataclass
