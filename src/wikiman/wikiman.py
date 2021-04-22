@@ -16,7 +16,9 @@ ILLEGAL_CHARACTERS = re.compile(r'[\\/:*?"<>|\a\b\f\n\r\t\v]')
 
 # The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
 ROOT_NAME = "wiki"
-GIT_REMOTE_URL = git.Repo().remotes.origin.url.removesuffix(".wiki.git") + "/wiki" + "/"
+GIT_REMOTE_URL = (
+    str(git.Repo().remotes.origin.url.removesuffix(".wiki.git")) + "/wiki" + "/"
+)
 
 # Get pages to be used throughout the module
 WIKI_ROOT = Path(ROOT_NAME)
@@ -40,7 +42,7 @@ MD_TAB = "&nbsp;" * 4
 WIDTH = 2
 
 
-def main():
+def main() -> None:
     """The command-line interface. Runs if file is invoked directly, or from prompt."""
 
     fire.Fire({"up": cli_update_navigation, "add": cli_add_page})
@@ -50,7 +52,7 @@ def main():
 # ! CLI
 
 
-def cli_update_navigation():
+def cli_update_navigation() -> None:
     """Update sidebars and footers."""
 
     for page in PAGES:
@@ -72,7 +74,7 @@ def cli_update_navigation():
             file.write(nav)
 
 
-def cli_add_page(name: str, under: str, position: Optional[int] = None):
+def cli_add_page(name: str, under: str, position: Optional[int] = None) -> None:
     """Add a new page under a page, optionally specifying position."""
 
     parent = find_page(under)
@@ -112,7 +114,7 @@ def cli_add_page(name: str, under: str, position: Optional[int] = None):
 #     pass
 
 
-def move_page(page: Path, under: Path, position: int):
+def move_page(page: Path, under: Path, position: int) -> None:
     """Change the position of a page."""
 
     new_page = init_page(page.stem, under, position)
@@ -120,7 +122,7 @@ def move_page(page: Path, under: Path, position: int):
     page.rename(new_page)
 
 
-def remove_page(page: Path):
+def remove_page(page: Path) -> None:
     """Remove a page."""
 
     page_dir = page.parent
@@ -130,7 +132,7 @@ def remove_page(page: Path):
     page_dir.rmdir()
 
 
-def create_page(page: Path):
+def create_page(page: Path) -> None:
     """Create a page that has been initialized but does not exist yet."""
 
     page.parent.mkdir()
@@ -181,7 +183,7 @@ def get_tree(page: Path) -> str:
     return MD_NEWLINE.join(tree)
 
 
-def insert_subtree(subtree: list[str], tree: list[str], index: int):
+def insert_subtree(subtree: list[str], tree: list[str], index: int) -> list[str]:
     """Insert a subtree into a tree after the specified index."""
 
     index += 1  # To insert *after* the specified index.
@@ -280,7 +282,7 @@ def get_next(page: Path, siblings: list[Path], page_position: int) -> Path:
     return next_page
 
 
-def get_next_of_last_child(page) -> Path:
+def get_next_of_last_child(page: Path) -> Path:
     """Get the next page of a last child."""
 
     parent = get_parent(page)
