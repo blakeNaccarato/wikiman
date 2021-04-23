@@ -1,10 +1,13 @@
 [flake8]
 
-compatibility with black
+; compatibility with black
 max-line-length = 88
 
 ; Exclude hidden directories and files
 exclude = .*
+
+; McCabe complexity
+max_complexity = 10
 
 ignore =
 

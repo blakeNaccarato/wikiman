@@ -21,7 +21,7 @@
 
 
     //* flake8
-    "python.linting.flake8Args": [],
+    "python.linting.flake8Args": ["--config", ".flake8"],
 
 
     //* pylance
