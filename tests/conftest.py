@@ -1,5 +1,3 @@
-# pylint: disable=missing-module-docstring, redefined-outer-name, unused-argument, wrong-import-order
-
 import shutil
 from pathlib import Path
 
