@@ -1,17 +1,37 @@
 [flake8]
 
-; compatibility with black
+compatibility with black
 max-line-length = 88
 
-; exclude hidden directories and files
+; Exclude hidden directories and files
 exclude = .*
 
 ignore =
-    E203,  ; whitespace before '', conflict with black
-    E262,  ; inline comment should start with '#', conflict with Better Comments
-    E265,  ; block comment should start with '#', conflict with Better Comments
-    W503,  ; line break before binary operator, conflict with black
 
-; lowercase name, uppercase used to identify certain fixtures
+    ; Conflict with black
+    ; Whitespace before ''
+    E203,
+    ; Line break before binary operator
+    W503,
+
+    ; Conflict with Better Comments
+    ; Inline comment should start with '#'
+    E262,
+    ; Block comment should start with '#', conflict with Better Comments
+    E265,
+
 per-file-ignores =
-    tests/*: N802, N803
+    
+    tests/*:
+        ; We indicate custom fixtures w/ ALL_CAPS to distinguish from other args
+        ; function name should be lowercase
+        N802,
+        ; argument name should be lowercase
+        N803,
+
+    __init__.py:
+        ; So that we can un-nest modules for the end user
+        ; Module imported but unused
+        F401,
+        ; 'from module import *' used
+        F403,
