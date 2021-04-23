@@ -1,5 +1,3 @@
-# pylint: disable=missing-function-docstring, missing-module-docstring, missing-class-docstring, redefined-outer-name, unused-argument, wrong-import-order
-
 import pytest
 import wikiman as wm
 from pytest import mark as m
