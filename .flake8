@@ -1,6 +1,6 @@
 [flake8]
 
-max-line-length = 88  ; compatibility with black
+max-line-length=88  ; compatibility with black
 exclude = .*  ; exclude hidden directories and files
 
 ignore =
