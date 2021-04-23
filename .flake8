@@ -1,7 +1,10 @@
 [flake8]
 
-max-line-length=88  ; compatibility with black
-exclude = .*  ; exclude hidden directories and files
+; compatibility with black
+max-line-length = 88
+
+; exclude hidden directories and files
+exclude = .*
 
 ignore =
     E203,  ; whitespace before '', conflict with black
@@ -9,7 +12,6 @@ ignore =
     E265,  ; block comment should start with '#', conflict with Better Comments
     W503,  ; line break before binary operator, conflict with black
 
-; COMMENT INSIDE PER-FILE-IGNORES CAUSES CRITICAL ERROR
 ; lowercase name, uppercase used to identify certain fixtures
 per-file-ignores =
     tests/*: N802, N803
