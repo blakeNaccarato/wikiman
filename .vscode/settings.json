@@ -1,4 +1,10 @@
 {
+    //* workflows
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/main.yml",
+    ],
+
+
     //* pytest
     "python.testing.pytestArgs": [
         "tests"
@@ -8,41 +14,19 @@
     "python.testing.pytestEnabled": true,
 
 
-    //* linting
-
+    //* markdownlint
     "markdownlint.config": {
         "first-line-heading": false
     },
 
-    "python.linting.banditArgs": [
-        "-c",
-        ".config/lint.bandit.yaml"
-    ],
 
-    "python.linting.flake8Args": [
-        "--config",
-        ".config/lint.ini"
-    ],
+    //* flake8
+    "python.linting.flake8Args": [],
 
-    "python.linting.mypyArgs": [
-        "--config-file",
-        ".config/lint.ini",
-    ],
 
-    "python.linting.pylintArgs": [
-        "--rcfile",
-        ".config/lint.ini"
-    ],
-
-    "restructuredtext.linter.name": "rstcheck",
-    "restructuredtext.linter.extraArgs": [
-        "--config",
-        ".config/lint.ini"
-    ],
-
-    //* workflows
-    
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/main.yml",
-    ],
-}
+    //* pylance
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.completeFunctionParens": true,
+    "python.analysis.extraPaths": ["./tests"],

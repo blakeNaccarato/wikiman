@@ -8,17 +8,6 @@ on:
     branches: [main]
 
 jobs:
-  pylint:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/setup-python@v2.2.2
-        with:
-          python-version: 3.9
-      - run: |
-          pip install -U pip setuptools wheel
-          pip install . pylint~=2.7
-      - run: pylint --rcfile ./.config/lint.ini ./src/wikiman/
   flake8:
     runs-on: ubuntu-20.04
     steps:
@@ -30,28 +19,6 @@ jobs:
           pip install -U pip setuptools wheel
           pip install . flake8~=3.9 flake8-bugbear~=21.4 pep8-naming~=0.11
       - run: flake8 --config .config/lint.ini
-  mypy:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/setup-python@v2.2.2
-        with:
-          python-version: 3.9
-      - run: |
-          pip install -U pip setuptools wheel
-          pip install . mypy==0.812
-      - run: mypy --config-file .config/lint.ini src tests
-  bandit:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/setup-python@v2.2.2
-        with:
-          python-version: 3.9
-      - run: |
-          pip install -U pip setuptools wheel
-          pip install . bandit~=1.7
-      - run: bandit -c .config/lint.bandit.yaml .
   pytest-cov:
     runs-on: ubuntu-20.04
     steps:
