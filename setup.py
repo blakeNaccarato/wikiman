@@ -1,16 +1,15 @@
-"""GitHub Wiki CLI manager."""
+"""CLI manager for GitHub Wikis."""
 
-import pathlib
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
-here = pathlib.Path().resolve()
-long_description = (here / "README.md").read_text(encoding="utf-8")
+long_description = (Path() / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="wikiman",
     version="0.3.0",
-    description=("GitHub Wiki CLI manager."),
+    description=("CLI manager for GitHub Wikis."),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/blakeNaccarato/wikiman",
