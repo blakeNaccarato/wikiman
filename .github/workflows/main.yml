@@ -24,6 +24,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install -U pip setuptools wheel
+          pip install .
       - uses: actions/setup-node@v2.1.5
         with:
           node-version: "14"
