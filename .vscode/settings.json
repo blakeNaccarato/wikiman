@@ -1,33 +1,24 @@
 {
-    //* workflows
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/main.yml",
-    ],
+  //* Extension: Pylance
+  "python.languageServer": "Pylance",
+  "python.analysis.completeFunctionParens": true,
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.autoSearchPaths": false,
 
+  //* workflows
+  "github-actions.workflows.pinned.workflows": [".github/workflows/main.yml"],
 
-    //* pytest
-    "python.testing.pytestArgs": [
-        "tests"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.pytestEnabled": true,
+  //* pytest
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.pytestEnabled": true,
 
+  //* markdownlint
+  "markdownlint.config": {
+    "first-line-heading": false
+  },
 
-    //* markdownlint
-    "markdownlint.config": {
-        "first-line-heading": false
-    },
-
-
-    //* flake8
-    "python.linting.flake8Args": ["--config", ".flake8"],
-
-
-    //* pylance
-    "python.languageServer": "Pylance",
-    "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.diagnosticMode": "workspace",
-    "python.analysis.completeFunctionParens": true,
-    "python.analysis.extraPaths": ["./tests"],
+  //* flake8
+  "python.linting.flake8Args": ["--config", ".flake8"]
 }

@@ -1,3 +1,3 @@
 """GitHub Wiki CLI manager."""
 
-from wikiman.wikiman import *
+from wikiman.wikiman import *  # type: ignore (reportWildcardImportFromLibrary)
