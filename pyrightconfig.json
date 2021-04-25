@@ -1,9 +1,5 @@
 {
     "typeCheckingMode": "basic",
-    // "extraPaths": ["tests"],
-    "executionEnvironments": [
-        {
-          "root": "tests",
-        },
-      ]
+    "include": ["src"],
+    "extraPaths": ["tests"]
 }

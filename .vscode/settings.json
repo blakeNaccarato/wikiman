@@ -1,6 +1,7 @@
 {
   //* Extension: Pylance
   "python.languageServer": "Pylance",
+  "python.analysis.autoSearchPaths": false,
 
   //* workflows
   "github-actions.workflows.pinned.workflows": [".github/workflows/main.yml"],
