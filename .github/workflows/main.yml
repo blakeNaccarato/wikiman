@@ -19,6 +19,23 @@ jobs:
           pip install -U pip setuptools wheel
           pip install . flake8~=3.9 flake8-bugbear~=21.4 pep8-naming~=0.11
       - run: flake8
+
+  pyright:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install -U pip setuptools wheel
+          pip install .
+      - uses: actions/setup-node@v2.1.5
+        with:
+          node-version: "14"
+      - run: npm install
+      - run: node_modules/.bin/pyright
+
   pytest-cov:
     runs-on: ubuntu-20.04
     steps:
