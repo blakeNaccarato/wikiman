@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: "14"
       - run: npm install
-      - run: pyright
+      - run: node_modules/.bin/pyright
 
   pytest-cov:
     runs-on: ubuntu-20.04
