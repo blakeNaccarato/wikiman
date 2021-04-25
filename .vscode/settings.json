@@ -1,9 +1,6 @@
 {
   //* Extension: Pylance
   "python.languageServer": "Pylance",
-  "python.analysis.completeFunctionParens": true,
-  "python.analysis.autoImportCompletions": true,
-  "python.analysis.autoSearchPaths": false,
 
   //* workflows
   "github-actions.workflows.pinned.workflows": [".github/workflows/main.yml"],

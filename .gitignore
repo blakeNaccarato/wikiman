@@ -1,3 +1,6 @@
+# NPM/Node.JS because of Pyright CI/CD dependency
+node_modules/
+
 # Project-specific
 /wiki
 
