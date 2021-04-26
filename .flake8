@@ -47,3 +47,6 @@ per-file-ignores =
         F401,
         ; 'from module import *' used
         F403,
+
+# darglint
+strictness = full
