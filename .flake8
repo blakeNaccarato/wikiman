@@ -35,6 +35,9 @@ per-file-ignores =
         ; Ignore darglint
         DAR,
 
+        ; Ignore assert from bandit. Not a security issue in tests
+        S101,
+
     __init__.py:
         ; So that we can un-nest modules for the end user
         ; Module imported but unused
