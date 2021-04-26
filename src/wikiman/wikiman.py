@@ -27,7 +27,7 @@ if not WIKI_ROOT.exists():
     WIKI_ROOT.mkdir()
     (WIKI_ROOT / "Home.md").touch()
 
-PAGES = list(sorted(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}")))
+PAGES = sorted(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}"))
 ROOT_PAGE = PAGES[-1]
 
 # Glyphs to place in the footer next to "Up", "Prev", and "Next" navigation links.
@@ -336,7 +336,7 @@ def get_parent(page: Path) -> Path:
         page_directory = page.parent
         parent_directory = page_directory.parent
         # If each page has its own directory, glob should get only one page
-        parent = list(sorted(parent_directory.glob(PAGE_PATTERN)))[0]
+        parent = sorted(parent_directory.glob(PAGE_PATTERN))[0]
 
     return parent
 
@@ -345,7 +345,7 @@ def get_children(page: Path) -> list[Path]:
     """Get the children of a page."""
 
     parent_directory = page.parent
-    return list(sorted(parent_directory.glob(f"*/{PAGE_PATTERN}")))
+    return sorted(parent_directory.glob(f"*/{PAGE_PATTERN}"))
 
 
 # ! -------------------------------------------------------------------------------- ! #
