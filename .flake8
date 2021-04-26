@@ -49,4 +49,4 @@ per-file-ignores =
         F403,
 
 # darglint
-strictness = full
+strictness = short
