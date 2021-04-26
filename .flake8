@@ -32,6 +32,9 @@ per-file-ignores =
         ; argument name should be lowercase
         N803,
 
+        ; Ignore darglint
+        DAR,
+
     __init__.py:
         ; So that we can un-nest modules for the end user
         ; Module imported but unused

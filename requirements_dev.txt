@@ -18,9 +18,7 @@ jupyter~=1.0
 black==20.8b1  # doesn't follow semver
 
 # lint
-flake8~=3.9
-flake8-bugbear~=21.4
-pep8-naming~=0.11
+-r requirements_lint.txt
 
 # test
 pytest~=6.2
