@@ -19,6 +19,7 @@ black==20.8b1  # doesn't follow semver
 
 # lint
 -r requirements_lint.txt
+flake8-codes~=0.1  # flake8 error code introspection
 
 # test
 pytest~=6.2
