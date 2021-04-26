@@ -23,6 +23,9 @@ ignore =
     ; Block comment should start with '#', conflict with Better Comments
     E265,
 
+    ; flake8-black handles line length considerations better
+    E501,
+
 per-file-ignores =
     
     tests/*:
@@ -32,9 +35,18 @@ per-file-ignores =
         ; argument name should be lowercase
         N803,
 
+        ; Ignore darglint
+        DAR,
+
+        ; Ignore assert from bandit. Not a security issue in tests
+        S101,
+
     __init__.py:
         ; So that we can un-nest modules for the end user
         ; Module imported but unused
         F401,
         ; 'from module import *' used
         F403,
+
+# darglint
+strictness = short
