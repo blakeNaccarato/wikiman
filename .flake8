@@ -23,6 +23,9 @@ ignore =
     ; Block comment should start with '#', conflict with Better Comments
     E265,
 
+    ; flake8-black handles line length considerations better
+    E501,
+
 per-file-ignores =
     
     tests/*:
