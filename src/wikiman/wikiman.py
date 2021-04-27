@@ -30,7 +30,7 @@ if not WIKI_ROOT.exists():
 PAGES = sorted(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}"))
 ROOT_PAGE = PAGES[-1]
 
-# Glyphs to place in the footer next to "Up", "Prev", and "Next" navigation links.
+# Glyphs to place in the footer next to navigation links.
 NAV_HEAD = ("Next: ", "Prev: ", "Up: ")
 # Heading levels indicated by number of "#" in sequence. Changes header size.
 MD_HEAD = "# "
