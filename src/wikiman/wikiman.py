@@ -249,7 +249,7 @@ def get_nearest(page: Path) -> tuple[Path, Path, Path]:
 
     siblings = get_siblings(page)
     if page == ROOT_PAGE:
-        next_page = ROOT_PAGE if len(siblings) == 0 else siblings[0]
+        next_page = siblings[0] if siblings else ROOT_PAGE
         prev_page = ROOT_PAGE
     else:
         page_position = siblings.index(page)
@@ -264,9 +264,8 @@ def get_next(page: Path, siblings: list[Path], page_position: int) -> Path:
     """Get the page just after this page."""
 
     children = get_children(page)
-    has_children = len(children) > 0
     is_last_child = page_position + 1 >= len(siblings)
-    if has_children:
+    if children:
         next_page = children[0]
     elif is_last_child:
         next_page = get_next_of_last_child(page)
