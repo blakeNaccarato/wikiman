@@ -172,14 +172,12 @@ def get_tree(page: Path) -> str:
             # Insert the working tree below the root page
             parent_links = [get_page_link(ROOT_PAGE)]
             parent_idx = 0
-            tree = insert_subtree(subtree=tree, tree=parent_links, index=parent_idx)
         else:
             # Insert the working tree below the parent page in the list of parents
             parents = get_siblings(parent)
             parent_links = [get_page_link(page) for page in parents]
             parent_idx = parents.index(parent)
-            tree = insert_subtree(subtree=tree, tree=parent_links, index=parent_idx)
-
+        tree = insert_subtree(subtree=tree, tree=parent_links, index=parent_idx)
     return MD_NEWLINE.join(tree)
 
 
@@ -209,9 +207,7 @@ def get_toc(page: Path) -> str:
         link = get_md_link(name, f"{page_url}#{token_id}")
         toc_list.append(link)
 
-    toc = MD_NEWLINE.join(toc_list)
-
-    return toc
+    return MD_NEWLINE.join(toc_list)
 
 
 def get_relative_nav(page: Path) -> str:
@@ -253,10 +249,7 @@ def get_nearest(page: Path) -> tuple[Path, Path, Path]:
 
     siblings = get_siblings(page)
     if page == ROOT_PAGE:
-        if len(siblings) == 0:
-            next_page = ROOT_PAGE
-        else:
-            next_page = siblings[0]
+        next_page = ROOT_PAGE if len(siblings) == 0 else siblings[0]
         prev_page = ROOT_PAGE
     else:
         page_position = siblings.index(page)
@@ -304,11 +297,7 @@ def get_prev(page: Path, siblings: list[Path], page_position: int) -> Path:
     """Get the page just before this page."""
 
     is_first_child = page_position == 0
-    if is_first_child:
-        prev_page = get_parent(page)
-    else:
-        prev_page = siblings[page_position - 1]
-    return prev_page
+    return get_parent(page) if is_first_child else siblings[page_position - 1]
 
 
 # * -------------------------------------------------------------------------------- * #
@@ -319,8 +308,7 @@ def get_siblings(page: Path) -> list[Path]:
     """Get a page and its siblings. The home page has its children as its siblings."""
 
     parent = get_parent(page)
-    children_of_parent = get_children(parent)
-    siblings = children_of_parent
+    siblings = get_children(parent)
     return siblings
 
 
@@ -330,12 +318,11 @@ def get_parent(page: Path) -> Path:
     if page == ROOT_PAGE:
         # Make the Home page its own parent
         parent = page
-
     else:
         # Make the page in the parent directory its parent
         page_directory = page.parent
         parent_directory = page_directory.parent
-        # If each page has its own directory, glob should get only one page
+        # If each page has its own directory, glob should get only one page, the parent
         parent = sorted(parent_directory.glob(PAGE_PATTERN))[0]
 
     return parent
