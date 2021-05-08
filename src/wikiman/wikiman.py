@@ -145,18 +145,18 @@ def get_tree(page: Path) -> str:
     # Start the tree at root or with the page and its siblings
     if page == ROOT_PAGE:
         # Tree is a list of just the root page
-        tree = [bold_md(get_page_link(ROOT_PAGE))]
+        tree = [utils.bold_md(utils.get_page_link(ROOT_PAGE))]
         page_idx = 0
     else:
         # Tree is a list of the page and its siblings
         siblings = get_siblings(page)
-        tree = [get_page_link(page) for page in siblings]
+        tree = [utils.get_page_link(page) for page in siblings]
         page_idx = siblings.index(page)
-        tree[page_idx] = bold_md(tree[page_idx])
+        tree[page_idx] = utils.bold_md(tree[page_idx])
 
     # Insert child links below the page
     children = get_children(page)
-    child_links = [get_page_link(page) for page in children]
+    child_links = [utils.get_page_link(page) for page in children]
     tree = insert_subtree(subtree=child_links, tree=tree, index=page_idx)
 
     # Only worry about parents if it's not the root page
@@ -166,12 +166,12 @@ def get_tree(page: Path) -> str:
 
         if parent == ROOT_PAGE:
             # Insert the working tree below the root page
-            parent_links = [get_page_link(ROOT_PAGE)]
+            parent_links = [utils.get_page_link(ROOT_PAGE)]
             parent_idx = 0
         else:
             # Insert the working tree below the parent page in the list of parents
             parents = get_siblings(parent)
-            parent_links = [get_page_link(page) for page in parents]
+            parent_links = [utils.get_page_link(page) for page in parents]
             parent_idx = parents.index(parent)
         tree = insert_subtree(subtree=tree, tree=parent_links, index=parent_idx)
     return MD_NEWLINE.join(tree)
@@ -190,7 +190,7 @@ def get_toc(page: Path) -> str:
     """Get the table of contents for a page. List only the most significant headings."""
 
     toc_list: list[str] = []
-    page_url = get_page_url(page)
+    page_url = utils.get_page_url(page)
 
     with open(page) as file:
         content = file.read()
@@ -200,7 +200,7 @@ def get_toc(page: Path) -> str:
     for token in md.toc_tokens:  # type: ignore  # pylint: disable=no-member
         token_id = token["id"]
         name = token["name"]
-        link = get_md_link(name, f"{page_url}#{token_id}")
+        link = utils.get_md_link(name, f"{page_url}#{token_id}")
         toc_list.append(link)
 
     return MD_NEWLINE.join(toc_list)
@@ -216,21 +216,21 @@ def get_relative_nav(page: Path) -> str:
     if next_page == ROOT_PAGE:
         next_link = None
     else:
-        next_link = get_page_link(next_page)
+        next_link = utils.get_page_link(next_page)
         relative_nav.append(NAV_HEAD[0] + next_link)
 
     # Get previous link for any page except the home page
     if page == ROOT_PAGE:
         prev_link = None
     else:
-        prev_link = get_page_link(prev_page)
+        prev_link = utils.get_page_link(prev_page)
         relative_nav.append(NAV_HEAD[1] + prev_link)
 
     # Get parent link for any page except for Home, or the first page in a section
     if page == ROOT_PAGE or prev_page == parent:
         parent_link = None
     else:
-        parent_link = get_page_link(parent)
+        parent_link = utils.get_page_link(parent)
         relative_nav.append(NAV_HEAD[2] + parent_link)
 
     return MD_TAB.join(relative_nav)
@@ -357,77 +357,21 @@ def init_page(name: str, under: Path, position: int) -> Path:
         raise ValueError(message)
 
     destination_dir = under.parent
-    page_dir = destination_dir / get_dir_name(name, position)
-    page = page_dir / get_md_name(name)
+    page_dir = destination_dir / utils.get_dir_name(name, position)
+    page = page_dir / utils.get_md_name(name)
     return page
 
 
 def find_page(name: str) -> Path:
     """Find an existing page."""
 
-    page_names = [get_dashed_name(page.stem).lower() for page in PAGES]
+    page_names = [utils.get_dashed_name(page.stem).lower() for page in PAGES]
 
     try:
-        page_location = page_names.index(get_dashed_name(name).lower())
+        page_location = page_names.index(utils.get_dashed_name(name).lower())
     except ValueError as exception:
         raise ValueError("Page not found.") from exception
     return PAGES[page_location]
-
-
-# * -------------------------------------------------------------------------------- * #
-# * MARKDOWN
-
-
-def bold_md(text: str) -> str:
-    """Make text bold in Markdown format."""
-
-    return utils.bold_md(text)
-
-
-def get_page_link(page: Path) -> str:
-    """Get a link to a page in Markdown format."""
-
-    return utils.get_page_link(page)
-
-
-def get_md_link(text: str, link: str) -> str:
-    """Get a link in Markdown format."""
-
-    return utils.get_md_link(text, link)
-
-
-def get_page_url(page: Path) -> str:
-    """Get the URL for a page."""
-
-    return utils.get_page_url(page)
-
-
-# * -------------------------------------------------------------------------------- * #
-# * STRINGS
-
-
-def get_dir_name(name: str, index: int) -> str:
-    """Get the name for the directory containing a page in the file structure."""
-
-    return utils.get_dir_name(name, index)
-
-
-def get_md_name(name: str) -> str:
-    """Get the name for a `*.md` page in the file structure."""
-
-    return utils.get_md_name(name)
-
-
-def get_human_name(name: str) -> str:
-    """Get a human-readable name."""
-
-    return utils.get_human_name(name)
-
-
-def get_dashed_name(name: str) -> str:
-    """Get a dashed name."""
-
-    return utils.get_dashed_name(name)
 
 
 # ! -------------------------------------------------------------------------------- ! #

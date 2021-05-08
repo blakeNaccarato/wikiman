@@ -1,4 +1,3 @@
-import wikiman as wm
 from pytest import mark as m
 from wikiman import utils
 
@@ -19,7 +18,7 @@ from test_wikiman import PAGES
     ],
 )
 def test_get_dashed_name(test_id, args, expected):
-    result = wm.get_dashed_name(*args)
+    result = utils.get_dashed_name(*args)
     assert result == expected
 
 
@@ -35,7 +34,7 @@ def test_get_dashed_name(test_id, args, expected):
     ],
 )
 def test_get_human_name(test_id, args, expected):
-    result = wm.get_human_name(*args)
+    result = utils.get_human_name(*args)
     assert result == expected
 
 
@@ -47,7 +46,7 @@ def test_get_human_name(test_id, args, expected):
     "test_id, args, expected", [("base", ("Name of a page",), "Name-of-a-page.md")]
 )
 def test_get_md_name(test_id, args, expected):
-    result = wm.get_md_name(*args)
+    result = utils.get_md_name(*args)
     assert result == expected
 
 
@@ -63,7 +62,7 @@ def test_get_md_name(test_id, args, expected):
     ],
 )
 def test_get_dir_name(test_id, args, expected):
-    result = wm.get_dir_name(*args)
+    result = utils.get_dir_name(*args)
     assert result == expected
 
 
@@ -82,7 +81,7 @@ def test_get_dir_name(test_id, args, expected):
     [("base", (PAGES["home"],), utils.GIT_REMOTE_URL + "Home")],
 )
 def test_get_page_url(test_id, args, expected):
-    result = wm.get_page_url(*args)
+    result = utils.get_page_url(*args)
     assert result == expected
 
 
@@ -92,7 +91,7 @@ def test_get_page_url(test_id, args, expected):
 
 @m.parametrize("test_id, args, expected", [("base", ("text", "link"), "[text](link)")])
 def test_get_md_link(test_id, args, expected):
-    result = wm.get_md_link(*args)
+    result = utils.get_md_link(*args)
     assert result == expected
 
 
@@ -105,7 +104,7 @@ def test_get_md_link(test_id, args, expected):
     [("base", (PAGES["home"],), f"[Home]({utils.GIT_REMOTE_URL}Home)")],
 )
 def test_get_page_link(test_id, args, expected):
-    result = wm.get_page_link(*args)
+    result = utils.get_page_link(*args)
     assert result == expected
 
 
@@ -115,5 +114,5 @@ def test_get_page_link(test_id, args, expected):
 
 @m.parametrize("test_id, args, expected", [("base", ("text",), "**text**")])
 def test_bold_md(test_id, args, expected):
-    result = wm.bold_md(*args)
+    result = utils.bold_md(*args)
     assert result == expected
