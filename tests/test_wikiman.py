@@ -1,6 +1,7 @@
 import pytest
 import wikiman as wm
 from pytest import mark as m
+from wikiman import utils
 
 from conftest import WIKI_ROOT
 
@@ -113,12 +114,13 @@ def test_get_dir_name(test_id, args, expected):
 # * ---------------------------------------- * #
 # * get_page_url
 
-# We use `wm.GIT_REMOTE_URL` because we don't care about that part. That will resolve
-# the wiki repo properly when invoked by end-users. Sure, it doesn't give us a "proper"
-# wiki link in the test suite, since we're not invoking this from a "proper" wiki repo.
-# And we can't pytest.fixtures.monkeypatch a module-level variable, either.
+# We use `utils.GIT_REMOTE_URL` because we don't care about that part. That will
+# resolve the wiki repo properly when invoked by end-users. Sure, it doesn't give us a
+# "proper" wiki link in the test suite, since we're not invoking this from a "proper"
+# wiki repo. And we can't pytest.fixtures.monkeypatch a module-level variable, either.
 @m.parametrize(
-    "test_id, args, expected", [("base", (PAGES["home"],), wm.GIT_REMOTE_URL + "Home")]
+    "test_id, args, expected",
+    [("base", (PAGES["home"],), utils.GIT_REMOTE_URL + "Home")],
 )
 def test_get_page_url(test_id, args, expected):
     result = wm.get_page_url(*args)
@@ -141,7 +143,7 @@ def test_get_md_link(test_id, args, expected):
 
 @m.parametrize(
     "test_id, args, expected",
-    [("base", (PAGES["home"],), f"[Home]({wm.GIT_REMOTE_URL}Home)")],
+    [("base", (PAGES["home"],), f"[Home]({utils.GIT_REMOTE_URL}Home)")],
 )
 def test_get_page_link(test_id, args, expected):
     result = wm.get_page_link(*args)

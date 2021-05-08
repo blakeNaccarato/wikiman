@@ -5,8 +5,9 @@ from pathlib import Path
 from typing import Optional
 
 import fire
-import git
 from markdown import Markdown
+
+from wikiman import utils
 
 # Patterns specific to GitHub Wiki
 PAGE_PATTERN = "[!_]*.md"
@@ -16,9 +17,6 @@ ILLEGAL_CHARACTERS = re.compile(r'[\\/:*?"<>|\a\b\f\n\r\t\v]')
 
 # The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
 ROOT_NAME = "wiki"
-GIT_REMOTE_URL = (
-    str(git.Repo().remotes.origin.url.removesuffix(".wiki.git")) + "/wiki" + "/"
-)
 
 # Get pages to be used throughout the module
 WIKI_ROOT = Path(ROOT_NAME)
@@ -38,8 +36,6 @@ MD_HEAD = "# "
 MD_NEWLINE = "  \n"
 # Workaround. Markdown converts sequential whitespace (other than \n) to single spaces.
 MD_TAB = "&nbsp;" * 4
-# Width of the number to prepend to directories
-WIDTH = 2
 
 
 def main() -> None:
@@ -385,25 +381,25 @@ def find_page(name: str) -> Path:
 def bold_md(text: str) -> str:
     """Make text bold in Markdown format."""
 
-    return f"**{text}**"
+    return utils.bold_md(text)
 
 
 def get_page_link(page: Path) -> str:
     """Get a link to a page in Markdown format."""
 
-    return get_md_link(get_human_name(page.stem), get_page_url(page))
+    return utils.get_page_link(page)
 
 
 def get_md_link(text: str, link: str) -> str:
     """Get a link in Markdown format."""
 
-    return f"[{text}]({link})"
+    return utils.get_md_link(text, link)
 
 
 def get_page_url(page: Path) -> str:
     """Get the URL for a page."""
 
-    return GIT_REMOTE_URL + page.stem
+    return utils.get_page_url(page)
 
 
 # * -------------------------------------------------------------------------------- * #
@@ -413,25 +409,25 @@ def get_page_url(page: Path) -> str:
 def get_dir_name(name: str, index: int) -> str:
     """Get the name for the directory containing a page in the file structure."""
 
-    return str(index).zfill(WIDTH) + "_" + get_dashed_name(name)
+    return utils.get_dir_name(name, index)
 
 
 def get_md_name(name: str) -> str:
     """Get the name for a `*.md` page in the file structure."""
 
-    return get_dashed_name(name) + ".md"
+    return utils.get_md_name(name)
 
 
 def get_human_name(name: str) -> str:
     """Get a human-readable name."""
 
-    return name.replace("-", " ")
+    return utils.get_human_name(name)
 
 
 def get_dashed_name(name: str) -> str:
     """Get a dashed name."""
 
-    return name.replace(" ", "-")
+    return utils.get_dashed_name(name)
 
 
 # ! -------------------------------------------------------------------------------- ! #
