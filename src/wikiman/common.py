@@ -15,6 +15,8 @@ if not WIKI_ROOT.exists():
     WIKI_ROOT.mkdir()
     (WIKI_ROOT / "Home.md").touch()
 
-
 PAGES = sorted(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}"))
 ROOT_PAGE = PAGES[-1]
+
+# Two newlines signifies a paragraph break in Markdown.
+MD_NEWLINE = "  \n"

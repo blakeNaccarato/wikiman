@@ -6,17 +6,7 @@ from typing import Optional
 import fire
 from markdown import Markdown
 
-from wikiman import utils
-from wikiman import common
-
-# Glyphs to place in the footer next to navigation links.
-NAV_HEAD = ("Next: ", "Prev: ", "Up: ")
-# Heading levels indicated by number of "#" in sequence. Changes header size.
-MD_HEAD = "# "
-# Two newlines signifies a paragraph break in Markdown.
-MD_NEWLINE = "  \n"
-# Workaround. Markdown converts sequential whitespace (other than \n) to single spaces.
-MD_TAB = "&nbsp;" * 4
+from wikiman import common, utils
 
 
 def main() -> None:
@@ -32,13 +22,16 @@ def main() -> None:
 def cli_update_navigation() -> None:
     """Update sidebars and footers."""
 
+    # Heading levels indicated by number of "#" in sequence. Changes header size.
+    md_head = "# "
+
     for page in common.PAGES:
 
         # Write the tree of nearby pages and the TOC for this page into the sidebar
         tree = get_tree(page)
         toc = get_toc(page)
-        sidebar_text = MD_NEWLINE.join(
-            [f"{MD_HEAD}Directory", tree, f"{MD_HEAD}Contents", toc]
+        sidebar_text = common.MD_NEWLINE.join(
+            [f"{md_head}Directory", tree, f"{md_head}Contents", toc]
         )
         sidebar = page.parent / common.SIDEBAR_FILENAME
         with open(sidebar, "w") as file:
@@ -119,6 +112,9 @@ def create_page(page: Path) -> None:
 # * -------------------------------------------------------------------------------- * #
 # * NAVIGATION
 
+# Workaround. Markdown converts sequential whitespace (other than \n) to single spaces.
+MD_TAB = "&nbsp;" * 4
+
 
 def get_tree(page: Path) -> str:
     """Get Markdown links for the tree of pages near a page."""
@@ -155,7 +151,7 @@ def get_tree(page: Path) -> str:
             parent_links = [utils.get_page_link(page) for page in parents]
             parent_idx = parents.index(parent)
         tree = insert_subtree(subtree=tree, tree=parent_links, index=parent_idx)
-    return MD_NEWLINE.join(tree)
+    return common.MD_NEWLINE.join(tree)
 
 
 def insert_subtree(subtree: list[str], tree: list[str], index: int) -> list[str]:
@@ -184,11 +180,13 @@ def get_toc(page: Path) -> str:
         link = utils.get_md_link(name, f"{page_url}#{token_id}")
         toc_list.append(link)
 
-    return MD_NEWLINE.join(toc_list)
+    return common.MD_NEWLINE.join(toc_list)
 
 
 def get_relative_nav(page: Path) -> str:
     """Get the parent, previous, and next Markdown links."""
+
+    nav_head = ("Next: ", "Prev: ", "Up: ")
 
     (next_page, prev_page, parent) = get_nearest(page)
     relative_nav: list[str] = []
@@ -198,21 +196,21 @@ def get_relative_nav(page: Path) -> str:
         next_link = None
     else:
         next_link = utils.get_page_link(next_page)
-        relative_nav.append(NAV_HEAD[0] + next_link)
+        relative_nav.append(nav_head[0] + next_link)
 
     # Get previous link for any page except the home page
     if page == common.ROOT_PAGE:
         prev_link = None
     else:
         prev_link = utils.get_page_link(prev_page)
-        relative_nav.append(NAV_HEAD[1] + prev_link)
+        relative_nav.append(nav_head[1] + prev_link)
 
     # Get parent link for any page except for Home, or the first page in a section
     if page == common.ROOT_PAGE or prev_page == parent:
         parent_link = None
     else:
         parent_link = utils.get_page_link(parent)
-        relative_nav.append(NAV_HEAD[2] + parent_link)
+        relative_nav.append(nav_head[2] + parent_link)
 
     return MD_TAB.join(relative_nav)
 
