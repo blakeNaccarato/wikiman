@@ -1,7 +1,95 @@
+import pytest
 from pytest import mark as m
 from wikiman import utils
 
+from conftest import WIKI_ROOT
 from test_wikiman import PAGES
+
+# ! -------------------------------------------------------------------------------- ! #
+# ! UTILITIES
+
+# * -------------------------------------------------------------------------------- * #
+# * PAGES
+
+# * ---------------------------------------- * #
+# * find_page
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        ("home", ("Home",), PAGES["home"]),
+        ("lowercase", ("impeach-vermilion-vacuum",), PAGES["impeach-vermilion-vacuum"]),
+        ("uppercase", ("Impeach-Vermilion-Vacuum",), PAGES["impeach-vermilion-vacuum"]),
+        ("subpage", ("measure-transient-respite",), PAGES["measure-transient-respite"]),
+    ],
+)
+def test_find_page(test_id, args, expected, RESTORE_WIKI):
+    result = utils.find_page(*args)
+    assert result == expected
+
+
+@m.parametrize("test_id, args", [("page_not_found", ("Page-That-Doesn't-Exist",))])
+def test_find_page_raises(test_id, args, RESTORE_WIKI):
+    with pytest.raises(ValueError):
+        utils.find_page(*args)
+
+
+# * ---------------------------------------- * #
+# * init_page
+
+
+INIT_PAGE_PARAMS = [
+    # (
+    #     <test_id>
+    #     <args>
+    #     <expected>
+    # ),
+    (
+        "base",
+        ("test-page-name", PAGES["home"], 0),
+        WIKI_ROOT / "00_test-page-name/test-page-name.md",
+    )
+]
+
+
+@m.parametrize("test_id, args, expected", INIT_PAGE_PARAMS)
+def test_init_page(test_id, args, expected):
+    result = utils.init_page(*args)
+    assert result == expected
+
+
+@m.parametrize(
+    "test_id, args",
+    [
+        ("backslash", (r"Backs\lash", PAGES["home"], 0)),
+        ("escape_sequences", ("E\as\bc\fa\np\re\ts\v", PAGES["home"], 0)),
+        ("all_others", ('/:*?"<>|', PAGES["home"], 0)),
+    ],
+)
+def test_init_page_raises(test_id, args):
+    with pytest.raises(ValueError):
+        utils.init_page(*args)
+
+
+# * ---------------------------------------- * #
+# * get_page_position
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        ("home", (PAGES["home"],), 0),
+        (0, (PAGES["impeach-vermilion-vacuum"],), 0),
+        (1, (PAGES["measure-transient-respite"],), 0),
+        (2, (PAGES["middle-pasture-floating"],), 2),
+        (3, (PAGES["medium-establish-vital"],), 1),
+    ],
+)
+def test_get_page_position(test_id, args, expected):
+    result = utils.get_page_position(*args)
+    assert result == expected
+
 
 # * -------------------------------------------------------------------------------- * #
 # * STRINGS

@@ -1,6 +1,5 @@
 """Generate wiki navigation links in the sidebar and footer of each page."""
 
-import re
 from pathlib import Path
 from typing import Optional
 
@@ -8,25 +7,7 @@ import fire
 from markdown import Markdown
 
 from wikiman import utils
-
-# Patterns specific to GitHub Wiki
-PAGE_PATTERN = "[!_]*.md"
-SIDEBAR_FILENAME = "_Sidebar.md"
-FOOTER_FILENAME = "_Footer.md"
-ILLEGAL_CHARACTERS = re.compile(r'[\\/:*?"<>|\a\b\f\n\r\t\v]')
-
-# The origin repo should be a GitHub wiki, and pages should be in the "wiki" subfolder
-ROOT_NAME = "wiki"
-
-# Get pages to be used throughout the module
-WIKI_ROOT = Path(ROOT_NAME)
-
-if not WIKI_ROOT.exists():
-    WIKI_ROOT.mkdir()
-    (WIKI_ROOT / "Home.md").touch()
-
-PAGES = sorted(WIKI_ROOT.glob(f"**/{PAGE_PATTERN}"))
-ROOT_PAGE = PAGES[-1]
+from wikiman import common
 
 # Glyphs to place in the footer next to navigation links.
 NAV_HEAD = ("Next: ", "Prev: ", "Up: ")
@@ -51,7 +32,7 @@ def main() -> None:
 def cli_update_navigation() -> None:
     """Update sidebars and footers."""
 
-    for page in PAGES:
+    for page in common.PAGES:
 
         # Write the tree of nearby pages and the TOC for this page into the sidebar
         tree = get_tree(page)
@@ -59,13 +40,13 @@ def cli_update_navigation() -> None:
         sidebar_text = MD_NEWLINE.join(
             [f"{MD_HEAD}Directory", tree, f"{MD_HEAD}Contents", toc]
         )
-        sidebar = page.parent / SIDEBAR_FILENAME
+        sidebar = page.parent / common.SIDEBAR_FILENAME
         with open(sidebar, "w") as file:
             file.write(sidebar_text)
 
         # Write relative navigation links into the footer
         nav = get_relative_nav(page)
-        footer = page.parent / FOOTER_FILENAME
+        footer = page.parent / common.FOOTER_FILENAME
         with open(footer, "w") as file:
             file.write(nav)
 
@@ -73,7 +54,7 @@ def cli_update_navigation() -> None:
 def cli_add_page(name: str, under: str, position: Optional[int] = None) -> None:
     """Add a new page under a page, optionally specifying position."""
 
-    parent = find_page(under)
+    parent = utils.find_page(under)
 
     if position is None:
         position = len(get_children(parent))
@@ -84,10 +65,10 @@ def cli_add_page(name: str, under: str, position: Optional[int] = None) -> None:
 
         # Shift child directory numbering to accomdate the new page
         for child in children_after:
-            new_child_position = get_page_position(child) + 1
+            new_child_position = utils.get_page_position(child) + 1
             move_page(child, parent, new_child_position)
 
-    page = init_page(name, parent, position)
+    page = utils.init_page(name, parent, position)
     create_page(page)
 
 
@@ -113,7 +94,7 @@ def cli_add_page(name: str, under: str, position: Optional[int] = None) -> None:
 def move_page(page: Path, under: Path, position: int) -> None:
     """Change the position of a page."""
 
-    new_page = init_page(page.stem, under, position)
+    new_page = utils.init_page(page.stem, under, position)
     new_page.parent.mkdir()
     page.rename(new_page)
 
@@ -123,7 +104,7 @@ def remove_page(page: Path) -> None:
 
     page_dir = page.parent
     page.unlink()
-    for file in [SIDEBAR_FILENAME, FOOTER_FILENAME]:
+    for file in [common.SIDEBAR_FILENAME, common.FOOTER_FILENAME]:
         (page_dir / file).unlink(missing_ok=True)
     page_dir.rmdir()
 
@@ -143,9 +124,9 @@ def get_tree(page: Path) -> str:
     """Get Markdown links for the tree of pages near a page."""
 
     # Start the tree at root or with the page and its siblings
-    if page == ROOT_PAGE:
+    if page == common.ROOT_PAGE:
         # Tree is a list of just the root page
-        tree = [utils.bold_md(utils.get_page_link(ROOT_PAGE))]
+        tree = [utils.bold_md(utils.get_page_link(common.ROOT_PAGE))]
         page_idx = 0
     else:
         # Tree is a list of the page and its siblings
@@ -160,13 +141,13 @@ def get_tree(page: Path) -> str:
     tree = insert_subtree(subtree=child_links, tree=tree, index=page_idx)
 
     # Only worry about parents if it's not the root page
-    if page != ROOT_PAGE:
+    if page != common.ROOT_PAGE:
 
         parent = get_parent(page)
 
-        if parent == ROOT_PAGE:
+        if parent == common.ROOT_PAGE:
             # Insert the working tree below the root page
-            parent_links = [utils.get_page_link(ROOT_PAGE)]
+            parent_links = [utils.get_page_link(common.ROOT_PAGE)]
             parent_idx = 0
         else:
             # Insert the working tree below the parent page in the list of parents
@@ -213,21 +194,21 @@ def get_relative_nav(page: Path) -> str:
     relative_nav: list[str] = []
 
     # Get next link for any page except the last page in the entire wiki
-    if next_page == ROOT_PAGE:
+    if next_page == common.ROOT_PAGE:
         next_link = None
     else:
         next_link = utils.get_page_link(next_page)
         relative_nav.append(NAV_HEAD[0] + next_link)
 
     # Get previous link for any page except the home page
-    if page == ROOT_PAGE:
+    if page == common.ROOT_PAGE:
         prev_link = None
     else:
         prev_link = utils.get_page_link(prev_page)
         relative_nav.append(NAV_HEAD[1] + prev_link)
 
     # Get parent link for any page except for Home, or the first page in a section
-    if page == ROOT_PAGE or prev_page == parent:
+    if page == common.ROOT_PAGE or prev_page == parent:
         parent_link = None
     else:
         parent_link = utils.get_page_link(parent)
@@ -244,9 +225,9 @@ def get_nearest(page: Path) -> tuple[Path, Path, Path]:
     """Get the pages nearest to a page."""
 
     siblings = get_siblings(page)
-    if page == ROOT_PAGE:
-        next_page = siblings[0] if siblings else ROOT_PAGE
-        prev_page = ROOT_PAGE
+    if page == common.ROOT_PAGE:
+        next_page = siblings[0] if siblings else common.ROOT_PAGE
+        prev_page = common.ROOT_PAGE
     else:
         page_position = siblings.index(page)
         next_page = get_next(page, siblings, page_position)
@@ -274,9 +255,9 @@ def get_next_of_last_child(page: Path) -> Path:
     """Get the next page of a last child."""
 
     parent = get_parent(page)
-    is_last_page = parent == ROOT_PAGE
+    is_last_page = parent == common.ROOT_PAGE
     if is_last_page:
-        next_page = ROOT_PAGE
+        next_page = common.ROOT_PAGE
     else:
         siblings_of_parent = get_siblings(parent)
         next_page_position = siblings_of_parent.index(parent) + 1
@@ -310,7 +291,7 @@ def get_siblings(page: Path) -> list[Path]:
 def get_parent(page: Path) -> Path:
     """Get the parent of a page."""
 
-    if page == ROOT_PAGE:
+    if page == common.ROOT_PAGE:
         # Make the Home page its own parent
         parent = page
     else:
@@ -318,7 +299,7 @@ def get_parent(page: Path) -> Path:
         page_directory = page.parent
         parent_directory = page_directory.parent
         # If each page has its own directory, glob should get only one page, the parent
-        parent = sorted(parent_directory.glob(PAGE_PATTERN))[0]
+        parent = sorted(parent_directory.glob(common.PAGE_PATTERN))[0]
 
     return parent
 
@@ -327,51 +308,7 @@ def get_children(page: Path) -> list[Path]:
     """Get the children of a page."""
 
     parent_directory = page.parent
-    return sorted(parent_directory.glob(f"*/{PAGE_PATTERN}"))
-
-
-# ! -------------------------------------------------------------------------------- ! #
-# ! UTILITIES
-
-
-# * -------------------------------------------------------------------------------- * #
-# * PAGE
-
-
-def get_page_position(page: Path) -> int:
-    """Get the position of a page."""
-
-    if page == ROOT_PAGE:
-        position = 0
-    else:
-        page_dir = page.parent
-        position = int(page_dir.name.split("_")[0])
-    return position
-
-
-def init_page(name: str, under: Path, position: int) -> Path:
-    """Initialize a page in the wiki at the specified position."""
-
-    if ILLEGAL_CHARACTERS.search(name):
-        message = 'Name cannot contain escape sequences or \\ / : * ? " < > |'
-        raise ValueError(message)
-
-    destination_dir = under.parent
-    page_dir = destination_dir / utils.get_dir_name(name, position)
-    page = page_dir / utils.get_md_name(name)
-    return page
-
-
-def find_page(name: str) -> Path:
-    """Find an existing page."""
-
-    page_names = [utils.get_dashed_name(page.stem).lower() for page in PAGES]
-
-    try:
-        page_location = page_names.index(utils.get_dashed_name(name).lower())
-    except ValueError as exception:
-        raise ValueError("Page not found.") from exception
-    return PAGES[page_location]
+    return sorted(parent_directory.glob(f"*/{common.PAGE_PATTERN}"))
 
 
 # ! -------------------------------------------------------------------------------- ! #

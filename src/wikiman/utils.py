@@ -1,13 +1,58 @@
 """Utility functions."""
 
+import re
 from pathlib import Path
 
 import git
+
+from wikiman import common
+
+ILLEGAL_CHARACTERS = re.compile(r'[\\/:*?"<>|\a\b\f\n\r\t\v]')
 
 WIDTH = 2  # Width of the number to prepend to directories
 GIT_REMOTE_URL = (
     str(git.Repo().remotes.origin.url.removesuffix(".wiki.git")) + "/wiki" + "/"
 )
+
+# * -------------------------------------------------------------------------------- * #
+# * PAGE
+
+
+def get_page_position(page: Path) -> int:
+    """Get the position of a page."""
+
+    if page == common.ROOT_PAGE:
+        position = 0
+    else:
+        page_dir = page.parent
+        position = int(page_dir.name.split("_")[0])
+    return position
+
+
+def init_page(name: str, under: Path, position: int) -> Path:
+    """Initialize a page in the wiki at the specified position."""
+
+    if ILLEGAL_CHARACTERS.search(name):
+        message = 'Name cannot contain escape sequences or \\ / : * ? " < > |'
+        raise ValueError(message)
+
+    destination_dir = under.parent
+    page_dir = destination_dir / get_dir_name(name, position)
+    page = page_dir / get_md_name(name)
+    return page
+
+
+def find_page(name: str) -> Path:
+    """Find an existing page."""
+
+    page_names = [get_dashed_name(page.stem).lower() for page in common.PAGES]
+
+    try:
+        page_location = page_names.index(get_dashed_name(name).lower())
+    except ValueError as exception:
+        raise ValueError("Page not found.") from exception
+    return common.PAGES[page_location]
+
 
 # * -------------------------------------------------------------------------------- * #
 # * MARKDOWN
