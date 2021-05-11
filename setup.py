@@ -19,6 +19,6 @@ setup(
     python_requires=">=3.9",
     install_requires=["fire~=0.4", "markdown~=3.3", "GitPython~=3.1"],
     entry_points={
-        "console_scripts": ["wikiman=wikiman.wikiman:main"],
+        "console_scripts": ["wikiman=wikiman.cli:main"],
     },
 )

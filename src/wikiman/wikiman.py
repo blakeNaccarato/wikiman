@@ -1,41 +1,10 @@
 """Generate wiki navigation links in the sidebar and footer of each page."""
 
 from pathlib import Path
-from typing import Optional
 
-import fire
 from markdown import Markdown
 
-from wikiman import cli, common, utils
-
-
-def main() -> None:
-    """The command-line interface. Runs if file is invoked directly, or from prompt."""
-
-    fire.Fire({"up": cli_update_navigation, "add": cli_add_page})
-
-
-# ! -------------------------------------------------------------------------------- ! #
-# ! CLI
-
-
-def cli_update_navigation() -> None:
-    """Update sidebars and footers."""
-
-    cli.cli_update_navigation()
-
-
-def cli_add_page(name: str, under: str, position: Optional[int] = None) -> None:
-    """Add a new page under a page, optionally specifying position."""
-
-    cli.cli_add_page(name, under, position)
-
-
-# def cli_move_page():  # name: str, under: str, position: Optional[int] = None):
-#     """Move a page under a page, optionally specifying position."""
-
-#     pass
-
+from wikiman import common, utils
 
 # ! -------------------------------------------------------------------------------- ! #
 # ! API
@@ -273,10 +242,3 @@ def get_children(page: Path) -> list[Path]:
 
     parent_directory = page.parent
     return sorted(parent_directory.glob(f"*/{common.PAGE_PATTERN}"))
-
-
-# ! -------------------------------------------------------------------------------- ! #
-# ! RUN MAIN
-
-if __name__ == "__main__":
-    main()

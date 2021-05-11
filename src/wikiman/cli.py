@@ -1,10 +1,18 @@
 from typing import Optional
 
-from wikiman import wikiman as wm
+import fire
+
 from wikiman import common, utils
+from wikiman import wikiman as wm
 
 
-def cli_update_navigation() -> None:
+def main() -> None:
+    """The command-line interface. Runs if file is invoked directly, or from prompt."""
+
+    fire.Fire({"up": update_navigation, "add": add_page})
+
+
+def update_navigation() -> None:
     """Update sidebars and footers."""
 
     # Heading levels indicated by number of "#" in sequence. Changes header size.
@@ -29,7 +37,7 @@ def cli_update_navigation() -> None:
             file.write(nav)
 
 
-def cli_add_page(name: str, under: str, position: Optional[int] = None) -> None:
+def add_page(name: str, under: str, position: Optional[int] = None) -> None:
     """Add a new page under a page, optionally specifying position."""
 
     parent = utils.find_page(under)
@@ -54,3 +62,9 @@ def cli_add_page(name: str, under: str, position: Optional[int] = None) -> None:
 #     """Move a page under a page, optionally specifying position."""
 
 #     pass
+
+# ! -------------------------------------------------------------------------------- ! #
+# ! RUN MAIN
+
+if __name__ == "__main__":
+    main()
