@@ -405,7 +405,3 @@ def test_get_nearest(test_id, args, expected):
 #     result = dircmp(WIKI_ROOT, EXPECTED_WIKI)
 
 #     assert not result.diff_files
-
-
-# ! -------------------------------------------------------------------------------- ! #
-# ! CLI
