@@ -123,7 +123,7 @@ def get_relative_nav(page: Path) -> str:
 
     nav_head = ("Next: ", "Prev: ", "Up: ")
 
-    (next_page, prev_page, parent) = get_nearest(page)
+    (next_page, prev_page, parent) = utils.get_nearest(page)
     relative_nav: list[str] = []
 
     # Get next link for any page except the last page in the entire wiki
@@ -148,23 +148,3 @@ def get_relative_nav(page: Path) -> str:
         relative_nav.append(nav_head[2] + parent_link)
 
     return MD_TAB.join(relative_nav)
-
-
-# * -------------------------------------------------------------------------------- * #
-# * GET NEAREST
-
-
-def get_nearest(page: Path) -> tuple[Path, Path, Path]:
-    """Get the pages nearest to a page."""
-
-    siblings = family.get_siblings(page)
-    if page == common.ROOT_PAGE:
-        next_page = siblings[0] if siblings else common.ROOT_PAGE
-        prev_page = common.ROOT_PAGE
-    else:
-        page_position = siblings.index(page)
-        next_page = utils.get_next(page, siblings, page_position)
-        prev_page = utils.get_prev(page, siblings, page_position)
-
-    parent = family.get_parent(page)
-    return next_page, prev_page, parent

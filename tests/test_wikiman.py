@@ -1,6 +1,3 @@
-import wikiman as wm
-from pytest import mark as m
-
 from conftest import WIKI_ROOT
 
 # We hardcode our expected pages rather than pulling from the module under test. This
@@ -128,41 +125,6 @@ PAGES = {str(key).lower(): value / (key + ".md") for key, value in PAGE_PATHS.it
 
 # ! -------------------------------------------------------------------------------- ! #
 # ! API
-
-
-# * ---------------------------------------- * #
-# * get_nearest
-
-
-@m.parametrize(
-    "test_id, args, expected",
-    [
-        (
-            "home",
-            (PAGES["home"],),
-            (PAGES["impeach-vermilion-vacuum"], PAGES["home"], PAGES["home"]),
-        ),
-        # (
-        #     #? Can't test this path without a lot of fixturing
-        #     "home_is_only_page",
-        #     (PAGES["home"],),
-        #     (PAGES["home"], PAGES["home"], PAGES["home"]),
-        # ),
-        (
-            "else",
-            (PAGES["medium-establish-vital"],),
-            (
-                PAGES["reaction-diagonal-patter"],
-                PAGES["automatic-party-merit"],
-                PAGES["equity-substitute-huddle"],
-            ),
-        ),
-    ],
-)
-def test_get_nearest(test_id, args, expected):
-    result = wm.get_nearest(*args)
-    assert result == expected
-
 
 # * -------------------------------------------------------------------------------- * #
 # * NAVIGATION

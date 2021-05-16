@@ -8,6 +8,42 @@ from test_wikiman import PAGES
 # ! -------------------------------------------------------------------------------- ! #
 # ! UTILITIES
 
+# * -------------------------------------------------------------------------------- * #
+# * GET NEAREST
+
+# * ---------------------------------------- * #
+# * get_nearest
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            "home",
+            (PAGES["home"],),
+            (PAGES["impeach-vermilion-vacuum"], PAGES["home"], PAGES["home"]),
+        ),
+        # (
+        #     #? Can't test this path without a lot of fixturing
+        #     "home_is_only_page",
+        #     (PAGES["home"],),
+        #     (PAGES["home"], PAGES["home"], PAGES["home"]),
+        # ),
+        (
+            "else",
+            (PAGES["medium-establish-vital"],),
+            (
+                PAGES["reaction-diagonal-patter"],
+                PAGES["automatic-party-merit"],
+                PAGES["equity-substitute-huddle"],
+            ),
+        ),
+    ],
+)
+def test_get_nearest(test_id, args, expected):
+    result = utils.get_nearest(*args)
+    assert result == expected
+
 
 # * ---------------------------------------- * #
 # * get_prev
