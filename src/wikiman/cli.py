@@ -43,10 +43,10 @@ def add_page(name: str, under: str, position: Optional[int] = None) -> None:
     parent = utils.find_page(under)
 
     if position is None:
-        position = len(wm.get_children(parent))
+        position = len(wm.family.get_children(parent))
     else:
         # Get the children that will come after the new page
-        children = wm.get_children(parent)
+        children = wm.family.get_children(parent)
         children_after = children[position:]
 
         # Shift child directory numbering to accomdate the new page
