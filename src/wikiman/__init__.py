@@ -1,3 +1,2 @@
-"""GitHub Wiki CLI manager."""
-
-from wikiman.wikiman import *  # type: ignore (reportWildcardImportFromLibrary)
+# type: ignore (Pylance: Cycle detected in import chain)
+from wikiman.wikiman import *  # type: ignore Pylance(reportWildcardImportFromLibrary)
