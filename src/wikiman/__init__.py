@@ -1,2 +1,2 @@
-# type: ignore (Pylance: Cycle detected in import chain)
-from wikiman.wikiman import *  # type: ignore Pylance(reportWildcardImportFromLibrary)
+# type: ignore (Pylance(Cycle detected, reportWildcardImportFromLibrary))
+from wikiman.api import *

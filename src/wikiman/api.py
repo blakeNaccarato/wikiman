@@ -6,13 +6,8 @@ from markdown import Markdown
 
 from wikiman import common, family, utils
 
-# ! -------------------------------------------------------------------------------- ! #
-# ! API
-
-
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
-
 
 # def shift_page():  # page: Path, count: int):
 #     """Shift a page."""

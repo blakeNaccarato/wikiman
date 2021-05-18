@@ -1,7 +1,7 @@
 from pytest import mark as m
 from wikiman import family
 
-from test_wikiman import PAGES
+from test_api import PAGES
 
 # * ---------------------------------------- * #
 # * get_children

@@ -3,10 +3,7 @@ from pytest import mark as m
 from wikiman import utils
 
 from conftest import WIKI_ROOT
-from test_wikiman import PAGES
-
-# ! -------------------------------------------------------------------------------- ! #
-# ! UTILITIES
+from test_api import PAGES
 
 # * -------------------------------------------------------------------------------- * #
 # * GET NEAREST
