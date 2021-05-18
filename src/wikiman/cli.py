@@ -1,3 +1,5 @@
+"""CLI implementation of the `wikiman` API."""
+
 from typing import Optional
 
 import fire

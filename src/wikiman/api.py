@@ -1,4 +1,4 @@
-"""Generate wiki navigation links in the sidebar and footer of each page."""
+"""Main API for `wikiman`."""
 
 from pathlib import Path
 

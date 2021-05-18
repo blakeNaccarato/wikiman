@@ -1,3 +1,5 @@
+"""Functions that find the family of a page."""
+
 from pathlib import Path
 
 from wikiman import common
