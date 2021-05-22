@@ -42,7 +42,7 @@ def update_navigation() -> None:
 def add_page(name: str, under: str, position: Optional[int] = None) -> None:
     """Add a new page under a page, optionally specifying position."""
 
-    parent = utils.find_page(under)
+    parent = utils.find_page(under, pages=common.PAGES)
 
     if position is None:
         position = len(api.family.get_children(parent))

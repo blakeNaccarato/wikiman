@@ -102,10 +102,10 @@ def init_page(name: str, under: Path, position: int) -> Path:
     return page
 
 
-def find_page(name: str) -> Path:
+def find_page(name: str, pages: list[Path]) -> Path:
     """Find an existing page."""
 
-    page_names = [get_dashed_name(page.stem).lower() for page in common.PAGES]
+    page_names = [get_dashed_name(page.stem).lower() for page in pages]
 
     try:
         page_location = page_names.index(get_dashed_name(name).lower())
