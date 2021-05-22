@@ -10,6 +10,8 @@
     "ms-python.python",
     "yzhang.markdown-all-in-one",
     "bierner.markdown-preview-github-styles",
-    "davidanson.vscode-markdownlint"
+    "davidanson.vscode-markdownlint",
+    "esbenp.prettier-vscode",
+    "lextudio.restructuredtext"
   ]
 }
