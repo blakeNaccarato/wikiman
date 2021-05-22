@@ -19,13 +19,15 @@ GIT_REMOTE_URL = (
 # * GET NEAREST
 
 
-def get_nearest(page: Path) -> tuple[Path, Path, Path]:
+def get_nearest(
+    page: Path, root_page: Path = common.ROOT_PAGE
+) -> tuple[Path, Path, Path]:
     """Get the pages nearest to a page."""
 
     siblings = family.get_siblings(page)
-    if page == common.ROOT_PAGE:
-        next_page = siblings[0] if siblings else common.ROOT_PAGE
-        prev_page = common.ROOT_PAGE
+    if page == root_page:
+        next_page = siblings[0] if siblings else root_page
+        prev_page = root_page
     else:
         page_position = siblings.index(page)
         next_page = get_next(page, siblings, page_position)
@@ -49,13 +51,13 @@ def get_next(page: Path, siblings: list[Path], page_position: int) -> Path:
     return next_page
 
 
-def get_next_of_last_child(page: Path) -> Path:
+def get_next_of_last_child(page: Path, root_page: Path = common.ROOT_PAGE) -> Path:
     """Get the next page of a last child."""
 
     parent = family.get_parent(page)
-    is_last_page = parent == common.ROOT_PAGE
+    is_last_page = parent == root_page
     if is_last_page:
-        next_page = common.ROOT_PAGE
+        next_page = root_page
     else:
         siblings_of_parent = family.get_siblings(parent)
         next_page_position = siblings_of_parent.index(parent) + 1
@@ -78,10 +80,10 @@ def get_prev(page: Path, siblings: list[Path], page_position: int) -> Path:
 # * PAGE
 
 
-def get_page_position(page: Path) -> int:
+def get_page_position(page: Path, root_page: Path = common.ROOT_PAGE) -> int:
     """Get the position of a page."""
 
-    if page == common.ROOT_PAGE:
+    if page == root_page:
         position = 0
     else:
         page_dir = page.parent

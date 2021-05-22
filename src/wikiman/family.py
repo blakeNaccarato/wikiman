@@ -50,10 +50,10 @@ def get_siblings(page: Path) -> list[Path]:
     return siblings
 
 
-def get_parent(page: Path) -> Path:
+def get_parent(page: Path, root_page: Path = common.ROOT_PAGE) -> Path:
     """Get the parent of a page."""
 
-    if page == common.ROOT_PAGE:
+    if page == root_page:
         # Make the Home page its own parent
         parent = page
     else:

@@ -46,13 +46,13 @@ def create_page(page: Path) -> None:
 MD_TAB = "&nbsp;" * 4
 
 
-def get_tree(page: Path) -> str:
+def get_tree(page: Path, root_page: Path = common.ROOT_PAGE) -> str:
     """Get Markdown links for the tree of pages near a page."""
 
     # Start the tree at root or with the page and its siblings
-    if page == common.ROOT_PAGE:
+    if page == root_page:
         # Tree is a list of just the root page
-        tree = [utils.bold_md(utils.get_page_link(common.ROOT_PAGE))]
+        tree = [utils.bold_md(utils.get_page_link(root_page))]
         page_idx = 0
     else:
         # Tree is a list of the page and its siblings
@@ -67,13 +67,13 @@ def get_tree(page: Path) -> str:
     tree = insert_subtree(subtree=child_links, tree=tree, index=page_idx)
 
     # Only worry about parents if it's not the root page
-    if page != common.ROOT_PAGE:
+    if page != root_page:
 
         parent = family.get_parent(page)
 
-        if parent == common.ROOT_PAGE:
+        if parent == root_page:
             # Insert the working tree below the root page
-            parent_links = [utils.get_page_link(common.ROOT_PAGE)]
+            parent_links = [utils.get_page_link(root_page)]
             parent_idx = 0
         else:
             # Insert the working tree below the parent page in the list of parents
@@ -113,7 +113,7 @@ def get_toc(page: Path) -> str:
     return common.MD_NEWLINE.join(toc_list)
 
 
-def get_relative_nav(page: Path) -> str:
+def get_relative_nav(page: Path, root_page: Path = common.ROOT_PAGE) -> str:
     """Get the parent, previous, and next Markdown links."""
 
     nav_head = ("Next: ", "Prev: ", "Up: ")
@@ -122,21 +122,21 @@ def get_relative_nav(page: Path) -> str:
     relative_nav: list[str] = []
 
     # Get next link for any page except the last page in the entire wiki
-    if next_page == common.ROOT_PAGE:
+    if next_page == root_page:
         next_link = None
     else:
         next_link = utils.get_page_link(next_page)
         relative_nav.append(nav_head[0] + next_link)
 
     # Get previous link for any page except the home page
-    if page == common.ROOT_PAGE:
+    if page == root_page:
         prev_link = None
     else:
         prev_link = utils.get_page_link(prev_page)
         relative_nav.append(nav_head[1] + prev_link)
 
     # Get parent link for any page except for Home, or the first page in a section
-    if page == common.ROOT_PAGE or prev_page == parent:
+    if page == root_page or prev_page == parent:
         parent_link = None
     else:
         parent_link = utils.get_page_link(parent)
