@@ -48,4 +48,4 @@ jobs:
           pip install -U pip setuptools wheel
           pip install . pytest~=6.2 pytest-cov~=2.11
       - run: pytest --cov
-      - uses: codecov/codecov-action@v1.4.1
+      - uses: codecov/codecov-action@v1.5.0
