@@ -57,7 +57,7 @@ def EXPECTED_WIKI(request, RESTORE_WIKI) -> Path:
     """Get the expected final state of the wiki.
 
     Search the "tests" folder for "wiki" subfolders to folders matching the test module
-    name (e.g. "test_wikiman"), the test itself (e.g. "test_create_page"), or the
+    name (e.g. "test_api"), the test itself (e.g. "test_create_page"), or the
     `test_id` of the parametrized test (if parametrized at all, e.g. "dashes").
 
     For example:
@@ -65,7 +65,7 @@ def EXPECTED_WIKI(request, RESTORE_WIKI) -> Path:
       tests
       │
       │ conftest.py
-      │ test_wikiman.py
+      │ test_api.py
       │
       └───test_wikiman
           │
@@ -97,7 +97,7 @@ def EXPECTED_WIKI(request, RESTORE_WIKI) -> Path:
         parametrized_wiki = None
 
     # Look in parametrized-, then test-, then module-level paths for an expected wiki
-    if is_parametrized and parametrized_wiki.exists():
+    if is_parametrized and parametrized_wiki.exists():  # type: ignore (Pylance(reportOptionalMemberAccess) misfire, doesn't see short-circuit)
         wiki = parametrized_wiki
     if test_wiki.exists():
         wiki = test_wiki

@@ -1,18 +1,13 @@
-"""Generate wiki navigation links in the sidebar and footer of each page."""
+"""Main API for `wikiman`."""
 
 from pathlib import Path
 
 from markdown import Markdown
 
-from wikiman import common, utils
-
-# ! -------------------------------------------------------------------------------- ! #
-# ! API
-
+from wikiman import common, family, utils
 
 # * -------------------------------------------------------------------------------- * #
 # * FILE OPERATIONS
-
 
 # def shift_page():  # page: Path, count: int):
 #     """Shift a page."""
@@ -61,20 +56,20 @@ def get_tree(page: Path) -> str:
         page_idx = 0
     else:
         # Tree is a list of the page and its siblings
-        siblings = get_siblings(page)
+        siblings = family.get_siblings(page)
         tree = [utils.get_page_link(page) for page in siblings]
         page_idx = siblings.index(page)
         tree[page_idx] = utils.bold_md(tree[page_idx])
 
     # Insert child links below the page
-    children = get_children(page)
+    children = family.get_children(page)
     child_links = [utils.get_page_link(page) for page in children]
     tree = insert_subtree(subtree=child_links, tree=tree, index=page_idx)
 
     # Only worry about parents if it's not the root page
     if page != common.ROOT_PAGE:
 
-        parent = get_parent(page)
+        parent = family.get_parent(page)
 
         if parent == common.ROOT_PAGE:
             # Insert the working tree below the root page
@@ -82,7 +77,7 @@ def get_tree(page: Path) -> str:
             parent_idx = 0
         else:
             # Insert the working tree below the parent page in the list of parents
-            parents = get_siblings(parent)
+            parents = family.get_siblings(parent)
             parent_links = [utils.get_page_link(page) for page in parents]
             parent_idx = parents.index(parent)
         tree = insert_subtree(subtree=tree, tree=parent_links, index=parent_idx)
@@ -123,7 +118,7 @@ def get_relative_nav(page: Path) -> str:
 
     nav_head = ("Next: ", "Prev: ", "Up: ")
 
-    (next_page, prev_page, parent) = get_nearest(page)
+    (next_page, prev_page, parent) = utils.get_nearest(page)
     relative_nav: list[str] = []
 
     # Get next link for any page except the last page in the entire wiki
@@ -148,97 +143,3 @@ def get_relative_nav(page: Path) -> str:
         relative_nav.append(nav_head[2] + parent_link)
 
     return MD_TAB.join(relative_nav)
-
-
-# * -------------------------------------------------------------------------------- * #
-# * GET NEAREST
-
-
-def get_nearest(page: Path) -> tuple[Path, Path, Path]:
-    """Get the pages nearest to a page."""
-
-    siblings = get_siblings(page)
-    if page == common.ROOT_PAGE:
-        next_page = siblings[0] if siblings else common.ROOT_PAGE
-        prev_page = common.ROOT_PAGE
-    else:
-        page_position = siblings.index(page)
-        next_page = get_next(page, siblings, page_position)
-        prev_page = get_prev(page, siblings, page_position)
-
-    parent = get_parent(page)
-    return next_page, prev_page, parent
-
-
-def get_next(page: Path, siblings: list[Path], page_position: int) -> Path:
-    """Get the page just after this page."""
-
-    children = get_children(page)
-    is_last_child = page_position + 1 >= len(siblings)
-    if children:
-        next_page = children[0]
-    elif is_last_child:
-        next_page = get_next_of_last_child(page)
-    else:
-        next_page = siblings[page_position + 1]
-    return next_page
-
-
-def get_next_of_last_child(page: Path) -> Path:
-    """Get the next page of a last child."""
-
-    parent = get_parent(page)
-    is_last_page = parent == common.ROOT_PAGE
-    if is_last_page:
-        next_page = common.ROOT_PAGE
-    else:
-        siblings_of_parent = get_siblings(parent)
-        next_page_position = siblings_of_parent.index(parent) + 1
-        parent_is_last_child = next_page_position >= len(siblings_of_parent)
-        if parent_is_last_child:
-            next_page = get_next_of_last_child(parent)
-        else:
-            next_page = siblings_of_parent[next_page_position]
-    return next_page
-
-
-def get_prev(page: Path, siblings: list[Path], page_position: int) -> Path:
-    """Get the page just before this page."""
-
-    is_first_child = page_position == 0
-    return get_parent(page) if is_first_child else siblings[page_position - 1]
-
-
-# * -------------------------------------------------------------------------------- * #
-# * RELATIVES
-
-
-def get_siblings(page: Path) -> list[Path]:
-    """Get a page and its siblings. The home page has its children as its siblings."""
-
-    parent = get_parent(page)
-    siblings = get_children(parent)
-    return siblings
-
-
-def get_parent(page: Path) -> Path:
-    """Get the parent of a page."""
-
-    if page == common.ROOT_PAGE:
-        # Make the Home page its own parent
-        parent = page
-    else:
-        # Make the page in the parent directory its parent
-        page_directory = page.parent
-        parent_directory = page_directory.parent
-        # If each page has its own directory, glob should get only one page, the parent
-        parent = sorted(parent_directory.glob(common.PAGE_PATTERN))[0]
-
-    return parent
-
-
-def get_children(page: Path) -> list[Path]:
-    """Get the children of a page."""
-
-    parent_directory = page.parent
-    return sorted(parent_directory.glob(f"*/{common.PAGE_PATTERN}"))

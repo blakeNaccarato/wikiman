@@ -3,10 +3,161 @@ from pytest import mark as m
 from wikiman import utils
 
 from conftest import WIKI_ROOT
-from test_wikiman import PAGES
+from test_api import PAGES
 
-# ! -------------------------------------------------------------------------------- ! #
-# ! UTILITIES
+# * -------------------------------------------------------------------------------- * #
+# * GET NEAREST
+
+# * ---------------------------------------- * #
+# * get_nearest
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            "home",
+            (PAGES["home"],),
+            (PAGES["impeach-vermilion-vacuum"], PAGES["home"], PAGES["home"]),
+        ),
+        # (
+        #     #? Can't test this path without a lot of fixturing
+        #     "home_is_only_page",
+        #     (PAGES["home"],),
+        #     (PAGES["home"], PAGES["home"], PAGES["home"]),
+        # ),
+        (
+            "else",
+            (PAGES["medium-establish-vital"],),
+            (
+                PAGES["reaction-diagonal-patter"],
+                PAGES["automatic-party-merit"],
+                PAGES["equity-substitute-huddle"],
+            ),
+        ),
+    ],
+)
+def test_get_nearest(test_id, args, expected):
+    result = utils.get_nearest(*args)
+    assert result == expected
+
+
+# * ---------------------------------------- * #
+# * get_prev
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            "is_first_child",
+            (
+                PAGES["measure-transient-respite"],
+                [
+                    PAGES["measure-transient-respite"],
+                    PAGES["official-union-advantage"],
+                    PAGES["middle-pasture-floating"],
+                ],
+                0,
+            ),
+            PAGES["impeach-vermilion-vacuum"],
+        ),
+        (
+            "else",
+            (
+                PAGES["official-union-advantage"],
+                [
+                    PAGES["measure-transient-respite"],
+                    PAGES["official-union-advantage"],
+                    PAGES["middle-pasture-floating"],
+                ],
+                1,
+            ),
+            PAGES["measure-transient-respite"],
+        ),
+    ],
+)
+def test_get_prev(test_id, args, expected):
+    result = utils.get_prev(*args)
+    assert result == expected
+
+
+# * ---------------------------------------- * #
+# * get_next_of_last_child
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        ("is_last_page", (PAGES["reaction-diagonal-patter"],), PAGES["home"]),
+        (
+            "elif_parent_is_last_child",
+            (PAGES["meridian-preserve-winter"],),
+            PAGES["equity-substitute-huddle"],
+        ),
+        (
+            "else",
+            (PAGES["middle-pasture-floating"],),
+            PAGES["equity-substitute-huddle"],
+        ),
+    ],
+)
+def test_get_next_of_last_child(test_id, args, expected):
+    result = utils.get_next_of_last_child(*args)
+    assert result == expected
+
+
+# * ---------------------------------------- * #
+# * get_next
+
+
+@m.parametrize(
+    "test_id, args, expected",
+    [
+        (
+            "has_children",
+            (
+                PAGES["equity-substitute-huddle"],
+                [
+                    PAGES["impeach-vermilion-vacuum"],
+                    PAGES["equity-substitute-huddle"],
+                ],
+                1,
+            ),
+            PAGES["automatic-party-merit"],
+        ),
+        (
+            "elif_is_last_child",
+            (
+                PAGES["serpentine-hurry-butcher"],
+                [
+                    PAGES["close-waste-transform"],
+                    PAGES["transit-thrum-middle"],
+                    PAGES["serpentine-hurry-butcher"],
+                ],
+                2,
+            ),
+            PAGES["middle-pasture-floating"],
+        ),
+        (
+            "else",
+            (
+                PAGES["medium-establish-vital"],
+                [
+                    PAGES["automatic-party-merit"],
+                    PAGES["medium-establish-vital"],
+                    PAGES["reaction-diagonal-patter"],
+                ],
+                1,
+            ),
+            PAGES["reaction-diagonal-patter"],
+        ),
+    ],
+)
+def test_get_next(test_id, args, expected):
+    result = utils.get_next(*args)
+    assert result == expected
+
 
 # * -------------------------------------------------------------------------------- * #
 # * PAGES

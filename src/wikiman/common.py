@@ -1,3 +1,5 @@
+"""Common values."""
+
 from pathlib import Path
 
 # Patterns specific to GitHub Wiki
