@@ -4,10 +4,14 @@
 requires = ["flit_core >=3.3,<4"]
 build-backend = "flit_core.buildapi"
 
+dependencies = ["fire~=0.4", "markdown~=3.3", "GitPython~=3.1"]
+
 [project]
 name = "wikiman"
 readme = "README.md"
-authors = [{name = "Blake Naccarato", email = "blake.naccarato+wikiman@gmail.com"}]
+authors = [
+    { name = "Blake Naccarato", email = "blake.naccarato+wikiman@gmail.com" },
+]
 dynamic = ["version", "description"]
 
 [project.scripts]
