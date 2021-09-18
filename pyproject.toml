@@ -10,5 +10,8 @@ readme = "README.md"
 authors = [{name = "Blake Naccarato", email = "blake.naccarato+wikiman@gmail.com"}]
 dynamic = ["version", "description"]
 
+[project.scripts]
+wikiman = "wikiman.cli:main"
+
 [project.urls]
 Home = "https://github.com/blakeNaccarato/wikiman"
