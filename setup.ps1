@@ -1,4 +1,4 @@
-copier gh:blakeNaccarato/copier-python . -r 7a6c90d
+copier gh:blakeNaccarato/copier-python . -r 4351848
 py -3.9 -m venv .venv
 .venv/Scripts/activate
 pip install -U pip  # throws [WinError 5], but still works on its own
