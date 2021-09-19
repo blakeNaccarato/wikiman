@@ -13,6 +13,7 @@ authors = [
 dynamic = ["version", "description"]
 requires-python = ">=3.9"
 dependencies = ["fire~=0.4", "markdown~=3.3", "GitPython~=3.1"]
+optional-dependencies = []  # Workaround in flit 3.3.0 https://github.com/takluyver/flit/issues/432
 
 [project.scripts]
 wikiman = "wikiman.cli:main"
