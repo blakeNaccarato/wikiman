@@ -6,17 +6,20 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "wikiman"
-readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["fire~=0.4", "markdown~=3.3", "GitPython~=3.1"]
+
 authors = [
     { name = "Blake Naccarato", email = "blake.naccarato+wikiman@gmail.com" },
 ]
 dynamic = ["version", "description"]
-requires-python = ">=3.9"
-dependencies = ["fire~=0.4", "markdown~=3.3", "GitPython~=3.1"]
-optional-dependencies = []  # Workaround in flit 3.3.0 https://github.com/takluyver/flit/issues/432
+readme = "README.md"
 
 [project.scripts]
 wikiman = "wikiman.cli:main"
 
 [project.urls]
 Home = "https://github.com/blakeNaccarato/wikiman"
+
+# Workaround for flit 3.3.0 https://github.com/takluyver/flit/issues/432
+[project.optional-dependencies]
