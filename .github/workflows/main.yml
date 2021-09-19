@@ -16,9 +16,12 @@ jobs:
         with:
           python-version: 3.9
       - run: |
-          pip install -U pip setuptools wheel
-          pip install -r requirements_lint.txt
-          pip install .
+          pip install -U pip
+          pip install wheel
+          pip install --pre copier
+          copier gh:blakeNaccarato/copier-python . -f -r 336a935
+          pip install -r requirements_cicd.txt
+          flit install
       - run: flake8
 
   pyright:
@@ -29,8 +32,12 @@ jobs:
         with:
           python-version: 3.9
       - run: |
-          pip install -U pip setuptools wheel
-          pip install .
+          pip install -U pip
+          pip install wheel
+          pip install --pre copier
+          copier gh:blakeNaccarato/copier-python . -f -r 336a935
+          pip install -r requirements_cicd.txt
+          flit install
       - uses: actions/setup-node@v2.4.0
         with:
           node-version: "14"
@@ -45,7 +52,11 @@ jobs:
         with:
           python-version: 3.9
       - run: |
-          pip install -U pip setuptools wheel
-          pip install . pytest~=6.2 pytest-cov~=2.11
+          pip install -U pip
+          pip install wheel
+          pip install --pre copier
+          copier gh:blakeNaccarato/copier-python . -f -r 336a935
+          pip install -r requirements_cicd.txt
+          flit install
       - run: pytest --cov
-      - uses: codecov/codecov-action@v2.0.2
+      - uses: codecov/codecov-action@v2.1.0
