@@ -19,7 +19,7 @@ jobs:
           pip install -U pip
           pip install wheel
           pip install --pre copier
-          copier gh:blakeNaccarato/copier-python . -f -r cf42377
+          copier gh:blakeNaccarato/copier-python . -f -r 2824cae
           pip install -r requirements_cicd.txt
           flit install
       - run: flake8
@@ -35,7 +35,7 @@ jobs:
           pip install -U pip
           pip install wheel
           pip install --pre copier
-          copier gh:blakeNaccarato/copier-python . -f -r cf42377
+          copier gh:blakeNaccarato/copier-python . -f -r 2824cae
           pip install -r requirements_cicd.txt
           flit install
       - uses: actions/setup-node@v2.4.0
@@ -55,7 +55,7 @@ jobs:
           pip install -U pip
           pip install wheel
           pip install --pre copier
-          copier gh:blakeNaccarato/copier-python . -f -r cf42377
+          copier gh:blakeNaccarato/copier-python . -f -r 2824cae
           pip install -r requirements_cicd.txt
           flit install
       - run: pytest --cov
