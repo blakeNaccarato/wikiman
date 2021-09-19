@@ -35,7 +35,8 @@ jobs:
       - run: |
           pip install -U pip
           pip install wheel
-          pip install --pre copier
+          pip install pipx
+          pipx install copier==6.0.0a7
           copier gh:blakeNaccarato/copier-python . -f -r 336a935
           pip install -r requirements_cicd.txt
           flit install
@@ -55,7 +56,8 @@ jobs:
       - run: |
           pip install -U pip
           pip install wheel
-          pip install --pre copier
+          pip install pipx
+          pipx install copier==6.0.0a7
           copier gh:blakeNaccarato/copier-python . -f -r 336a935
           pip install -r requirements_cicd.txt
           flit install
