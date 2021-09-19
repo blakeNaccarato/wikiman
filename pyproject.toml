@@ -10,7 +10,7 @@ requires-python = ">=3.9"
 dependencies = ["fire~=0.4", "markdown~=3.3", "GitPython~=3.1"]
 
 [project.scripts]
-wikiman = "wikiman.cli:main"
+wikiman = "cli:main"
 
 authors = [{ name = "Blake Naccarato", email = "blake.naccarato+wikiman@gmail.com" }]
 dynamic = ["version", "description"]
