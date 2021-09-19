@@ -1,7 +1,7 @@
-copier gh:blakeNaccarato/copier-python . -r b8299a4
+copier -r 60b927b
 py -3.9 -m venv .venv
 .venv/Scripts/activate
 pip install -U pip  # throws [WinError 5], but still works on its own
 pip install wheel
-pip install -r requirements_dev.txt  # packages for development
+pip install -r requirements_dev.txt
 flit install -s
