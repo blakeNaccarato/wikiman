@@ -1,6 +1,3 @@
-# Project-specific
-/wiki
-
 # Tooling
 .vscode/
 .coveragerc
