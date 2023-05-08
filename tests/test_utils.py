@@ -315,10 +315,7 @@ def test_get_dir_name(test_id, args, expected):
 # resolve the wiki repo properly when invoked by end-users. Sure, it doesn't give us a
 # "proper" wiki link in the test suite, since we're not invoking this from a "proper"
 # wiki repo. And we can't pytest.fixtures.monkeypatch a module-level variable, either.
-@m.parametrize(
-    "test_id, args, expected",
-    [("base", (PAGES["home"],), utils.GIT_REMOTE_URL + "Home")],
-)
+@m.parametrize("test_id, args, expected", [("base", (PAGES["home"],), f"{utils.GIT_REMOTE_URL}Home")])
 def test_get_page_url(test_id, args, expected):
     result = utils.get_page_url(*args)
     assert result == expected
