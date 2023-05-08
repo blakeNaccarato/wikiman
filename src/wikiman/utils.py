@@ -41,12 +41,11 @@ def get_next(page: Path, siblings: list[Path], page_position: int) -> Path:
     children = family.get_children(page)
     is_last_child = page_position + 1 >= len(siblings)
     if children:
-        next_page = children[0]
+        return children[0]
     elif is_last_child:
-        next_page = get_next_of_last_child(page)
+        return get_next_of_last_child(page)
     else:
-        next_page = siblings[page_position + 1]
-    return next_page
+        return siblings[page_position + 1]
 
 
 def get_next_of_last_child(page: Path) -> Path:
@@ -55,16 +54,15 @@ def get_next_of_last_child(page: Path) -> Path:
     parent = family.get_parent(page)
     is_last_page = parent == common.ROOT_PAGE
     if is_last_page:
-        next_page = common.ROOT_PAGE
-    else:
-        siblings_of_parent = family.get_siblings(parent)
-        next_page_position = siblings_of_parent.index(parent) + 1
-        parent_is_last_child = next_page_position >= len(siblings_of_parent)
-        if parent_is_last_child:
-            next_page = get_next_of_last_child(parent)
-        else:
-            next_page = siblings_of_parent[next_page_position]
-    return next_page
+        return common.ROOT_PAGE
+    siblings_of_parent = family.get_siblings(parent)
+    next_page_position = siblings_of_parent.index(parent) + 1
+    parent_is_last_child = next_page_position >= len(siblings_of_parent)
+    return (
+        get_next_of_last_child(parent)
+        if parent_is_last_child
+        else siblings_of_parent[next_page_position]
+    )
 
 
 def get_prev(page: Path, siblings: list[Path], page_position: int) -> Path:
@@ -82,11 +80,9 @@ def get_page_position(page: Path) -> int:
     """Get the position of a page."""
 
     if page == common.ROOT_PAGE:
-        position = 0
-    else:
-        page_dir = page.parent
-        position = int(page_dir.name.split("_")[0])
-    return position
+        return 0
+    page_dir = page.parent
+    return int(page_dir.name.split("_")[0])
 
 
 def init_page(name: str, under: Path, position: int) -> Path:
@@ -98,8 +94,7 @@ def init_page(name: str, under: Path, position: int) -> Path:
 
     destination_dir = under.parent
     page_dir = destination_dir / get_dir_name(name, position)
-    page = page_dir / get_md_name(name)
-    return page
+    return page_dir / get_md_name(name)
 
 
 def find_page(name: str) -> Path:
@@ -149,13 +144,13 @@ def get_page_url(page: Path) -> str:
 def get_dir_name(name: str, index: int) -> str:
     """Get the name for the directory containing a page in the file structure."""
 
-    return str(index).zfill(WIDTH) + "_" + get_dashed_name(name)
+    return f"{str(index).zfill(WIDTH)}_{get_dashed_name(name)}"
 
 
 def get_md_name(name: str) -> str:
     """Get the name for a `*.md` page in the file structure."""
 
-    return get_dashed_name(name) + ".md"
+    return f"{get_dashed_name(name)}.md"
 
 
 def get_human_name(name: str) -> str:

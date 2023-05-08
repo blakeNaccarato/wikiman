@@ -35,7 +35,9 @@ PAGE_PATHS = {
     "Reaction-Diagonal-Patter": EQUITY / "02_Reaction-Diagonal-Patter",
 }
 
-PAGES = {str(key).lower(): value / (key + ".md") for key, value in PAGE_PATHS.items()}
+PAGES = {
+    str(key).lower(): value / f"{key}.md" for key, value in PAGE_PATHS.items()
+}
 
 # # * -------------------------------------------------------------------------------- * #
 # # * PAGES
